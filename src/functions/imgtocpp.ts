@@ -1,6 +1,4 @@
 // Derived from https://github.com/javl/image2cpp/blob/master/index.html
-import { createCanvas } from 'canvas';
-
 const screenWidth = 128;
 const screenHeight = 32;
 const threshold = 128;
