@@ -1,5 +1,13 @@
+import styled from '@emotion/styled';
+import { Button, Grid, Input, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { convertGifToCpp } from './functions/functions';
+
+const MainDiv = styled.div`
+	margin: 0 auto;
+	max-width: 1000px;
+  padding: 32px;
+`;
 
 function App() {
 	const [inputGifUrl, setInputGifUrl] = useState<string>("");
@@ -21,8 +29,6 @@ function App() {
 	}
 
 	const handleProcessGif = async () => {
-		// console.log(inpGif);
-		// console.log(inputGifBuffer);
 		const codeSnippet = await convertGifToCpp(inputGifBuffer);
 		if (codeSnippet) {
 			setOutputCode(codeSnippet);
@@ -31,29 +37,59 @@ function App() {
 	}
 
   return (
-    <div>
-			<input 
-				type="file" 
-				id="img" 
-				name="img" 
-				accept="image/gif" 
-				onChange={event => handleInputGif(event)} 
-			/>
-			<button onClick={() => handleProcessGif()}>process!</button>
-			{inputGifUrl && 
-				<img src={inputGifUrl} alt="input gif" />
-			}
-			{outputCode && 
-				<button onClick={() => navigator.clipboard.writeText(outputCode)} >
-					Copy to clipboard
-				</button>
-			}
-			<code>
-				<pre>
-					{outputCode}
-				</pre>
-			</code>
-    </div>
+    <MainDiv>
+			<Grid container direction="column" alignItems="center" spacing={2}>
+				<Grid item>
+					<Typography variant="h4">
+						Satisfaction 75 GIF to code tool
+					</Typography>
+				</Grid>
+				<Grid item>
+					<Typography variant="subtitle1">
+						For use with atude's firmware (v12 and above)
+					</Typography>
+				</Grid>
+				<Grid item>
+					<Input 
+						type="file" 
+						id="img" 
+						name="img"
+						inputProps={{
+							accept: "image/gif",
+						}}
+						onChange={event => handleInputGif(event as React.ChangeEvent<HTMLInputElement>)} 
+					/>
+				</Grid>
+				<Grid item>
+					<Button 
+						disabled={!inputGifUrl || !inputGifBuffer} 
+						variant="outlined" 
+						onClick={() => handleProcessGif()}
+					>
+							Process GIF
+					</Button>
+				</Grid>
+				<Grid item>
+					{inputGifUrl && 
+						<img src={inputGifUrl} alt="input gif" />
+					}
+				</Grid>
+				<br />
+				<br />
+				<Grid item display="flex" flexDirection="column" >
+					{outputCode && 
+						<Button variant="outlined" onClick={() => navigator.clipboard.writeText(outputCode)} >
+							Copy code to clipboard
+						</Button>
+					}
+					<code>
+						<pre>
+							{outputCode}
+						</pre>
+					</code>
+				</Grid>
+			</Grid>
+    </MainDiv>
   );
 }
 
