@@ -1,14 +1,23 @@
+import { createCodePrefix, createCodeSuffix } from "./codeStrings";
+
 // Derived from https://github.com/javl/image2cpp/blob/master/index.html
 const screenWidth = 128;
 const screenHeight = 32;
 const threshold = 128;
+const indent = "        ";
+const double_indent = "            ";
 
 const imageToVertical1bit = (imageData: any) => {
-	let output_string = "";
+	let output_string = double_indent;
 	let output_index = 0;
+	let add_indent = false;
 
 	for (let p = 0; p < Math.ceil(screenHeight / 8); p++){
 		for (let x = 0; x < screenWidth; x++){
+			if (add_indent) {
+				output_string += double_indent;
+				add_indent = false;
+			}
 			let byteIndex = 7;
 			let number = 0;
 
@@ -29,6 +38,7 @@ const imageToVertical1bit = (imageData: any) => {
 			output_index++;
 			if(output_index >= 16){
 				output_string += "\n";
+				add_indent = true;
 				output_index = 0;
 			}
 		}
@@ -36,26 +46,26 @@ const imageToVertical1bit = (imageData: any) => {
 	return output_string;
 }
 
-// TODO: maybe different comments if multiple gifs are an option?
-const convertToString = (images: any[], frames_length: number) => {
+const convertToString = (images: any[], frames_length: number, curr_gif: number) => {
 	let output_string = "";
-	const prefix = `// GIF \nstatic const char PROGMEM gif1[${frames_length}][DEFAULT_ANIM_SIZE] = {\n`;
-	const suffix = "};";
+	const prefix = createCodePrefix(curr_gif, frames_length);
+	const suffix = createCodeSuffix(curr_gif, frames_length);
 	output_string += prefix;
 	let code;
-	images.forEach((image: any) => {
-		code = "{\n";
+	images.forEach((image: any, index: number) => {
+		code = indent + "{\n";
 		code += imageToVertical1bit(image);
-		code += "},\n";
+		code += indent + "},";
+		if (index !== images.length - 1) {
+			code += "\n";
+		}
 		output_string += code;
 	});
 	output_string += suffix;
-	// Trim whitespace from end and remove trailing comma
-	// return output_string.replace(/,\s*$/g,"");
 	return output_string;
 };
 
-const convertImgToCpp = async (images: any) => {
+const convertImagesToCpp = async (images: any, index: number) => {
 	const imageToRgba = async (imageBase64: any) => {
 		const img = new Image();
 		img.width = 128;
@@ -81,7 +91,8 @@ const convertImgToCpp = async (images: any) => {
 	for (const image of images) {
 		processedImages.push(await imageToRgba(image));
 	}
-	return convertToString(processedImages, processedImages.length);
+	const outputString = convertToString(processedImages, processedImages.length, index + 1);
+	return outputString;
 }
 
-export default convertImgToCpp;
+export default convertImagesToCpp;

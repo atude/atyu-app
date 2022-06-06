@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Button, Grid, Input, Typography } from '@mui/material';
+import { Button, Grid, Input, CircularProgress, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { convertGifToCpp } from './functions/functions';
 
@@ -10,29 +10,45 @@ const MainDiv = styled.div`
 `;
 
 function App() {
-	const [inputGifUrl, setInputGifUrl] = useState<string>("");
-	const [inputGifBuffer, setInputGifBuffer] = useState<string>("");
+	const [inputGifUrls, setInputGifUrls] = useState<string[]>(["", "", ""]);
+	const [inputGifBuffers, setInputGifBuffers] = useState<string[]>(["", "", ""]);
 	const [outputCode, setOutputCode] = useState<string>("");
-
-	const handleInputGif = async (event: React.ChangeEvent<HTMLInputElement>) => {
+	const [loading, setLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string>("");
+ 
+	const handleInputGif = async (event: React.ChangeEvent<HTMLInputElement>, gifIndex: number) => {
 		if (event.target.files?.length) {
 			const file = event.target.files[0];
 			const fileReader = new FileReader();
 
 			fileReader.addEventListener("load", (fileEvent) => {
-				setInputGifBuffer(fileEvent?.target?.result?.toString() ?? "");
+				// Set new input buffers
+				const newBuffers = [...inputGifBuffers];
+				newBuffers[gifIndex] = fileEvent?.target?.result?.toString() ?? "";
+				setInputGifBuffers(newBuffers);
 			}); 
 				
 			fileReader.readAsDataURL(file);
-			setInputGifUrl(window.URL.createObjectURL(file));
+
+			// Set new urls
+			const newUrls = [...inputGifUrls];
+			newUrls[gifIndex] = window.URL.createObjectURL(file);
+			setInputGifUrls(newUrls);
 		};
 	}
 
 	const handleProcessGif = async () => {
-		const codeSnippet = await convertGifToCpp(inputGifBuffer);
-		if (codeSnippet) {
-			setOutputCode(codeSnippet);
-			console.log(codeSnippet);
+		setLoading(true);
+		try {
+			const codeSnippet = await convertGifToCpp(inputGifBuffers);
+			if (codeSnippet) {
+				setOutputCode(codeSnippet);
+				console.log(codeSnippet);
+			}
+			setLoading(false);
+		} catch (e) {
+			setError("Error occurred");
+			setLoading(false);
 		}
 	}
 
@@ -49,34 +65,44 @@ function App() {
 						For use with atude's firmware (v12 and above)
 					</Typography>
 				</Grid>
-				<Grid item>
-					<Input 
-						type="file" 
-						id="img" 
-						name="img"
-						inputProps={{
-							accept: "image/gif",
-						}}
-						onChange={event => handleInputGif(event as React.ChangeEvent<HTMLInputElement>)} 
-					/>
+				<br />
+				<br />
+				<Grid container direction="row" justifyContent="center" spacing={2}>
+					{Array.from(Array(3).keys()).map(i => (
+						<Grid item key={i}>
+							<Typography>Slot {i + 1}</Typography>
+							<Input 
+								type="file" 
+								id="img" 
+								name="img"
+								inputProps={{
+									accept: "image/gif",
+								}}
+								onChange={event => handleInputGif(event as React.ChangeEvent<HTMLInputElement>, i)} 
+							/>
+						</Grid>
+					))}
 				</Grid>
 				<Grid item>
 					<Button 
-						disabled={!inputGifUrl || !inputGifBuffer} 
+						disabled={!inputGifUrls[0] || !inputGifBuffers[0] || loading} 
 						variant="outlined" 
 						onClick={() => handleProcessGif()}
 					>
-							Process GIF
+							Process GIFs
 					</Button>
 				</Grid>
 				<Grid item>
-					{inputGifUrl && 
-						<img src={inputGifUrl} alt="input gif" />
-					}
+					{inputGifUrls.map((inputGifUrl, i) => (
+						inputGifUrl ? 
+							<img style={{ margin: "4px", border: "2px solid red" }} key={i} src={inputGifUrl} alt="input gif" /> :
+							<div key={i}/>
+					))}
 				</Grid>
 				<br />
 				<br />
 				<Grid item display="flex" flexDirection="column" >
+					{!!loading && <CircularProgress />}
 					{outputCode && 
 						<Button variant="outlined" onClick={() => navigator.clipboard.writeText(outputCode)} >
 							Copy code to clipboard
