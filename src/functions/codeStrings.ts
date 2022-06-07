@@ -1,4 +1,15 @@
 export const createCodeFunctionPrefix = () => `
+#include "render_gif.h"
+#include "satisfaction75.h"
+#include <stdio.h>
+
+#define DEFAULT_ANIM_SIZE 512
+#define ANIM_GIF_SPEED 100
+
+#ifdef OLED_ENABLE
+
+uint32_t gif_anim_timer = 0;
+
 void draw_gif() {
 `;
 
@@ -21,8 +32,8 @@ export const createCodeSuffix = (curr_gif: number, frames_length: number) => `
 `;
 
 export const createCodeFunctionSuffix = (length: number) => `
-	if (timer_elapsed32(anim_timer) > ANIM_GIF_SPEED) {
-		anim_timer = timer_read32();
+	if (timer_elapsed32(gif_anim_timer) > ANIM_GIF_SPEED) {
+		gif_anim_timer = timer_read32();
 		if (gif_mode == 0) {
 				animate_gif_1();
 		} else if (gif_mode == 1) {

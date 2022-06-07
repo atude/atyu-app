@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import { Button, Grid, Input, CircularProgress, Typography } from '@mui/material';
+import { Button, Grid, Input, CircularProgress, Typography, Alert } from '@mui/material';
 import React, { useState } from 'react';
-import { convertGifToCpp } from './functions/functions';
+import { convertGifToCpp, maxFrames } from './functions/functions';
 
 const MainDiv = styled.div`
 	margin: 0 auto;
@@ -17,6 +17,7 @@ function App() {
 	const [error, setError] = useState<string>("");
  
 	const handleInputGif = async (event: React.ChangeEvent<HTMLInputElement>, gifIndex: number) => {
+		setError("");
 		if (event.target.files?.length) {
 			const file = event.target.files[0];
 			const fileReader = new FileReader();
@@ -39,17 +40,32 @@ function App() {
 
 	const handleProcessGif = async () => {
 		setLoading(true);
+		setError("");
 		try {
-			const codeSnippet = await convertGifToCpp(inputGifBuffers);
+			const [codeSnippet, totalFrames] = await convertGifToCpp(inputGifBuffers);
+			if (totalFrames > maxFrames) {
+				setError(`Too many total frames; try with smaller gifs (max ${maxFrames} frames total - your gifs have ${totalFrames})`);
+				setOutputCode("");
+			}
 			if (codeSnippet) {
 				setOutputCode(codeSnippet);
-				console.log(codeSnippet);
 			}
 			setLoading(false);
 		} catch (e) {
-			setError("Error occurred");
+			setError(`Unknown error: ${e || "reload page"}`);
 			setLoading(false);
 		}
+	}
+
+	const downloadCode = (code: string) => {
+    const element = document.createElement("a");
+    const file = new Blob([code], {
+      type: "text/plain"
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = "render_gif.c";
+    document.body.appendChild(element);
+    element.click();
 	}
 
   return (
@@ -101,12 +117,20 @@ function App() {
 				</Grid>
 				<br />
 				<br />
-				<Grid item display="flex" flexDirection="column" >
+				<Grid item display="flex" flexDirection="column" alignItems="center">
 					{!!loading && <CircularProgress />}
+					{!!error.length && <Alert severity="error">{error}</Alert>}
+					<br />
+					<br />
 					{outputCode && 
-						<Button variant="outlined" onClick={() => navigator.clipboard.writeText(outputCode)} >
-							Copy code to clipboard
-						</Button>
+						<div>
+							<Button style={{ marginRight: "4px" }} variant="outlined" onClick={() => navigator.clipboard.writeText(outputCode)} >
+								Copy code to clipboard
+							</Button>
+							<Button variant="outlined" onClick={() => downloadCode(outputCode)}>
+								Download as 'render_gif.c' file
+							</Button>
+						</div>
 					}
 					<code>
 						<pre>
