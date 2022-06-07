@@ -44,8 +44,10 @@ function App() {
 		try {
 			const [codeSnippet, totalFrames] = await convertGifToCpp(inputGifBuffers);
 			if (totalFrames > maxFrames) {
-				setError(`Too many total frames; try with smaller gifs (max ${maxFrames} frames total - your gifs have ${totalFrames})`);
-				setOutputCode("");
+				setError(`
+					Too many total frames; may not fit in firmware and require a hard reset 
+					(recommended ${maxFrames} frames max - your gifs have ${totalFrames})
+				`.trim());
 			}
 			if (codeSnippet) {
 				setOutputCode(codeSnippet);
