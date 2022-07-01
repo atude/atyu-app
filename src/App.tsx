@@ -9,6 +9,12 @@ const MainDiv = styled.div`
   padding: 32px;
 `;
 
+const slotText: Record<number, string> = {
+	0: "Slot 1 (Replaces LUNA)",
+	1: "Slot 2 (Replaces PUSHEEN)",
+	2: "Slot 3 (Replaces KIRBY)",
+}
+
 function App() {
 	const [inputGifUrls, setInputGifUrls] = useState<string[]>(["", "", ""]);
 	const [inputGifBuffers, setInputGifBuffers] = useState<string[]>(["", "", ""]);
@@ -45,8 +51,8 @@ function App() {
 			const [codeSnippet, totalFrames] = await convertGifToCpp(inputGifBuffers);
 			if (totalFrames > maxFrames) {
 				setError(`
-					Too many total frames; may not fit in firmware and require a hard reset 
-					(recommended ${maxFrames} frames max - your gifs have ${totalFrames})
+					Your GIFs may be too large. It may not fit in the firmware and would require a hard reset 
+					(recommended ${maxFrames} frames max - your GIFs have ${totalFrames} total).
 				`.trim());
 			}
 			if (codeSnippet) {
@@ -80,7 +86,7 @@ function App() {
 				</Grid>
 				<Grid item>
 					<Typography variant="subtitle1">
-						For use with atude's firmware (v12 and above)
+						For use with atude's firmware <b>(v13 and above)</b>
 					</Typography>
 				</Grid>
 				<br />
@@ -88,7 +94,7 @@ function App() {
 				<Grid container direction="row" justifyContent="center" spacing={2}>
 					{Array.from(Array(3).keys()).map(i => (
 						<Grid item key={i}>
-							<Typography>Slot {i + 1}</Typography>
+							<Typography>{slotText[i]}</Typography>
 							<Input 
 								type="file" 
 								id="img" 
@@ -103,7 +109,7 @@ function App() {
 				</Grid>
 				<Grid item>
 					<Button 
-						disabled={!inputGifUrls[0] || !inputGifBuffers[0] || loading} 
+						disabled={loading} 
 						variant="outlined" 
 						onClick={() => handleProcessGif()}
 					>
@@ -121,7 +127,7 @@ function App() {
 				<br />
 				<Grid item display="flex" flexDirection="column" alignItems="center">
 					{!!loading && <CircularProgress />}
-					{!!error.length && <Alert severity="error">{error}</Alert>}
+					{!!error.length && <Alert severity="warning">{error}</Alert>}
 					<br />
 					<br />
 					{outputCode && 

@@ -1,15 +1,19 @@
 import gifFrames from "gif-frames";
-import { createCodeFunctionPrefix, createCodeFunctionSuffix } from "./codeStrings";
+import { createCodeFunctionPrefix, createCodeFunctionSuffix, createNoGifFunction } from "./codeStrings";
 import convertImagesToCpp from "./imgtocpp";
 
-export const maxFrames = 48;
+export const maxFrames = 100;
 
 export const convertGifToCpp = async (urls: string[]): Promise<[string, number]> => {
-	const urlsFiltered = urls.filter(url => !!url);
 	const codeSnippets = [];
 	let totalFrames = 0;
 	let i = 0;
-	for (const url of urlsFiltered) {
+	for (const url of urls) {
+		if (!url.length) {
+			i++;
+			codeSnippets.push(createNoGifFunction(i));
+			continue;
+		}
 		const rawFrames = await gifFrames({ url, frames: "all" });
 		const frames = rawFrames.map((rawFrame) => rawFrame.getImage().read().toString('base64'));
 		codeSnippets.push(await convertImagesToCpp(frames, i));
@@ -18,5 +22,5 @@ export const convertGifToCpp = async (urls: string[]): Promise<[string, number]>
 	};
 	return [createCodeFunctionPrefix() +
 	 codeSnippets.join("\n") +
-	 createCodeFunctionSuffix(urlsFiltered.length), totalFrames];
+	 createCodeFunctionSuffix(), totalFrames];
 };
