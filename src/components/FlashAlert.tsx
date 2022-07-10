@@ -20,7 +20,7 @@ const StandardLinearProgress = styled(LinearProgress)`
 `;
 
 const FlashAlert = () => {
-  const { flashState, setFlashState } = useContext(AppContext);
+  const { flashState, setFlashState, flashProgress } = useContext(AppContext);
   const flashSeverity = FlashAlertSeverityMap[flashState];
   const displayString = FlashStateDisplayStrings[flashState];
 
@@ -49,7 +49,14 @@ const FlashAlert = () => {
 					<CircularProgress size={20}/>
 				</Box>
 			)}
-			{flashState === FlashState.FLASHING && <StandardLinearProgress />}
+			{
+				(
+					flashState === FlashState.FLASHING_ERASING || 
+					flashState === FlashState.FLASHING_DOWNLOADING
+				) && (
+					<StandardLinearProgress variant="determinate" value={flashProgress} />
+				)
+			}
     </AlertStyled>
   );
 };

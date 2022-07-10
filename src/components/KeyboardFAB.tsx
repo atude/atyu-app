@@ -17,13 +17,13 @@ const FABBox = styled(Box)`
 `;
 
 const KeyboardFAB = () => {
-	const { keyboard, setKeyboard, flashState, setFlashState } = useContext(AppContext);
+	const { keyboard, setKeyboard, flashState, setFlashState, setFlashProgress } = useContext(AppContext);
 	const handleChange = (event: SelectChangeEvent<string>) => {
 		setKeyboard(event.target.value);
 	};
 
 	const handleRunFlash = () => {
-		runFlash(keyboard, setFlashState);
+		runFlash(keyboard, setFlashState, setFlashProgress);
 	};
 	
 	return (
