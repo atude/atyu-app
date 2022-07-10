@@ -1,6 +1,15 @@
 import { AlertColor } from "@mui/material";
+import { ReactElement } from "react";
 
 export const versionString = "v0.1 alpha"
+
+export type OledMode = {
+	name: string;
+	component: ReactElement;
+	icon: ReactElement;
+	toggleEnabled?: () => void;
+	isEnabled?: boolean;
+};
 
 export enum FlashState {
 	IDLE,
