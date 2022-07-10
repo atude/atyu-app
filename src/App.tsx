@@ -5,6 +5,7 @@ import { AppContext } from './context';
 import { defaultKeyboard } from './configs/keyboards';
 import TabPanel from './components/TabPanel';
 import { FlashState } from './consts';
+import FlashAlert from './components/FlashAlert';
 
 const darkTheme = createTheme({
   palette: {
@@ -20,6 +21,7 @@ const App = () => {
     <ThemeProvider theme={darkTheme}>
 			<AppContext.Provider value={{ keyboard, setKeyboard, flashState, setFlashState }}>
 				<CssBaseline />
+				<FlashAlert />
 				<TabPanel />
 			</AppContext.Provider>
     </ThemeProvider>
