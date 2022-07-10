@@ -1,5 +1,7 @@
 import { AlertColor } from "@mui/material";
 
+export const versionString = "v0.1 alpha"
+
 export enum FlashState {
 	IDLE,
 	COMPILING,
@@ -12,7 +14,7 @@ export enum FlashState {
 export const FlashStateDisplayStrings: Record<FlashState, string> = {
 	[FlashState.IDLE]: "",
 	[FlashState.COMPILING]: "Building firmware...",
-	[FlashState.WAITING_FOR_DFU]: "Waiting for your keyboard to go into RESET mode...",
+	[FlashState.WAITING_FOR_DFU]: "Waiting for your keyboard to go into flash mode...",
 	[FlashState.FLASHING]: "Installing firmware...",
 	[FlashState.DONE]: "Done!",
 	[FlashState.ERROR]: "Error during installation!",
