@@ -1,6 +1,10 @@
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from "@mui/material/CssBaseline";
-import Home from "./pages/Home";
+import { useState } from "react";
+import { AppContext } from './context';
+import { defaultKeyboard } from './configs/keyboards';
+import TabPanel from './components/TabPanel';
+import { FlashState } from './consts';
 
 const darkTheme = createTheme({
   palette: {
@@ -9,10 +13,15 @@ const darkTheme = createTheme({
 });
 
 const App = () => {
+	const [keyboard, setKeyboard] = useState<string>(defaultKeyboard);
+	const [flashState, setFlashState] = useState<FlashState>(FlashState.IDLE);
+
   return (
     <ThemeProvider theme={darkTheme}>
-			<CssBaseline />
-			<Home />
+			<AppContext.Provider value={{ keyboard, setKeyboard, flashState, setFlashState }}>
+				<CssBaseline />
+				<TabPanel />
+			</AppContext.Provider>
     </ThemeProvider>
   );
 }

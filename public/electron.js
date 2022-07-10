@@ -3,6 +3,7 @@ const path = require('path');
 const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
 
+
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
@@ -10,6 +11,8 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
+			nodeIntegrationInWorker: true,
+			contextIsolation: false,
     },
   });
 
@@ -22,7 +25,7 @@ function createWindow() {
   );
   // Open the DevTools.
   if (isDev) {
-    win.webContents.openDevTools({ mode: 'detach' });
+    win.webContents.openDevTools({ mode: 'right' });
   }
 }
 
