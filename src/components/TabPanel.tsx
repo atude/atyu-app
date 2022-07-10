@@ -24,7 +24,7 @@ function TabPanel(props: TabPanelProps) {
 			{...other}
     >
       {value === index && (
-        <Box sx={{ p: 4 }}>
+        <Box sx={{ pt: 2, pl: 4, pr: 4 }}>
           {children}
         </Box>
       )}
@@ -59,7 +59,7 @@ export default function VerticalTabs() {
 				</Box>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        TODO settings
       </TabPanel>
     </Box>
   );

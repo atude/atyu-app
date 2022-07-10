@@ -46,10 +46,10 @@ const imageToVertical1bit = (imageData: any) => {
 	return output_string;
 }
 
-const convertToString = (images: any[], frames_length: number, curr_gif: number) => {
+const convertToString = (images: any[], frames_length: number) => {
 	let output_string = "";
-	const prefix = createCodePrefix(curr_gif, frames_length);
-	const suffix = createCodeSuffix(curr_gif, frames_length);
+	const prefix = createCodePrefix(frames_length);
+	const suffix = createCodeSuffix(frames_length);
 	output_string += prefix;
 	let code;
 	images.forEach((image: any, index: number) => {
@@ -65,7 +65,7 @@ const convertToString = (images: any[], frames_length: number, curr_gif: number)
 	return output_string;
 };
 
-const convertImagesToCpp = async (images: any, index: number) => {
+const convertImagesToCpp = async (images: any) => {
 	const imageToRgba = async (imageBase64: any) => {
 		const img = new Image();
 		img.width = 128;
@@ -91,7 +91,7 @@ const convertImagesToCpp = async (images: any, index: number) => {
 	for (const image of images) {
 		processedImages.push(await imageToRgba(image));
 	}
-	const outputString = convertToString(processedImages, processedImages.length, index + 1);
+	const outputString = convertToString(processedImages, processedImages.length);
 	return outputString;
 }
 

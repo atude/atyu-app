@@ -1,4 +1,4 @@
-export const createCodeFunctionPrefix = () => `
+export const codeFunctionPrefix = `
 #include "render_gif.h"
 #include "satisfaction75.h"
 #include <stdio.h>
@@ -11,13 +11,13 @@ export const createCodeFunctionPrefix = () => `
 uint32_t gif_anim_timer = 0;
 `;
 
-export const createCodePrefix = (curr_gif: number, frames_length: number) => `
-bool draw_gif_${curr_gif}() {
+export const createCodePrefix = (frames_length: number) => `
+void draw_gif() {
 	static uint8_t gif_curr_frame = 0;
 	static const char PROGMEM gif[${frames_length}][DEFAULT_ANIM_SIZE] = {
 `;
 
-export const createCodeSuffix = (curr_gif: number, frames_length: number) => `
+export const createCodeSuffix = (frames_length: number) => `
 	};
 
 	void animate_gif(void) {
@@ -35,12 +35,6 @@ export const createCodeSuffix = (curr_gif: number, frames_length: number) => `
 
 	return true;
 }
-`;
 
-export const createNoGifFunction = (curr_gif: number) => `
-bool draw_gif_${curr_gif}() { return false; }
-`;
-
-export const createCodeFunctionSuffix = () => `
 #endif
 `;
