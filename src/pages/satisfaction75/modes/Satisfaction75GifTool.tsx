@@ -1,11 +1,11 @@
-import { Alert, Button, CircularProgress, Grid, Input, Snackbar, Typography, useTheme } from '@mui/material';
+import { Clear } from '@mui/icons-material';
+import { Alert, Button, CircularProgress, IconButton, Snackbar, useTheme } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import HorizontalBox from '../../../components/HorizontalBox';
+import { defaultEmptyGif } from '../../../consts';
 import { AppContext } from '../../../context';
-import { convertGifToCpp } from '../../../functions/functions';
+import { convertGifToCpp } from '../../../functions/gifToCpp';
 import { useSatisfaction75 } from '../context';
-
-const defaultEmptyGif = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 
 function Satisfaction75GifTool() {
 	const theme = useTheme();
@@ -16,6 +16,10 @@ function Satisfaction75GifTool() {
 	const handleError = (msg: string) => {
 		setError(msg);
 		setDoingTask(false);
+		updateGif("", "");
+	}
+
+	const handleClearGif = () => {
 		updateGif("", "");
 	}
  
@@ -35,6 +39,7 @@ function Satisfaction75GifTool() {
 				try {
 					const codeSnippet = await convertGifToCpp(inputGifBuffer);
 					if (codeSnippet) {
+						console.log(codeSnippet);
 						updateGif(undefined, codeSnippet);
 						setDoingTask(false);
 					} else {
@@ -80,6 +85,9 @@ function Satisfaction75GifTool() {
 					src={gifUrl || defaultEmptyGif} 
 					alt="sat75_gif" 
 				/>
+				<IconButton disabled={isDoingTask || !gifUrl} onClick={handleClearGif} color="secondary">
+					<Clear />
+				</IconButton>
 				<Snackbar open={!!error.length} autoHideDuration={6000} onClose={() => setError("")}>
 					<Alert severity="error" sx={{ width: '100%' }}>
 						{error}

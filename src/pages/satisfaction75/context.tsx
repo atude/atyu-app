@@ -6,7 +6,7 @@ export const Satisfaction75Context = createContext({
 	toggleMatrixEnabled: () => {},
 	toggleBigClockEnabled: () => {},
 	toggleCustomGifEnabled: () => {},
-	updateGif: (gifUrl?: string, gifCode?: string) => {}
+	updateGif: (gifUrl?: string, gifCode?: string) => {},
 });
 
 export const Satisfaction75Provider = ({ children }: { children?: React.ReactNode}) => {

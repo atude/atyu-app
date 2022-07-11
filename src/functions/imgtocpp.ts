@@ -1,11 +1,16 @@
-import { createCodePrefix, createCodeSuffix } from "./codeStrings";
-
 // Derived from https://github.com/javl/image2cpp/blob/master/index.html
 const screenWidth = 128;
 const screenHeight = 32;
 const threshold = 128;
 const indent = "        ";
 const double_indent = "            ";
+const gifCodePrefix = (frames_length: number) => `
+#define GIF_LENGTH ${frames_length};
+static const char PROGMEM gif[GIF_LENGTH][512] = {
+`;
+const gifCodeSuffix = `
+};
+`;
 
 const imageToVertical1bit = (imageData: any) => {
 	let output_string = double_indent;
@@ -48,9 +53,6 @@ const imageToVertical1bit = (imageData: any) => {
 
 const convertToString = (images: any[], frames_length: number) => {
 	let output_string = "";
-	const prefix = createCodePrefix(frames_length);
-	const suffix = createCodeSuffix(frames_length);
-	output_string += prefix;
 	let code;
 	images.forEach((image: any, index: number) => {
 		code = indent + "{\n";
@@ -61,7 +63,6 @@ const convertToString = (images: any[], frames_length: number) => {
 		}
 		output_string += code;
 	});
-	output_string += suffix;
 	return output_string;
 };
 
@@ -92,7 +93,7 @@ const convertImagesToCpp = async (images: any) => {
 		processedImages.push(await imageToRgba(image));
 	}
 	const outputString = convertToString(processedImages, processedImages.length);
-	return outputString;
+	return gifCodePrefix(images.length) + outputString + gifCodeSuffix;
 }
 
 export default convertImagesToCpp;

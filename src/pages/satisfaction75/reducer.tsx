@@ -43,7 +43,7 @@ export const reducer: Reducer<Satisfaction75State, Action> = (state, action) => 
 				return { ...state, customGifEnabled: !state.customGifEnabled };
 		case "UPDATE_GIF":
 			if (!payload.gifUrl && !payload.gifCode) {
-				return state;
+				return { ...state, gifUrl: "", gifCode: "" };
 			}
 			return { 
 				...state, 
