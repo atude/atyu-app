@@ -3,20 +3,20 @@ import React, { useContext, useState } from 'react';
 import HorizontalBox from '../../../components/HorizontalBox';
 import { AppContext } from '../../../context';
 import { convertGifToCpp } from '../../../functions/functions';
+import { useSatisfaction75 } from '../context';
 
 const defaultEmptyGif = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 
 function Satisfaction75GifTool() {
 	const theme = useTheme();
+	const { gifUrl, updateGif } = useSatisfaction75();
 	const { isDoingTask, setDoingTask } = useContext(AppContext);
-	const [inputGifUrl, setInputGifUrl] = useState<string>(defaultEmptyGif);
-	const [outputCode, setOutputCode] = useState<string>("");
 	const [error, setError] = useState<string>("");
 
 	const handleError = (msg: string) => {
 		setError(msg);
 		setDoingTask(false);
-		setOutputCode("");
+		updateGif("", "");
 	}
  
 	const handleInputGif = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,8 +35,7 @@ function Satisfaction75GifTool() {
 				try {
 					const codeSnippet = await convertGifToCpp(inputGifBuffer);
 					if (codeSnippet) {
-						setOutputCode(codeSnippet);
-						console.log(codeSnippet)
+						updateGif(undefined, codeSnippet);
 						setDoingTask(false);
 					} else {
 						handleError("Failed to generate GIF code");
@@ -47,7 +46,7 @@ function Satisfaction75GifTool() {
 			}); 
 
 			fileReader.readAsDataURL(file);
-			setInputGifUrl(window.URL.createObjectURL(file));
+			updateGif(window.URL.createObjectURL(file), undefined);
 		};
 	}
 
@@ -78,7 +77,7 @@ function Satisfaction75GifTool() {
 						width: "128px",
 						height: "32px",
 					}} 
-					src={inputGifUrl || "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="} 
+					src={gifUrl || defaultEmptyGif} 
 					alt="sat75_gif" 
 				/>
 				<Snackbar open={!!error.length} autoHideDuration={6000} onClose={() => setError("")}>
