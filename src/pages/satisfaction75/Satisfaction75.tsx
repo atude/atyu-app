@@ -1,4 +1,4 @@
-import { AccessTime, Gif, ViewComfyRounded } from "@mui/icons-material";
+import { AccessTime, Gif, Pets, ViewComfyRounded } from "@mui/icons-material";
 import { Box, Button } from "@mui/material";
 import OledModeContainer from "../../components/OledModeContainer";
 import { OledMode } from "../../consts";
@@ -18,6 +18,18 @@ const Satisfaction75 = () => {
 			icon: <AccessTime />,
 			toggleEnabled: context.toggleBigClockEnabled,
 			isEnabled: context.bigClockEnabled,
+		},
+		{
+			name: "Bongo Cat",
+			icon: <Pets />, // TODO:
+			toggleEnabled: context.toggleBongoEnabled,
+			isEnabled: context.bongoEnabled,
+		},
+		{
+			name: "Interactive Pets",
+			icon: <Pets />,
+			toggleEnabled: context.togglePetsEnabled,
+			isEnabled: context.petsEnabled,
 		},
 		{
 			name: "Custom GIF",

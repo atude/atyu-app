@@ -39,7 +39,6 @@ function Satisfaction75GifTool() {
 				try {
 					const codeSnippet = await convertGifToCpp(inputGifBuffer);
 					if (codeSnippet) {
-						console.log(codeSnippet);
 						updateGif(undefined, codeSnippet);
 						setDoingTask(false);
 					} else {

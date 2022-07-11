@@ -3,8 +3,9 @@ import { initialState, reducer } from "./reducer";
 
 export const Satisfaction75Context = createContext({
 	...initialState,
-	toggleMatrixEnabled: () => {},
 	toggleBigClockEnabled: () => {},
+	toggleBongoEnabled: () => {},
+	togglePetsEnabled: () => {},
 	toggleCustomGifEnabled: () => {},
 	updateGif: (gifUrl?: string, gifCode?: string) => {},
 });
@@ -12,21 +13,24 @@ export const Satisfaction75Context = createContext({
 export const Satisfaction75Provider = ({ children }: { children?: React.ReactNode}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 	
-	const toggleMatrixEnabled = () =>  dispatch({ type: "TOGGLE_MATRIX_MODE" });
 	const toggleBigClockEnabled = () => dispatch({ type: "TOGGLE_BIG_CLOCK_MODE" });
+	const toggleBongoEnabled = () => dispatch({ type: "TOGGLE_BONGO_MODE" });
+	const togglePetsEnabled = () => dispatch({ type: "TOGGLE_PETS_MODE" });
 	const toggleCustomGifEnabled = () => dispatch({ type: "TOGGLE_CUSTOM_GIF_MODE" });
 	const updateGif = (gifUrl?: string, gifCode?: string) => {
 		dispatch({ type: "UPDATE_GIF", payload: { gifUrl, gifCode } });
 	};
 
 	const value = {
-		matrixEnabled: state.matrixEnabled,
 		bigClockEnabled: state.bigClockEnabled,
+		bongoEnabled: state.bongoEnabled,
+		petsEnabled: state.petsEnabled,
 		customGifEnabled: state.customGifEnabled,
 		gifUrl: state.gifUrl,
 		gifCode: state.gifCode,
-		toggleMatrixEnabled,
 		toggleBigClockEnabled,
+		toggleBongoEnabled,
+		togglePetsEnabled,
 		toggleCustomGifEnabled,
 		updateGif,
 	};
