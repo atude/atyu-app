@@ -17,6 +17,7 @@ const App = () => {
   const [keyboard, setKeyboard] = useState<string>(defaultKeyboard);
   const [flashState, setFlashState] = useState<FlashState>(FlashState.IDLE);
   const [flashProgress, setFlashProgress] = useState<number>(0);
+	const [isDoingTask, setDoingTask] = useState<boolean>(false);
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -28,6 +29,8 @@ const App = () => {
           setFlashState,
           flashProgress,
           setFlashProgress,
+					isDoingTask, 
+					setDoingTask,
         }}
       >
         <CssBaseline />

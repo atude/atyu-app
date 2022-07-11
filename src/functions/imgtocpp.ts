@@ -82,7 +82,7 @@ const convertImagesToCpp = async (images: any) => {
 		if (context) {
 			context.drawImage(img, 0, 0, 128, 32);
 			imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-			console.log(imageData.data);
+			// console.log(imageData.data);
 			return imageData.data;
 		}
 	};

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Alert, Box, Switch, Typography } from "@mui/material";
+import { Alert, Box, Switch, Typography, useTheme } from "@mui/material";
 import { OledMode } from "../consts";
 
 type OledModeContainerProps = {
@@ -27,13 +27,25 @@ const OledModeHeaderText = styled.div`
 	align-items: center;
 `;
 
+const OledModeComponent = styled.div`
+	margin-top: 12px;
+	padding: 14px 8px 0 8px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	border-top: 1px solid ${props => props.color};
+`;
+
 const OledModeContainer = (props: OledModeContainerProps) => {
+	const theme = useTheme();
 	const { oledModes } = props;
 	return (
 		<Box>
 			<Typography color="primary" variant="h5" sx={{ mb: "12px" }}>OLED modes</Typography>
 				{oledModes.map((oledMode) => {
-					const { name, icon, toggleEnabled, isEnabled } = oledMode; 
+					const { name, icon, toggleEnabled, isEnabled, component } = oledMode; 
 					return (
 						<OledModeBox 
 							variant="outlined" 
@@ -50,6 +62,11 @@ const OledModeContainer = (props: OledModeContainerProps) => {
 									<Switch checked={isEnabled} onChange={toggleEnabled} />
 								}
 							</OledModeHeader>
+							{!!isEnabled && !!component && (
+								<OledModeComponent color={theme.palette.primary.main}>
+									{component}
+								</OledModeComponent>
+							)}
 						</OledModeBox>
 					);
 				})}

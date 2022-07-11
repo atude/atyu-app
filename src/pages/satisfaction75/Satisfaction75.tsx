@@ -10,19 +10,17 @@ const Satisfaction75 = () => {
 	const oledModes: OledMode[] = [
 		{
 			name: "Keyboard Matrix Display",
-			component: <></>,
 			icon: <ViewComfyRounded />,
 		},
 		{
 			name: "Big Clock Display",
-			component: <></>,
 			icon: <AccessTime />,
 			toggleEnabled: context.toggleBigClockEnabled,
 			isEnabled: context.bigClockEnabled,
 		},
 		{
 			name: "Custom GIF",
-			component: <></>,
+			component: <Satisfaction75GifTool />,
 			icon: <Gif />,
 			toggleEnabled: context.toggleCustomGifEnabled,
 			isEnabled: context.customGifEnabled,
@@ -32,7 +30,6 @@ const Satisfaction75 = () => {
 	return (
 		<Box>
 			<OledModeContainer oledModes={oledModes}  />
-			<Satisfaction75GifTool />
 		</Box>
 	);
 };

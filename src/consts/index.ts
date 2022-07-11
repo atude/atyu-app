@@ -5,7 +5,7 @@ export const versionString = "v0.1 alpha"
 
 export type OledMode = {
 	name: string;
-	component: ReactElement;
+	component?: ReactElement;
 	icon: ReactElement;
 	toggleEnabled?: () => void;
 	isEnabled?: boolean;
