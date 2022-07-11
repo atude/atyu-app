@@ -1,7 +1,7 @@
 html {
 	height: 100%;
 	width: 100%;
-	overflow-x: overlay;
+	overflow: overlay;
 }
 
 body {
@@ -22,17 +22,18 @@ code {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 4px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #000;
+  background: none;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #888;
+	border-radius: 12px;
 }
 
 /* Handle on hover */
