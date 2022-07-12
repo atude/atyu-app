@@ -18,6 +18,10 @@ check_status "Could not find git or qmk"
 echo "-> Downloading and setting up atude/qmk_firmware..."
 cd $dir
 
-# Run qmk setup on repo
+# Save old home
+
+# Run qmk setup on repo; switch to new home
 qmk setup atude/qmk_firmware --home "$dir/qmk_firmware" --yes
 check_status "Failed to setup fresh qmk"
+
+# Return back to old home
