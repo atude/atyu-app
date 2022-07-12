@@ -1,17 +1,23 @@
-#! /bin/bash
+#!/bin/bash
+
+dir="/Users/atude/Core/projects/qmk_atude"
+
+check_status() {
+	status=$? 
+	[ $status -ne 0 ] && echo "-> script_error: $1" && exit 1
+}
 
 # Check if git and qmk are installed
-which qmk 
-which git
-# TODO: error if not found
+echo "-> Checking if qmk and git are installed..."
+checkQmk="which qmk"
+checkGit="which git"
+$checkQmk && $checkGit
+check_status "Could not find git or qmk"
 
-# Clone atude/qmk_firmware 
-# TODO:
+# Setup qmk and set qmk home
+echo "-> Downloading and setting up atude/qmk_firmware..."
+cd $dir
 
 # Run qmk setup on repo
-qmk setup atude/qmk_firmware
-
-# Get existing home config, change it, and set it back after flashing
-# Change home config
-# TODO: 
-qmk config user.qmk_home=/Users/atude/Core/projects/qmk_atude
+qmk setup atude/qmk_firmware --home "$dir/qmk_firmware" --yes
+check_status "Failed to setup fresh qmk"
