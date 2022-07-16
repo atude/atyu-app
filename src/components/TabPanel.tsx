@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import { AppContext } from '../context';
 import KeyboardSelector from './KeyboardFAB';
 import Configurator from '../pages/configurator/Configurator';
+import { AtyuConfigProvider } from '../pages/configurator/context';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -55,7 +56,9 @@ export default function VerticalTabs() {
       <TabPanel value={value} index={0}>
 				<Box>
 					<KeyboardSelector />
-					<Configurator />
+					<AtyuConfigProvider>
+						<Configurator />
+					</AtyuConfigProvider>
 				</Box>
       </TabPanel>
       <TabPanel value={value} index={1}>

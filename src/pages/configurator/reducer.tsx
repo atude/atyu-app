@@ -132,8 +132,6 @@ export const initialState = generateInitialState(testConfig);
 export const reducer: Reducer<AtyuState, Action> = (state, action) => {
 	const { type } = action;
 
-	console.log("REDUCER: ", type, action.payload);
-
 	switch (type) {
 		case "TOGGLE":
 			const { key } = action?.payload as AtyuTogglePayload;
@@ -141,7 +139,6 @@ export const reducer: Reducer<AtyuState, Action> = (state, action) => {
 				console.log("couldnt find key in payload");
 				return state;
 			}
-			console.log({ ...state, [key]: (!state[key] || false) });
 			return { ...state, [key]: (!state[key] || false) };
 		case "UPDATE_GIF":
 			const { gifUrl, gifCode } = action?.payload as AtyuGifPayload;

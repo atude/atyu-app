@@ -60,6 +60,7 @@ const Configurator = () => {
 				const { dispatchToggleKey } = context;
 				let isEnabled: boolean = isEnabledByDefault;
 				if (typeof context[key] === "boolean") {
+					console.log("is boolean!");
 					isEnabled = !!context[key];
 				}
 				
@@ -75,7 +76,7 @@ const Configurator = () => {
               <OledModeHeaderText>
                 {/*{icon}*/}&nbsp;&nbsp;{name}
               </OledModeHeaderText>
-              {!!configurable && <Switch checked={isEnabled} onChange={() => dispatchToggleKey(key)} />}
+              {!!configurable && <Switch checked={isEnabled} onChange={() => dispatchToggleKey(key)}/>}
             </OledModeHeader>
             {/* {!!isEnabled && !!component && (
               <OledModeComponent color={theme.palette.primary.main}>{component}</OledModeComponent>
