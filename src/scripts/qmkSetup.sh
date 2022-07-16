@@ -14,14 +14,14 @@ checkGit="which git"
 $checkQmk && $checkGit
 check_status "Could not find git or qmk"
 
-# Setup qmk and set qmk home
+# Run qmk setup on repo
 echo "-> Downloading and setting up atude/qmk_firmware..."
 cd $dir
 
-# Save old home
-
 # Run qmk setup on repo; switch to new home
-qmk setup atude/qmk_firmware --home "$dir/qmk_firmware" --yes
+qmk setup atude/qmk_firmware --yes
 check_status "Failed to setup fresh qmk"
+cd "qmk_firmware"
 
-# Return back to old home
+# Test a build to check setup works
+#TODO: 

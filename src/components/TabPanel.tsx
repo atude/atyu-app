@@ -3,8 +3,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { AppContext } from '../context';
-import { keyboardsMap } from '../configs/keyboards';
 import KeyboardSelector from './KeyboardFAB';
+import Configurator from '../pages/configurator/Configurator';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -55,7 +55,7 @@ export default function VerticalTabs() {
       <TabPanel value={value} index={0}>
 				<Box>
 					<KeyboardSelector />
-					{keyboardsMap[appContext.keyboard].home}
+					<Configurator />
 				</Box>
       </TabPanel>
       <TabPanel value={value} index={1}>

@@ -4,14 +4,6 @@ import { ReactElement } from "react";
 export const versionString = "v0.1 alpha"
 export const defaultEmptyGif = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 
-export type OledMode = {
-	name: string;
-	component?: ReactElement;
-	icon: ReactElement;
-	toggleEnabled?: () => void;
-	isEnabled?: boolean;
-};
-
 export enum FlashState {
 	IDLE,
 	COMPILING,

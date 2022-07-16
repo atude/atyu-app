@@ -1,26 +1,26 @@
 import { Clear } from '@mui/icons-material';
 import { Alert, Button, CircularProgress, IconButton, Snackbar, useTheme } from '@mui/material';
 import React, { useContext, useState } from 'react';
-import HorizontalBox from '../../../components/HorizontalBox';
-import { defaultEmptyGif } from '../../../consts';
-import { AppContext } from '../../../context';
-import { convertGifToCpp } from '../../../functions/gifToCpp';
-import { useSatisfaction75 } from '../context';
+import HorizontalBox from '../HorizontalBox';
+import { defaultEmptyGif } from '../../consts';
+import { AppContext } from '../../context';
+import { convertGifToCpp } from '../../functions/gifToCpp';
+import { useAtyuContext } from '../../pages/configurator/context';
 
-function Satisfaction75GifTool() {
+function UpdateGifComponent() {
 	const theme = useTheme();
-	const { gifUrl, updateGif } = useSatisfaction75();
+	const { dispatchUpdateGif } = useAtyuContext(); //TODO:
 	const { isDoingTask, setDoingTask } = useContext(AppContext);
 	const [error, setError] = useState<string>("");
 
 	const handleError = (msg: string) => {
 		setError(msg);
 		setDoingTask(false);
-		updateGif("", "");
+		dispatchUpdateGif("", "");
 	}
 
 	const handleClearGif = () => {
-		updateGif("", "");
+		dispatchUpdateGif("", "");
 	}
  
 	const handleInputGif = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +39,7 @@ function Satisfaction75GifTool() {
 				try {
 					const codeSnippet = await convertGifToCpp(inputGifBuffer);
 					if (codeSnippet) {
-						updateGif(undefined, codeSnippet);
+						dispatchUpdateGif(undefined, codeSnippet);
 						setDoingTask(false);
 					} else {
 						handleError("Failed to generate GIF code");
@@ -50,7 +50,7 @@ function Satisfaction75GifTool() {
 			}); 
 
 			fileReader.readAsDataURL(file);
-			updateGif(window.URL.createObjectURL(file), undefined);
+			dispatchUpdateGif(window.URL.createObjectURL(file), undefined);
 		};
 	}
 
@@ -72,7 +72,7 @@ function Satisfaction75GifTool() {
 					Upload 128x32 black and white GIF
 				</Button>
       </label>
-			<HorizontalBox>
+			{/* <HorizontalBox>
 				{!!isDoingTask && <CircularProgress size={30} sx={{ mr: "8px" }} />}
 				<img 
 					style={{ 
@@ -81,7 +81,7 @@ function Satisfaction75GifTool() {
 						width: "128px",
 						height: "32px",
 					}} 
-					src={gifUrl || defaultEmptyGif} 
+					src={gifUrl || defaultEmptyGif} //TO
 					alt="sat75_gif" 
 				/>
 				<IconButton disabled={isDoingTask || !gifUrl} onClick={handleClearGif} color="secondary">
@@ -92,9 +92,9 @@ function Satisfaction75GifTool() {
 						{error}
 					</Alert>
 				</Snackbar>	
-			</HorizontalBox>
+			</HorizontalBox> */}
 		</HorizontalBox>
   );
 }
 
-export default Satisfaction75GifTool;
+export default UpdateGifComponent;

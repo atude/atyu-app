@@ -1,7 +1,7 @@
-import { codegenHashDefine, tab } from "../../../functions/codegenHelpers";
-import { Satisfaction75State } from "../reducer";
+import { codegenHashDefine, tab } from "../../functions/codegenHelpers";
+import { AtyuState } from "../configurator/reducer";
 
-export const runCodegen = (state: Satisfaction75State): string => {
+export const runCodegen = (state: AtyuState): string => {
 	const { 
 		bigClockEnabled, 
 		bongoEnabled,
