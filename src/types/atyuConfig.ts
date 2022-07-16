@@ -1,8 +1,8 @@
-
 // Selection of keys you can enable or disable
-type AtyuOptionMultiselectBoolean = {
+export type AtyuOptionMultiselectBoolean = {
 	type: "multiselect_boolean";
-	multiselectKeys: {
+	multiselectStruct: {
+		name: string;
 		key: string;
 		defaultValue: boolean;
 	}[],
@@ -13,7 +13,7 @@ type AtyuOptionMultiselectBoolean = {
 }
 
 // One key you can set a strict value on
-type AtyuOptionMultiselectNumber = {
+export type AtyuOptionMultiselectNumber = {
 	type: "multiselect_number";
 	multiselectKey: string;
 	multiselectValues: {
@@ -23,29 +23,29 @@ type AtyuOptionMultiselectNumber = {
 	defaultValue: number;
 }
 
-type AtyuOptionSwitch = {
+export type AtyuOptionSwitch = {
 	type: "switch";
 	key: string;
 	defaultValue: boolean;
 }
 
-type AtyuChildOptionsStructure = 
+type AtyuChildOptionsStruct = 
 	| AtyuOptionMultiselectBoolean
 	| AtyuOptionMultiselectNumber
 ;
 
-type AtyuChildConfig = {
+export type AtyuChildConfig = {
 	name: string;
-	description: string;
-	structure: AtyuChildOptionsStructure;
+	desc: string;
+	struct: AtyuChildOptionsStruct;
 };
 
 // Top level configs are all booleans
 export type AtyuConfig =  {
 	name: string;
-	description: string;
+	desc: string;
 	key: string;
 	configurable: boolean;
-	isEnabledByDefault: boolean;
+	enabledByDefault: boolean;
 	children: AtyuChildConfig[];
 };

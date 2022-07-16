@@ -1,7 +1,9 @@
 // import { AccessTime, Gif, Pets, ViewComfyRounded } from "@mui/icons-material";
 import styled from "@emotion/styled";
 import { Alert, Box, Button, Switch, Typography, useTheme } from "@mui/material";
-import { AtyuConfig } from "../../types/atyuConfig";
+import MultiselectBooleanComponent from "../../components/configurator/MultiselectBooleanComponent";
+import { atyuBooleanValue } from "../../functions/configuratorHelpers";
+import { AtyuChildConfig, AtyuConfig } from "../../types/atyuConfig";
 import { runCodegen } from "../codegen";
 import { useAtyuContext } from "./context";
 import { testConfig } from "./reducer";
@@ -29,7 +31,7 @@ const OledModeHeaderText = styled.div`
 `;
 
 const OledModeComponent = styled.div`
-  margin-top: 12px;
+  margin: 12px auto;
   padding: 14px 8px 0 8px;
   width: 100%;
   display: flex;
@@ -38,6 +40,15 @@ const OledModeComponent = styled.div`
   justify-content: space-between;
   border-top: 1px solid ${(props) => props.color};
 `;
+
+const getChildComponent = (childConfigSection: AtyuChildConfig) => {
+  switch (childConfigSection.struct.type) {
+    case "multiselect_boolean":
+      return <MultiselectBooleanComponent config={childConfigSection.struct} />;
+    case "multiselect_number":
+      return <></>;
+  }
+};
 
 // This is the UI generator
 const Configurator = () => {
@@ -51,19 +62,15 @@ const Configurator = () => {
 
   return (
     <Box>
-      <Typography color="primary" variant="h5" sx={{ mb: "12px" }}>
-        OLED modes
+      <Typography color="primary" variant="h5" sx={{ mb: "18px" }}>
+        Configure OLED modes
       </Typography>
-      {config.map((configSection) => {
-        const { name, description, key, configurable, children, isEnabledByDefault } =
+      {config.map((configSection: AtyuConfig) => {
+        const { name, desc, key, configurable, children, enabledByDefault } =
           configSection;
-				const { dispatchToggleKey } = context;
-				let isEnabled: boolean = isEnabledByDefault;
-				if (typeof context[key] === "boolean") {
-					console.log("is boolean!");
-					isEnabled = !!context[key];
-				}
-				
+        const { dispatchToggleKey } = context;
+        const isEnabled = atyuBooleanValue(context[key], enabledByDefault);
+
         return (
           <OledModeBox
             variant="outlined"
@@ -74,13 +81,28 @@ const Configurator = () => {
           >
             <OledModeHeader>
               <OledModeHeaderText>
-                {/*{icon}*/}&nbsp;&nbsp;{name}
+                {/*{icon}*/}&nbsp;&nbsp;<Typography variant="button">{name}</Typography>
               </OledModeHeaderText>
-              {!!configurable && <Switch checked={isEnabled} onChange={() => dispatchToggleKey(key)}/>}
+              {!!configurable && (
+                <Switch checked={isEnabled} onChange={() => dispatchToggleKey(key)} />
+              )}
             </OledModeHeader>
-            {/* {!!isEnabled && !!component && (
-              <OledModeComponent color={theme.palette.primary.main}>{component}</OledModeComponent>
-            )} */}
+            {!!isEnabled && !!children.length && (
+              <OledModeComponent color={theme.palette.primary.main}>
+                {children.map((childConfigSection) => {
+									const { name: childName, desc: childDesc } = childConfigSection;
+									return (
+										<Box sx={{ width: "100%" }}>
+											<Typography variant="subtitle1">{childName}</Typography>
+											{!!childDesc.length && (
+												<Typography sx={{ mb: "12px" }} variant="subtitle2" color={theme.palette.info.main}>{childDesc}</Typography>
+											)}
+											{getChildComponent(childConfigSection)}
+										</Box>
+									)
+								})}
+              </OledModeComponent>
+            )}
           </OledModeBox>
         );
       })}

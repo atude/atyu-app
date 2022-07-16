@@ -4,50 +4,53 @@ import { AtyuConfig } from "../../types/atyuConfig";
 export const testConfig: AtyuConfig[] = [
 	{
 		name: "Keyboard Matrix",
-		description: "",
+		desc: "",
 		key: "",
 		configurable: false,
-		isEnabledByDefault: false,
+		enabledByDefault: true,
 		children: [],
 	},
 	{
 		name: "Big Clock",
-		description: "",
+		desc: "",
 		key: "OLED_CLOCK_ENABLED",
 		configurable: true,
-		isEnabledByDefault: false,
+		enabledByDefault: true,
 		children: [],
 	},
 	{
 		name: "Bongo Cat",
-		description: "",
+		desc: "",
 		key: "OLED_BONGO_ENABLED",
 		configurable: true,
-		isEnabledByDefault: false,
+		enabledByDefault: false,
 		children: [],
 	},
 	{
 		name: "Pets Mode",
-		description: "",
+		desc: "",
 		key: "OLED_PETS_ENABLED",
 		configurable: true,
-		isEnabledByDefault: false,
+		enabledByDefault: false,
 		children: [
 			{
-				name: "Enabled Pets",
-				description: "Choose up to 3 pets",
-				structure: {
+				name: "Choose your pets",
+				desc: "put controls here",
+				struct: {
 					type: "multiselect_boolean",
-					multiselectKeys: [
+					multiselectStruct: [
 						{
+							name: "Luna",
 							key: "OLED_PET_LUNA_ENABLED",
 							defaultValue: true,
 						},
 						{
+							name: "Kirby",
 							key: "OLED_PET_KIRBY_ENABLED",
 							defaultValue: false,
 						},
 						{
+							name: "Pusheen",
 							key: "OLED_PET_PUSHEEN_ENABLED",
 							defaultValue: true,
 						}
@@ -102,19 +105,19 @@ const generateInitialState = (config: AtyuConfig[]): AtyuState => {
 
 	config.forEach(configSection => {
 		if (configSection.key) {
-			initialState[configSection.key] = configSection.isEnabledByDefault;
+			initialState[configSection.key] = configSection.enabledByDefault;
 		}
 		configSection.children.forEach(childConfigSection => {
-			switch (childConfigSection.structure.type) {
+			switch (childConfigSection.struct.type) {
 				case "multiselect_boolean": {
-					const { multiselectKeys } = childConfigSection.structure;
-					multiselectKeys.forEach(multiselectKey => {
+					const { multiselectStruct } = childConfigSection.struct;
+					multiselectStruct.forEach(multiselectKey => {
 						initialState[multiselectKey.key] = multiselectKey.defaultValue;
 					});
 					break;
 				}
 				case "multiselect_number": {
-					const { multiselectKey, defaultValue } = childConfigSection.structure;
+					const { multiselectKey, defaultValue } = childConfigSection.struct;
 					initialState[multiselectKey] = defaultValue;
 					break;
 				}
