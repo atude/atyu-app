@@ -31,7 +31,7 @@ export type AtyuOptionSwitch = {
 
 export type AtyuOptionUpdateGif = {
 	type: "update_gif";
-	
+	// TODO:
 }
 
 type AtyuChildOptionsStruct = 
