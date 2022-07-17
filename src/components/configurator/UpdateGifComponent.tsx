@@ -1,16 +1,16 @@
 import { Clear } from '@mui/icons-material';
 import { Alert, Button, CircularProgress, IconButton, Snackbar, useTheme } from '@mui/material';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import HorizontalBox from '../HorizontalBox';
-import { defaultEmptyGif } from '../../consts';
-import { AppContext } from '../../context';
+import { defaultEmptyGif } from '../../constants';
 import { convertGifToCpp } from '../../functions/gifToCpp';
-import { useAtyuContext } from '../../pages/configurator/context';
+import { useAtyuContext } from '../../controllers/context/atyuContext';
+import { useAppContext } from '../../controllers/context/appContext';
 
 function UpdateGifComponent() {
 	const theme = useTheme();
 	const { dispatchUpdateGif } = useAtyuContext(); //TODO:
-	const { isDoingTask, setDoingTask } = useContext(AppContext);
+	const { isDoingTask, setDoingTask } = useAppContext();
 	const [error, setError] = useState<string>("");
 
 	const handleError = (msg: string) => {

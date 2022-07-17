@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import { Alert, AlertTitle, Box, CircularProgress, LinearProgress } from "@mui/material";
 import { useEffect } from "react";
-import { useContext } from "react";
-import { FlashAlertSeverityMap, FlashState, FlashStateDisplayStrings, versionString } from "../consts";
-import { AppContext } from "../context";
+import { versionString } from "../constants";
+import { FlashAlertSeverityMap, FlashState, FlashStateDisplayStrings } from "../constants/types/flashState";
+import { useAppContext } from "../controllers/context/appContext";
 
 const AlertStyled = styled(Alert)`
   top: 0;
@@ -20,7 +20,7 @@ const StandardLinearProgress = styled(LinearProgress)`
 `;
 
 const FlashAlert = () => {
-  const { flashState, setFlashState, flashProgress } = useContext(AppContext);
+  const { flashState, setFlashState, flashProgress } = useAppContext();
   const flashSeverity = FlashAlertSeverityMap[flashState];
   const displayString = FlashStateDisplayStrings[flashState];
 

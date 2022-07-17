@@ -2,10 +2,10 @@ import React, { useContext, useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { AppContext } from '../context';
 import KeyboardSelector from './KeyboardFAB';
-import Configurator from '../pages/configurator/Configurator';
-import { AtyuConfigProvider } from '../pages/configurator/context';
+import Configurator from './Configurator';
+import { AtyuConfigProvider } from '../controllers/context/atyuContext';
+import { useAppContext } from '../controllers/context/appContext';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -35,7 +35,7 @@ function TabPanel(props: TabPanelProps) {
 
 export default function VerticalTabs() {
   const [value, setValue] = useState(0);
-	const appContext = useContext(AppContext);
+	const appContext = useAppContext();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

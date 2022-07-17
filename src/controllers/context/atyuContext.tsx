@@ -1,7 +1,12 @@
 import React, { createContext, useContext, useReducer } from "react";
-import { reducer, initialState, AtyuContext } from "./reducer";
+import { reducer, initialState, AtyuState } from "../reducers/atyuReducer";
 
-export const context = createContext<AtyuContext>({
+export type AtyuContext = AtyuState & {
+	dispatchToggleKey: (key: string) => void;
+	dispatchUpdateGif: (gifUrl?: string, gifCode?: string) => void;
+};
+
+const context = createContext<AtyuContext>({
   ...initialState,
   dispatchToggleKey: (key: string) => {},
   dispatchUpdateGif: (gifUrl?: string, gifCode?: string) => {},

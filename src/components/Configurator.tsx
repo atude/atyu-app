@@ -1,12 +1,12 @@
 // import { AccessTime, Gif, Pets, ViewComfyRounded } from "@mui/icons-material";
 import styled from "@emotion/styled";
 import { Alert, Box, Button, Switch, Typography, useTheme } from "@mui/material";
-import MultiselectBooleanComponent from "../../components/configurator/MultiselectBooleanComponent";
-import { atyuBooleanValue } from "../../functions/configuratorHelpers";
-import { AtyuChildConfig, AtyuConfig } from "../../types/atyuConfig";
-import { runCodegen } from "../codegen";
-import { useAtyuContext } from "./context";
-import { testConfig } from "./reducer";
+import MultiselectBooleanComponent from "./configurator/MultiselectBooleanComponent";
+import { atyuBooleanValue } from "../functions/configuratorHelpers";
+import { AtyuChildConfig, AtyuConfig } from "../constants/types/atyuConfig";
+import { runCodegen } from "../pages/codegen";
+import { useAtyuContext } from "../controllers/context/atyuContext";
+import { testConfig } from "../controllers/reducers/atyuReducer";
 // import Satisfaction75GifTool from "./modes/Satisfaction75GifTool";
 
 const OledModeBox = styled(Alert)`

@@ -9,10 +9,9 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { useContext } from "react";
 import { keyboardsArray } from "../configs/keyboards";
-import { FlashState } from "../consts";
-import { AppContext } from "../context";
+import { FlashState } from "../constants/types/flashState";
+import { useAppContext } from "../controllers/context/appContext";
 import { runFlash } from "../functions/flash";
 
 const FABBox = styled(Box)`
@@ -32,7 +31,8 @@ const KeyboardFAB = () => {
     setFlashState,
     setFlashProgress,
     isDoingTask,
-  } = useContext(AppContext);
+  } = useAppContext();
+
   const handleChange = (event: SelectChangeEvent<string>) => {
     setKeyboard(event.target.value);
   };

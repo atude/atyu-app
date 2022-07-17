@@ -1,5 +1,5 @@
 import { keyboardsMap } from "../configs/keyboards";
-import { FlashState } from "../consts";
+import { FlashState } from "../constants/types/flashState";
 const { spawn } = window.require("child_process");
 
 const calcFlashProgress = (dataString: string): number => {

@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { Box, Checkbox, Typography } from "@mui/material";
 import { atyuBooleanValue } from "../../functions/configuratorHelpers";
-import { useAtyuContext } from "../../pages/configurator/context";
-import { AtyuOptionMultiselectBoolean } from "../../types/atyuConfig";
+import { useAtyuContext } from "../../controllers/context/atyuContext";
+import { AtyuOptionMultiselectBoolean } from "../../constants/types/atyuConfig";
 
 type Props = {
   config: AtyuOptionMultiselectBoolean;

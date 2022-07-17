@@ -1,5 +1,5 @@
 import { Reducer } from "react";
-import { AtyuConfig } from "../../types/atyuConfig";
+import { AtyuConfig } from "../../constants/types/atyuConfig";
 
 export const testConfig: AtyuConfig[] = [
 	{
@@ -68,10 +68,6 @@ export const testConfig: AtyuConfig[] = [
 export type AtyuState = {
 	[key: string]: any;
 }
-export type AtyuContext = AtyuState & {
-	dispatchToggleKey: (key: string) => void;
-	dispatchUpdateGif: (gifUrl?: string, gifCode?: string) => void;
-};
 
 type AtyuTogglePayload = {
 	key?: string;

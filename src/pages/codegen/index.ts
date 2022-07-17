@@ -1,6 +1,7 @@
-import { codegenHashDefine, tab } from "../../functions/codegenHelpers";
-import { AtyuState } from "../configurator/reducer";
+import { codegenHashDefine } from "../../functions/codegenHelpers";
+import { AtyuState } from "../../controllers/reducers/atyuReducer";
 
+// TODO: just hardcoded for now for testing purposes
 export const runCodegen = (state: AtyuState): string => {
 	const { 
 		bigClockEnabled, 
