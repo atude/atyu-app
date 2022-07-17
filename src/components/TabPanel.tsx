@@ -1,17 +1,22 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import KeyboardSelector from './KeyboardFAB';
 import Configurator from './Configurator';
 import { AtyuConfigProvider } from '../controllers/context/atyuContext';
-import { useAppContext } from '../controllers/context/appContext';
+import styled from '@emotion/styled';
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
+
+const FixedTabs = styled(Tabs)`
+	height: 100%;
+	position: fixed;
+`;
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -21,7 +26,7 @@ function TabPanel(props: TabPanelProps) {
       role="tabpanel"
       hidden={value !== index}
       id={`vertical-tabpanel-${index}`}
-      style={{ height: "100%", width: "100%" }}
+      style={{ width: "100%", marginLeft: "100px", marginBottom: "100px" }}
 			{...other}
     >
       {value === index && (
@@ -35,24 +40,23 @@ function TabPanel(props: TabPanelProps) {
 
 export default function VerticalTabs() {
   const [value, setValue] = useState(0);
-	const appContext = useAppContext();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Tabs
+    <Box sx={{ display: "flex", marginTop: "100px" }}>
+      <FixedTabs
         orientation="vertical"
         variant="scrollable"
         value={value}
         onChange={handleChange}
-        sx={{ borderRight: 1, borderColor: "divider", height: "100%" }}
+        sx={{ borderRight: 1, borderColor: "divider", }}
       >
         <Tab label="Home" />
         <Tab label="Settings" />
-      </Tabs>
+      </FixedTabs>
       <TabPanel value={value} index={0}>
 				<Box>
 					<KeyboardSelector />

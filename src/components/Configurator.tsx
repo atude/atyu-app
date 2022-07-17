@@ -7,6 +7,7 @@ import { AtyuChildConfig, AtyuConfig } from "../constants/types/atyuConfig";
 import { runCodegen } from "../pages/codegen";
 import { useAtyuContext } from "../controllers/context/atyuContext";
 import { testConfig } from "../controllers/reducers/atyuReducer";
+import { blueGrey } from "@mui/material/colors";
 // import Satisfaction75GifTool from "./modes/Satisfaction75GifTool";
 
 const OledModeBox = styled(Alert)`
@@ -95,7 +96,7 @@ const Configurator = () => {
 										<Box sx={{ width: "100%" }} key={i}>
 											<Typography variant="subtitle1">{childName}</Typography>
 											{!!childDesc.length && (
-												<Typography sx={{ mb: "12px" }} variant="subtitle2" color={theme.palette.info.main}>{childDesc}</Typography>
+												<Typography sx={{ mb: "12px" }} variant="subtitle2" color={blueGrey[300]}>{childDesc}</Typography>
 											)}
 											{getChildComponent(childConfigSection)}
 										</Box>

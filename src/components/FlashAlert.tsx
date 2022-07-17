@@ -7,6 +7,7 @@ import { useAppContext } from "../controllers/context/appContext";
 
 const AlertStyled = styled(Alert)`
   top: 0;
+	position: fixed;
 	padding-top: 15px;
   margin-bottom: 20px;
   display: flex;

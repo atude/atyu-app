@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 import { Download } from "@mui/icons-material";
 import {
-  Box,
   Button,
   FormControl,
   InputLabel,
@@ -19,8 +18,8 @@ const FABBox = styled(Paper)`
   position: fixed;
   bottom: 0;
   right: 0;
-	padding: 12px;
-	margin: 8px;
+	padding: 16px;
+	margin: 4px;
 	border-radius: 10px;
   display: flex;
   flex-direction: row;

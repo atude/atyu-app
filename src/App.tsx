@@ -3,16 +3,20 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { AppProvider } from "./controllers/context/appContext";
 import TabPanel from "./components/TabPanel";
 import FlashAlert from "./components/FlashAlert";
+import { colors } from "@mui/material";
 
-const darkTheme = createTheme({
+const theme = createTheme({
   palette: {
     mode: "dark",
+		secondary: {
+			main: colors.pink[300]
+		},
   },
 });
 
 const App = () => {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={theme}>
       <AppProvider>
         <CssBaseline />
         <FlashAlert />

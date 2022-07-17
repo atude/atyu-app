@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, Checkbox, Typography } from "@mui/material";
+import { Box, Checkbox, Typography, useTheme } from "@mui/material";
 import { atyuBooleanValue } from "../../functions/configuratorHelpers";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
 import { AtyuOptionMultiselectBoolean } from "../../constants/types/atyuConfig";
@@ -27,6 +27,7 @@ const CheckboxBox = styled(Box)`
 
 //TODO: we can use a radio component if max is 1
 const MultiselectBooleanComponent = (props: Props) => {
+	const theme = useTheme();
   const context = useAtyuContext();
   const { config } = props;
   const { multiselectStruct, multiselectOptions } = config;
@@ -38,12 +39,12 @@ const MultiselectBooleanComponent = (props: Props) => {
   return (
     <Box>
       {multiselectOptions?.max != null && (
-        <Typography component="span" variant="subtitle2" color="secondary">
+        <Typography component="span" variant="subtitle2" color={theme.palette.secondary.light}>
           Choose up to {multiselectOptions?.max} {multiselectOptions?.max === 1 ? "option" : "options"}.&nbsp;
         </Typography>
       )}
       {multiselectOptions?.min != null && (
-        <Typography component="span" variant="subtitle2" color="secondary">
+        <Typography component="span" variant="subtitle2" color={theme.palette.secondary.light}>
           You must have at least {multiselectOptions?.min} {multiselectOptions?.min === 1 ? "option" : "options"} selected.
         </Typography>
       )}
