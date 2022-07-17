@@ -9,7 +9,7 @@ import { useAppContext } from '../../controllers/context/appContext';
 
 function UpdateGifComponent() {
 	const theme = useTheme();
-	const { dispatchUpdateGif, gifUrl, gifCode, gifSpeed } = useAtyuContext(); //TODO:
+	const { dispatchUpdateGif, gifUrl } = useAtyuContext();
 	const { isDoingTask, setDoingTask } = useAppContext();
 	const [error, setError] = useState<string>("");
 
@@ -55,7 +55,7 @@ function UpdateGifComponent() {
 	}
 
   return (
-		<HorizontalBox expanded>
+		<HorizontalBox expanded sx={{ mb: "14px" }}>
 			<label htmlFor="contained-button-file">
 				<input
 					style={{ display: "none" }}

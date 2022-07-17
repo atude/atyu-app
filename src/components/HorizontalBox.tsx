@@ -1,9 +1,10 @@
-import { Box } from "@mui/material";
+import { Box, SxProps, Theme } from "@mui/material";
 import React from "react";
 
 type Props = {
 	children?: React.ReactNode;
 	expanded?: boolean;
+	sx?: SxProps<Theme>;
 };
 
 const HorizontalBox = (props: Props) => {
@@ -15,6 +16,7 @@ const HorizontalBox = (props: Props) => {
 				flexDirection: "row",
 				alignItems: "center",
 				...(props.expanded && { justifyContent: "space-between" }),
+				...props.sx,
 			}} 
 		>
 			{props.children}

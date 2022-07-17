@@ -34,7 +34,7 @@ const SwitchComponent = (props: Props) => {
 			</Box>
 			<Switch 
 				checked={isEnabled}
-				onChange={() => context.dispatchToggleKey(key)}
+				onChange={() => context.dispatchUpdateValue(key, !isEnabled)}
 			/>
 		</SwitchContainer>
   );

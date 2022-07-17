@@ -10,6 +10,8 @@ import { testConfig } from "../controllers/reducers/atyuReducer";
 import SwitchComponent from "./configurator/SwitchComponent";
 import { exhaustSwitch } from "../functions/generic";
 import UpdateGifComponent from "./configurator/UpdateGifComponent";
+import RadioNumberComponent from "./configurator/RadioNumberComponent";
+import { defaultGifRadioStruct } from "../constants";
 
 const OledModeBox = styled(Alert)`
   display: flex;
@@ -44,26 +46,24 @@ const OledModeComponent = styled.div`
 `;
 
 const getChildComponent = (childConfigSection: AtyuChildConfig, name: string, desc?: string) => {
-	const type = childConfigSection.struct.type;
+  const struct = childConfigSection.struct;
+  const type = struct.type;
   switch (type) {
     case "multiselect_boolean":
-      return (
-        <MultiselectBooleanComponent config={childConfigSection.struct} name={name} desc={desc} />
-      );
-		case "radio_number":
-			// TODO:
-			return <></>;
+      return <MultiselectBooleanComponent config={struct} name={name} desc={desc} />;
+    case "radio_number":
+      return <RadioNumberComponent config={struct} name={name} desc={desc} />;
     case "switch":
-      return <SwitchComponent config={childConfigSection.struct} name={name} desc={desc} />;
-		case "update_gif":
-			return (
-				<Box>
-					<UpdateGifComponent />
-					{/* TODO: radio number goes here too */}
-				</Box>
-			);
-		default: 
-			exhaustSwitch(type);
+      return <SwitchComponent config={struct} name={name} desc={desc} />;
+    case "update_gif":
+      return (
+        <Box>
+          <UpdateGifComponent />
+          <RadioNumberComponent config={defaultGifRadioStruct} name="GIF speed" />
+        </Box>
+      );
+    default:
+      exhaustSwitch(type);
   }
 };
 
@@ -71,10 +71,8 @@ const getChildComponent = (childConfigSection: AtyuChildConfig, name: string, de
 const Configurator = () => {
   const context = useAtyuContext();
   const theme = useTheme();
-  // TODO: here we want to read the config to create the UI components.
-  // can split it up so its easy to create here or something like that
-  // oleed modes replaced with something else
 
+	// TODO: dont use test config
   const config: AtyuConfig[] = testConfig;
 
   return (
@@ -84,7 +82,6 @@ const Configurator = () => {
       </Typography>
       {config.map((configSection: AtyuConfig) => {
         const { name, desc, key, configurable, children, enabledByDefault } = configSection;
-        const { dispatchToggleKey } = context;
         const isEnabled = atyuBooleanValue(context[key], enabledByDefault);
 
         return (
@@ -100,7 +97,10 @@ const Configurator = () => {
                 {/*{icon}*/}&nbsp;&nbsp;<Typography variant="button">{name}</Typography>
               </OledModeHeaderText>
               {!!configurable && (
-                <Switch checked={isEnabled} onChange={() => dispatchToggleKey(key)} />
+                <Switch
+                  checked={isEnabled}
+                  onChange={() => context.dispatchUpdateValue(key, !isEnabled)}
+                />
               )}
             </OledModeHeader>
             {!!isEnabled && !!children.length && (

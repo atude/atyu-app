@@ -19,7 +19,7 @@ export type AtyuOptionRadioNumber = {
 	radioValues: {
 		name: string;
 		value: number;
-	}
+	}[];
 	defaultValue: number;
 }
 export type AtyuOptionSwitch = {

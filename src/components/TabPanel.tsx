@@ -26,7 +26,7 @@ function TabPanel(props: TabPanelProps) {
       role="tabpanel"
       hidden={value !== index}
       id={`vertical-tabpanel-${index}`}
-      style={{ width: "100%", marginLeft: "100px", marginBottom: "100px" }}
+      style={{ marginLeft: "100px", marginBottom: "100px", width: "800px" }}
 			{...other}
     >
       {value === index && (

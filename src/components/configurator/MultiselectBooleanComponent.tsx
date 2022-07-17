@@ -77,7 +77,7 @@ const MultiselectBooleanComponent = (props: Props) => {
                       enabledAggregate <= multiselectOptions?.min))
                 }
                 checked={isEnabled}
-                onChange={() => context.dispatchToggleKey(key)}
+                onChange={() => context.dispatchUpdateValue(key, !isEnabled)}
               />
               <Typography>{name}</Typography>
             </CheckboxBox>

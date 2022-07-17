@@ -80,12 +80,12 @@ export const testConfig: AtyuConfig[] = [
 		enabledByDefault: false,
 		children: [
 			{
-				name: "Upload a gif",
+				name: "Upload a GIF",
 				struct: {
 					type: "update_gif",
 					defaultGifSpeed: 100,
 				}
-			}
+			},
 		]
 	}
 ];
@@ -94,8 +94,9 @@ export type AtyuState = {
 	[key: string]: any;
 }
 
-type AtyuTogglePayload = {
+type AtyuUpdateValuePayload = {
 	key?: string;
+	value?: string | number | boolean;
 };
 
 type AtyuGifPayload = {
@@ -104,12 +105,12 @@ type AtyuGifPayload = {
 };
 
 type AtyuReducerPayload = 
-	| AtyuTogglePayload
+	| AtyuUpdateValuePayload
 	| AtyuGifPayload
 ;
 
 type AtyuReducerType = 
-	| "TOGGLE"
+	| "UPDATE_VALUE"
 	| "UPDATE_GIF"
 ;
 
@@ -174,14 +175,14 @@ export const reducer: Reducer<AtyuState, Action> = (state, action) => {
 	console.log(state);
 
 	switch (type) {
-		case "TOGGLE":
-			const { key } = action?.payload as AtyuTogglePayload;
-			if (!key) {
-				console.log("couldnt find key in payload");
+		case "UPDATE_VALUE":
+			const { key, value } = action?.payload as AtyuUpdateValuePayload;
+			if (!key || value === undefined) {
+				console.log("couldnt find key or value in payload");
 				return state;
 			}
-			console.log(`Updating ${key} to ${!state[key]}`)
-			return { ...state, [key]: (!state[key] || false) };
+			console.log(`Updating ${key} to ${value}`)
+			return { ...state, [key]: value };
 		case "UPDATE_GIF":
 			const { gifUrl, gifCode } = action?.payload as AtyuGifPayload;
 			if (!gifUrl && !gifCode) {
