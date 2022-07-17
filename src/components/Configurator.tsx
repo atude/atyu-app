@@ -67,7 +67,7 @@ const getChildComponent = (childConfigSection: AtyuChildConfig, name: string, de
   }
 };
 
-// This is the UI generator
+// This is the UI generator entry point
 const Configurator = () => {
   const context = useAtyuContext();
   const theme = useTheme();
@@ -94,7 +94,7 @@ const Configurator = () => {
           >
             <OledModeHeader>
               <OledModeHeaderText>
-                {/*{icon}*/}&nbsp;&nbsp;<Typography variant="button">{name}</Typography>
+                {/*TODO: {icon}*/}<Typography variant="button">{name}</Typography>
               </OledModeHeaderText>
               {!!configurable && (
                 <Switch
