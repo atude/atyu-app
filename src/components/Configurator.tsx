@@ -89,10 +89,10 @@ const Configurator = () => {
             </OledModeHeader>
             {!!isEnabled && !!children.length && (
               <OledModeComponent color={theme.palette.primary.main}>
-                {children.map((childConfigSection) => {
+                {children.map((childConfigSection, i) => {
 									const { name: childName, desc: childDesc } = childConfigSection;
 									return (
-										<Box sx={{ width: "100%" }}>
+										<Box sx={{ width: "100%" }} key={i}>
 											<Typography variant="subtitle1">{childName}</Typography>
 											{!!childDesc.length && (
 												<Typography sx={{ mb: "12px" }} variant="subtitle2" color={theme.palette.info.main}>{childDesc}</Typography>

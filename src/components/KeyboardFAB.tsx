@@ -6,6 +6,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  Paper,
   Select,
   SelectChangeEvent,
 } from "@mui/material";
@@ -14,13 +15,16 @@ import { FlashState } from "../constants/types/flashState";
 import { useAppContext } from "../controllers/context/appContext";
 import { runFlash } from "../functions/flash";
 
-const FABBox = styled(Box)`
+const FABBox = styled(Paper)`
   position: fixed;
   bottom: 0;
   right: 0;
-  margin: 20px;
+	padding: 12px;
+	margin: 8px;
+	border-radius: 10px;
   display: flex;
   flex-direction: row;
+	z-index: 10;
 `;
 
 const KeyboardFAB = () => {
@@ -46,7 +50,7 @@ const KeyboardFAB = () => {
   };
 
   return (
-    <FABBox>
+    <FABBox elevation={0}>
       <FormControl>
         <InputLabel>Keyboard</InputLabel>
         <Select
