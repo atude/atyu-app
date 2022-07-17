@@ -52,7 +52,7 @@ export default function VerticalTabs() {
         variant="scrollable"
         value={value}
         onChange={handleChange}
-        sx={{ borderRight: 1, borderColor: "divider", }}
+        sx={{ borderRight: 1, borderColor: "divider", m: "auto 2px" }}
       >
         <Tab label="Home" />
         <Tab label="Settings" />

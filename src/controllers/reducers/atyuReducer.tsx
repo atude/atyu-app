@@ -1,5 +1,6 @@
 import { Reducer } from "react";
 import { AtyuConfig } from "../../constants/types/atyuConfig";
+import { exhaustSwitch } from "../../functions/generic";
 
 export const testConfig: AtyuConfig[] = [
 	{
@@ -24,7 +25,16 @@ export const testConfig: AtyuConfig[] = [
 		key: "OLED_BONGO_ENABLED",
 		configurable: true,
 		enabledByDefault: false,
-		children: [],
+		children: [
+			{
+				name: "Use filled bongo cat",
+				struct: {
+					type: "switch",
+					key: "OLED_BONGO_FILLED",
+					defaultValue: false,
+				}
+			}
+		],
 	},
 	{
 		name: "Pets Mode",
@@ -56,13 +66,28 @@ export const testConfig: AtyuConfig[] = [
 						}
 					],
 					multiselectOptions: {
-						min: 1,
 						max: 3,
 					}
 				}
 			}
 		],
 	},
+	{
+		name: "Custom Gif",
+		desc: "Have a separate mode to show a looping GIF.",
+		key: "OLED_GIF_ENABLED",
+		configurable: true,
+		enabledByDefault: false,
+		children: [
+			// {
+			// 	name: "Upload a gif",
+			// 	struct: {
+			// 		type: "special_upload_gif",
+
+			// 	}
+			// }
+		]
+	}
 ];
 
 export type AtyuState = {
@@ -104,7 +129,8 @@ const generateInitialState = (config: AtyuConfig[]): AtyuState => {
 			initialState[configSection.key] = configSection.enabledByDefault;
 		}
 		configSection.children.forEach(childConfigSection => {
-			switch (childConfigSection.struct.type) {
+			const { type } = childConfigSection.struct;
+			switch (type) {
 				case "multiselect_boolean": {
 					const { multiselectStruct } = childConfigSection.struct;
 					multiselectStruct.forEach(multiselectKey => {
@@ -117,6 +143,12 @@ const generateInitialState = (config: AtyuConfig[]): AtyuState => {
 					initialState[multiselectKey] = defaultValue;
 					break;
 				}
+				case "switch":
+					const { key, defaultValue } = childConfigSection.struct;
+					initialState[key] = defaultValue;
+					break;
+				default: 
+					exhaustSwitch(type);
 			}
 		}); 
 	});
@@ -138,6 +170,7 @@ export const reducer: Reducer<AtyuState, Action> = (state, action) => {
 				console.log("couldnt find key in payload");
 				return state;
 			}
+			console.log(`Updating ${key} to ${!state[key]}`)
 			return { ...state, [key]: (!state[key] || false) };
 		case "UPDATE_GIF":
 			const { gifUrl, gifCode } = action?.payload as AtyuGifPayload;
@@ -150,7 +183,7 @@ export const reducer: Reducer<AtyuState, Action> = (state, action) => {
 				gifCode: gifCode || state.gifCode,
 			};
 		default:
-			console.log(state);
+			exhaustSwitch(type);
 			return state;
 	}
 }

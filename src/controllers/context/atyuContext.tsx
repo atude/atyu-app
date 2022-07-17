@@ -22,8 +22,6 @@ export const AtyuConfigProvider = ({ children }: { children?: React.ReactNode })
       dispatch({ type: "UPDATE_GIF", payload: { gifUrl, gifCode } }),
   };
 
-  console.log(value);
-
   return <context.Provider value={value}>{children}</context.Provider>;
 };
 

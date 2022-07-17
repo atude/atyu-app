@@ -7,8 +7,8 @@ import { AtyuChildConfig, AtyuConfig } from "../constants/types/atyuConfig";
 import { runCodegen } from "../pages/codegen";
 import { useAtyuContext } from "../controllers/context/atyuContext";
 import { testConfig } from "../controllers/reducers/atyuReducer";
-import { blueGrey } from "@mui/material/colors";
-// import Satisfaction75GifTool from "./modes/Satisfaction75GifTool";
+import SwitchComponent from "./configurator/SwitchComponent";
+import { exhaustSwitch } from "../functions/generic";
 
 const OledModeBox = styled(Alert)`
   display: flex;
@@ -42,12 +42,19 @@ const OledModeComponent = styled.div`
   border-top: 1px solid ${(props) => props.color};
 `;
 
-const getChildComponent = (childConfigSection: AtyuChildConfig) => {
-  switch (childConfigSection.struct.type) {
+const getChildComponent = (childConfigSection: AtyuChildConfig, name: string, desc?: string) => {
+	const type = childConfigSection.struct.type;
+  switch (type) {
     case "multiselect_boolean":
-      return <MultiselectBooleanComponent config={childConfigSection.struct} />;
+      return (
+        <MultiselectBooleanComponent config={childConfigSection.struct} name={name} desc={desc} />
+      );
     case "multiselect_number":
       return <></>;
+    case "switch":
+      return <SwitchComponent config={childConfigSection.struct} name={name} desc={desc} />;
+		default: 
+			exhaustSwitch(type);
   }
 };
 
@@ -67,8 +74,7 @@ const Configurator = () => {
         Configure OLED modes
       </Typography>
       {config.map((configSection: AtyuConfig) => {
-        const { name, desc, key, configurable, children, enabledByDefault } =
-          configSection;
+        const { name, desc, key, configurable, children, enabledByDefault } = configSection;
         const { dispatchToggleKey } = context;
         const isEnabled = atyuBooleanValue(context[key], enabledByDefault);
 
@@ -91,17 +97,13 @@ const Configurator = () => {
             {!!isEnabled && !!children.length && (
               <OledModeComponent color={theme.palette.primary.main}>
                 {children.map((childConfigSection, i) => {
-									const { name: childName, desc: childDesc } = childConfigSection;
-									return (
-										<Box sx={{ width: "100%" }} key={i}>
-											<Typography variant="subtitle1">{childName}</Typography>
-											{!!childDesc.length && (
-												<Typography sx={{ mb: "12px" }} variant="subtitle2" color={blueGrey[300]}>{childDesc}</Typography>
-											)}
-											{getChildComponent(childConfigSection)}
-										</Box>
-									)
-								})}
+                  const { name: childName, desc: childDesc } = childConfigSection;
+                  return (
+                    <Box sx={{ width: "100%" }} key={i}>
+                      {getChildComponent(childConfigSection, childName, childDesc)}
+                    </Box>
+                  );
+                })}
               </OledModeComponent>
             )}
           </OledModeBox>

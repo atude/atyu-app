@@ -3,9 +3,12 @@ import { Box, Checkbox, Typography, useTheme } from "@mui/material";
 import { atyuBooleanValue } from "../../functions/configuratorHelpers";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
 import { AtyuOptionMultiselectBoolean } from "../../constants/types/atyuConfig";
+import { blueGrey } from "@mui/material/colors";
 
 type Props = {
   config: AtyuOptionMultiselectBoolean;
+	name: string;
+	desc?: string;
 };
 
 const CheckboxContainer = styled(Box)`
@@ -29,7 +32,7 @@ const CheckboxBox = styled(Box)`
 const MultiselectBooleanComponent = (props: Props) => {
 	const theme = useTheme();
   const context = useAtyuContext();
-  const { config } = props;
+  const { name, desc, config } = props;
   const { multiselectStruct, multiselectOptions } = config;
   const enabledAggregate = multiselectStruct.reduce(
     (total, multiselectKey) => (!!context[multiselectKey.key] ? total + 1 : total),
@@ -38,14 +41,23 @@ const MultiselectBooleanComponent = (props: Props) => {
 
   return (
     <Box>
-      {multiselectOptions?.max != null && (
-        <Typography component="span" variant="subtitle2" color={theme.palette.secondary.light}>
-          Choose up to {multiselectOptions?.max} {multiselectOptions?.max === 1 ? "option" : "options"}.&nbsp;
+			<Typography variant="subtitle1">{name}</Typography>
+			{!!desc?.length && (
+				<Typography sx={{ mb: "12px" }} variant="subtitle2" color="secondary">{desc}</Typography>
+			)}
+      { (
+        <Typography component="span" variant="subtitle2" color={blueGrey[300]}>
+          {multiselectOptions?.max != null && `
+						Choose up to ${multiselectOptions?.max} ${multiselectOptions?.max === 1 ? "option" : "options"}. 
+					`}
+					{multiselectOptions?.min != null && `
+						You must have at least ${multiselectOptions?.min} ${multiselectOptions?.min === 1 ? "option" : "options"} selected.
+					`}
         </Typography>
       )}
       {multiselectOptions?.min != null && (
         <Typography component="span" variant="subtitle2" color={theme.palette.secondary.light}>
-          You must have at least {multiselectOptions?.min} {multiselectOptions?.min === 1 ? "option" : "options"} selected.
+          
         </Typography>
       )}
       <CheckboxContainer>

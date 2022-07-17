@@ -6,9 +6,9 @@ export type AtyuOptionMultiselectBoolean = {
 		key: string;
 		defaultValue: boolean;
 	}[],
-	multiselectOptions: null | {
-		min: number | null;
-		max: number | null;
+	multiselectOptions?: {
+		min?: number;
+		max?: number;
 	}
 }
 
@@ -29,14 +29,22 @@ export type AtyuOptionSwitch = {
 	defaultValue: boolean;
 }
 
+export type AtyuOptionUpdateGif = {
+	type: "update_gif";
+	
+}
+
 type AtyuChildOptionsStruct = 
 	| AtyuOptionMultiselectBoolean
 	| AtyuOptionMultiselectNumber
+	| AtyuOptionSwitch
 ;
+
+export type AtyuChildOptionsType = AtyuChildOptionsStruct["type"];
 
 export type AtyuChildConfig = {
 	name: string;
-	desc: string;
+	desc?: string;
 	struct: AtyuChildOptionsStruct;
 };
 

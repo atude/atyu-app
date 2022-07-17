@@ -9,7 +9,7 @@ const theme = createTheme({
   palette: {
     mode: "dark",
 		secondary: {
-			main: colors.pink[300]
+			main: colors.deepOrange[400],
 		},
   },
 });

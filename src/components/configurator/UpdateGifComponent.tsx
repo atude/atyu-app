@@ -81,7 +81,7 @@ function UpdateGifComponent() {
 						width: "128px",
 						height: "32px",
 					}} 
-					src={gifUrl || defaultEmptyGif} //TO
+					src={gifUrl || defaultEmptyGif}
 					alt="sat75_gif" 
 				/>
 				<IconButton disabled={isDoingTask || !gifUrl} onClick={handleClearGif} color="secondary">
