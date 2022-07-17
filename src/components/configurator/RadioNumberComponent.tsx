@@ -2,16 +2,16 @@ import styled from "@emotion/styled";
 import { Box, Checkbox, Typography, useTheme } from "@mui/material";
 import { atyuBooleanValue } from "../../functions/configuratorHelpers";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
-import { AtyuOptionMultiselectBoolean } from "../../constants/types/atyuConfig";
+import { AtyuOptionRadioNumber } from "../../constants/types/atyuConfig";
 import { blueGrey } from "@mui/material/colors";
 
 type Props = {
-  config: AtyuOptionMultiselectBoolean;
+  config: AtyuOptionRadioNumber;
 	name: string;
 	desc?: string;
 };
 
-const CheckboxContainer = styled(Box)`
+const RadioContainer = styled(Box)`
   width: 100%;
   max-height: 200px;
   flex-wrap: wrap;
@@ -28,15 +28,11 @@ const CheckboxBox = styled(Box)`
   flex: 80%;
 `;
 
-const MultiselectBooleanComponent = (props: Props) => {
+const RadioNumberComponent = (props: Props) => {
 	const theme = useTheme();
   const context = useAtyuContext();
   const { name, desc, config } = props;
-  const { multiselectStruct, multiselectOptions } = config;
-  const enabledAggregate = multiselectStruct.reduce(
-    (total, multiselectKey) => (!!context[multiselectKey.key] ? total + 1 : total),
-    0
-  );
+  const { radioKey, radioValues } = config;
 
   return (
     <Box>
@@ -44,23 +40,9 @@ const MultiselectBooleanComponent = (props: Props) => {
 			{!!desc?.length && (
 				<Typography sx={{ mb: "12px" }} variant="subtitle2" color="secondary">{desc}</Typography>
 			)}
-      { (
-        <Typography component="span" variant="subtitle2" color={blueGrey[300]}>
-          {multiselectOptions?.max != null && `
-						Choose up to ${multiselectOptions?.max} ${multiselectOptions?.max === 1 ? "option" : "options"}. 
-					`}
-					{multiselectOptions?.min != null && `
-						You must have at least ${multiselectOptions?.min} ${multiselectOptions?.min === 1 ? "option" : "options"} selected.
-					`}
-        </Typography>
-      )}
-      {multiselectOptions?.min != null && (
-        <Typography component="span" variant="subtitle2" color={theme.palette.secondary.light}>
-          
-        </Typography>
-      )}
-      <CheckboxContainer>
-        {multiselectStruct.map((multiselectKey, i) => {
+      <RadioContainer>
+				{/* TODO: */}
+        {/* {multiselectStruct.map((multiselectKey, i) => {
           const { name, key, defaultValue } = multiselectKey;
           const isEnabled = atyuBooleanValue(context[key], defaultValue);
           return (
@@ -82,10 +64,10 @@ const MultiselectBooleanComponent = (props: Props) => {
               <Typography>{name}</Typography>
             </CheckboxBox>
           );
-        })}
-      </CheckboxContainer>
+        })} */}
+      </RadioContainer>
     </Box>
   );
 };
 
-export default MultiselectBooleanComponent;
+export default RadioNumberComponent;

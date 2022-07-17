@@ -9,6 +9,7 @@ import { useAtyuContext } from "../controllers/context/atyuContext";
 import { testConfig } from "../controllers/reducers/atyuReducer";
 import SwitchComponent from "./configurator/SwitchComponent";
 import { exhaustSwitch } from "../functions/generic";
+import UpdateGifComponent from "./configurator/UpdateGifComponent";
 
 const OledModeBox = styled(Alert)`
   display: flex;
@@ -49,10 +50,18 @@ const getChildComponent = (childConfigSection: AtyuChildConfig, name: string, de
       return (
         <MultiselectBooleanComponent config={childConfigSection.struct} name={name} desc={desc} />
       );
-    case "multiselect_number":
-      return <></>;
+		case "radio_number":
+			// TODO:
+			return <></>;
     case "switch":
       return <SwitchComponent config={childConfigSection.struct} name={name} desc={desc} />;
+		case "update_gif":
+			return (
+				<Box>
+					<UpdateGifComponent />
+					{/* TODO: radio number goes here too */}
+				</Box>
+			);
 		default: 
 			exhaustSwitch(type);
   }

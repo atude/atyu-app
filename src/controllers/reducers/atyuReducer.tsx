@@ -79,13 +79,13 @@ export const testConfig: AtyuConfig[] = [
 		configurable: true,
 		enabledByDefault: false,
 		children: [
-			// {
-			// 	name: "Upload a gif",
-			// 	struct: {
-			// 		type: "special_upload_gif",
-
-			// 	}
-			// }
+			{
+				name: "Upload a gif",
+				struct: {
+					type: "update_gif",
+					defaultGifSpeed: 100,
+				}
+			}
 		]
 	}
 ];
@@ -138,15 +138,23 @@ const generateInitialState = (config: AtyuConfig[]): AtyuState => {
 					});
 					break;
 				}
-				case "multiselect_number": {
-					const { multiselectKey, defaultValue } = childConfigSection.struct;
-					initialState[multiselectKey] = defaultValue;
+				case "radio_number": {
+					const { radioKey, defaultValue } = childConfigSection.struct;
+					initialState[radioKey] = defaultValue;
 					break;
 				}
-				case "switch":
+				case "switch": {
 					const { key, defaultValue } = childConfigSection.struct;
 					initialState[key] = defaultValue;
 					break;
+				}
+				case "update_gif": {
+					const { defaultGifSpeed } = childConfigSection.struct;
+					initialState.gifSpeed = defaultGifSpeed;
+					initialState.gifUrl = "";
+					initialState.gifCode = "";
+					break;
+ 				}
 				default: 
 					exhaustSwitch(type);
 			}
@@ -162,6 +170,8 @@ export const initialState = generateInitialState(testConfig);
 
 export const reducer: Reducer<AtyuState, Action> = (state, action) => {
 	const { type } = action;
+
+	console.log(state);
 
 	switch (type) {
 		case "TOGGLE":

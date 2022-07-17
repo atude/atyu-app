@@ -14,6 +14,7 @@ const AlertStyled = styled(Alert)`
   flex-direction: row;
   width: 100%;
 	height: 90px;
+	z-index: 9999;
 `;
 
 const StandardLinearProgress = styled(LinearProgress)`

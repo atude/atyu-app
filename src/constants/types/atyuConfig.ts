@@ -13,16 +13,15 @@ export type AtyuOptionMultiselectBoolean = {
 }
 
 // One key you can set a strict value on
-export type AtyuOptionMultiselectNumber = {
-	type: "multiselect_number";
-	multiselectKey: string;
-	multiselectValues: {
+export type AtyuOptionRadioNumber = {
+	type: "radio_number";
+	radioKey: string;
+	radioValues: {
 		name: string;
 		value: number;
 	}
 	defaultValue: number;
 }
-
 export type AtyuOptionSwitch = {
 	type: "switch";
 	key: string;
@@ -31,13 +30,14 @@ export type AtyuOptionSwitch = {
 
 export type AtyuOptionUpdateGif = {
 	type: "update_gif";
-	// TODO:
-}
+	defaultGifSpeed: number;
+};
 
 type AtyuChildOptionsStruct = 
 	| AtyuOptionMultiselectBoolean
-	| AtyuOptionMultiselectNumber
+	| AtyuOptionRadioNumber
 	| AtyuOptionSwitch
+	| AtyuOptionUpdateGif
 ;
 
 export type AtyuChildOptionsType = AtyuChildOptionsStruct["type"];

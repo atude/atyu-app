@@ -9,7 +9,7 @@ import { useAppContext } from '../../controllers/context/appContext';
 
 function UpdateGifComponent() {
 	const theme = useTheme();
-	const { dispatchUpdateGif } = useAtyuContext(); //TODO:
+	const { dispatchUpdateGif, gifUrl, gifCode, gifSpeed } = useAtyuContext(); //TODO:
 	const { isDoingTask, setDoingTask } = useAppContext();
 	const [error, setError] = useState<string>("");
 
@@ -72,7 +72,7 @@ function UpdateGifComponent() {
 					Upload 128x32 black and white GIF
 				</Button>
       </label>
-			{/* <HorizontalBox>
+			<HorizontalBox>
 				{!!isDoingTask && <CircularProgress size={30} sx={{ mr: "8px" }} />}
 				<img 
 					style={{ 
@@ -92,7 +92,7 @@ function UpdateGifComponent() {
 						{error}
 					</Alert>
 				</Snackbar>	
-			</HorizontalBox> */}
+			</HorizontalBox>
 		</HorizontalBox>
   );
 }
