@@ -6,10 +6,12 @@ const defaultKeyboard = "satisfaction75";
 type AppContext = {
   keyboard: string;
 	flashState: FlashState;
+	flashMessage: string;
 	flashProgress: number;
 	isDoingTask: boolean;
 	setKeyboard: Dispatch<SetStateAction<string>>;
 	setFlashState: Dispatch<SetStateAction<FlashState>>;
+	setFlashMessage: Dispatch<SetStateAction<string>>;
 	setFlashProgress: Dispatch<SetStateAction<number>>;
 	setDoingTask:  Dispatch<SetStateAction<boolean>>;
 }
@@ -17,10 +19,12 @@ type AppContext = {
 const context = createContext<AppContext>({
 	keyboard: defaultKeyboard,
 	flashState: FlashState.IDLE,
+	flashMessage: "",
 	flashProgress: 0,
 	isDoingTask: false,
 	setKeyboard: () => {},
 	setFlashState: () => {},
+	setFlashMessage: () => {},
 	setFlashProgress: () => {},
 	setDoingTask: () => {},
 });
@@ -28,6 +32,7 @@ const context = createContext<AppContext>({
 export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
   const [keyboard, setKeyboard] = useState<string>(defaultKeyboard);
   const [flashState, setFlashState] = useState<FlashState>(FlashState.IDLE);
+	const [flashMessage, setFlashMessage] = useState<string>("");
   const [flashProgress, setFlashProgress] = useState<number>(0);
 	const [isDoingTask, setDoingTask] = useState<boolean>(false);
 
@@ -36,6 +41,8 @@ export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
 		setKeyboard,
 		flashState,
 		setFlashState,
+		flashMessage,
+		setFlashMessage,
 		flashProgress,
 		setFlashProgress,
 		isDoingTask, 

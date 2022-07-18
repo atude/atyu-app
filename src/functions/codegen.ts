@@ -1,6 +1,9 @@
-import { codegenHashDefine } from "../../functions/codegenHelpers";
-import { AtyuContext } from "../../controllers/context/atyuContext";
-import { atyuSpecialKeys, atyuSpecialKeysArr } from "../../constants/atyuSpecialKeys";
+import { AtyuContext } from "../controllers/context/atyuContext";
+import { atyuSpecialKeys, atyuSpecialKeysArr } from "../constants/atyuSpecialKeys";
+
+export const codegenHashDefine = (key: string, value: boolean | string | number) =>
+	`#define ${key} ${value}`;
+export const tab = (tabDepth = 1): string => "    ".repeat(tabDepth);
 
 export const runCodegen = (context: AtyuContext): string => {
 	const code: string[] = [

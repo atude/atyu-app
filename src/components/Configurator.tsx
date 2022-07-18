@@ -4,7 +4,7 @@ import { Alert, Box, Button, Switch, Typography, useTheme } from "@mui/material"
 import MultiselectBooleanComponent from "./configurator/MultiselectBooleanComponent";
 import { atyuValue } from "../functions/configuratorHelpers";
 import { AtyuChildConfig, AtyuConfig } from "../constants/types/atyuConfig";
-import { runCodegen } from "../pages/codegen";
+import { runCodegen } from "../functions/codegen";
 import { useAtyuContext } from "../controllers/context/atyuContext";
 import { testConfig } from "../controllers/reducers/atyuReducer";
 import SwitchComponent from "./configurator/SwitchComponent";

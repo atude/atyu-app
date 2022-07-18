@@ -5,7 +5,8 @@ const threshold = 128;
 const indent = "        ";
 const double_indent = "            ";
 const gifCodePrefix = (frames_length: number) => `
-#define GIF_LENGTH ${frames_length};
+#define GIF_LENGTH ${frames_length}
+
 static const char PROGMEM gif[GIF_LENGTH][512] = {
 `;
 const gifCodeSuffix = `

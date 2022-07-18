@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import KeyboardSelector from './KeyboardFAB';
+import KeyboardFAB from './KeyboardFAB';
 import Configurator from './Configurator';
 import { AtyuConfigProvider } from '../controllers/context/atyuContext';
 import styled from '@emotion/styled';
@@ -58,12 +58,12 @@ export default function VerticalTabs() {
         <Tab label="Settings" />
       </FixedTabs>
       <TabPanel value={value} index={0}>
-				<Box>
-					<KeyboardSelector />
-					<AtyuConfigProvider>
+				<AtyuConfigProvider>
+					<Box>
+						<KeyboardFAB />
 						<Configurator />
-					</AtyuConfigProvider>
-				</Box>
+					</Box>
+				</AtyuConfigProvider>
       </TabPanel>
       <TabPanel value={value} index={1}>
         TODO settings

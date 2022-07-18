@@ -2,6 +2,7 @@ import { AlertColor } from "@mui/material";
 
 export enum FlashState {
 	IDLE,
+	PATCHING,
 	COMPILING,
 	WAITING_FOR_DFU,
 	FLASHING_ERASING,
@@ -12,6 +13,7 @@ export enum FlashState {
 
 export const FlashStateDisplayStrings: Record<FlashState, string> = {
 	[FlashState.IDLE]: "",
+	[FlashState.PATCHING]: "Saving changes...",
 	[FlashState.COMPILING]: "Building firmware...",
 	[FlashState.WAITING_FOR_DFU]: "Waiting for your keyboard to go into flash mode...",
 	[FlashState.FLASHING_ERASING]: "Removing old firmware...",
@@ -22,6 +24,7 @@ export const FlashStateDisplayStrings: Record<FlashState, string> = {
 
 export const FlashAlertSeverityMap: Record<FlashState, AlertColor | undefined> = {
 	[FlashState.IDLE]: undefined,
+	[FlashState.PATCHING]: "info",
 	[FlashState.COMPILING]: "info",
 	[FlashState.WAITING_FOR_DFU]: "info",
 	[FlashState.FLASHING_ERASING]: "info",
