@@ -33,8 +33,9 @@ export const runFlash = (
   const { qmkKb, qmkKm } = keyboardConfig;
   const configCode = runCodegen(context);
 
+	// TODO: get dir properly
   const dir =
-    "/Users/atude/Core/projects/qmk_atude/qmk_firmware/keyboards/cannonkeys/satisfaction75/";
+    "/Users/atude/Core/projects/qmk_atude/qmk_firmware/keyboards/cannonkeys/satisfaction75";
 
 	setFlashState(FlashState.PATCHING);
 	if (shell.cd(dir).code !== 0 || shell.echo(configCode).to(atyuConfigFilename).code !== 0) {

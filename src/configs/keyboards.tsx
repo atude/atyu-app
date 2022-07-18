@@ -3,6 +3,7 @@ type Keyboard = {
 	name: string;
 	qmkKb: string;
 	qmkKm: string;
+	dir: string;
 };
 
 export const keyboardsMap: Record<string, Keyboard> = {
@@ -11,6 +12,7 @@ export const keyboardsMap: Record<string, Keyboard> = {
 		name: "Satisfaction75",
 		qmkKb: "cannonkeys/satisfaction75/rev1",
 		qmkKm: "via",
+		dir: "keyboards/cannonkeys/satisfaction75",
 	},
 };
 
