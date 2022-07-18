@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Box, Checkbox, Typography, useTheme } from "@mui/material";
-import { atyuBooleanValue } from "../../functions/configuratorHelpers";
+import { atyuValue } from "../../functions/configuratorHelpers";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
 import { AtyuOptionMultiselectBoolean } from "../../constants/types/atyuConfig";
 import { blueGrey } from "@mui/material/colors";
@@ -62,7 +62,7 @@ const MultiselectBooleanComponent = (props: Props) => {
       <CheckboxContainer>
         {multiselectStruct.map((multiselectKey, i) => {
           const { name, key, defaultValue } = multiselectKey;
-          const isEnabled = atyuBooleanValue(context[key], defaultValue);
+          const isEnabled = atyuValue(context[key], defaultValue);
           return (
             <CheckboxBox key={key}>
               <Checkbox

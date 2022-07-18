@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Button, ButtonGroup, Typography, useTheme } from "@mui/material";
-import { atyuNumberValue } from "../../functions/configuratorHelpers";
+import { atyuValue } from "../../functions/configuratorHelpers";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
 import { AtyuOptionRadioNumber } from "../../constants/types/atyuConfig";
 import HorizontalBox from "../HorizontalBox";
@@ -18,11 +18,11 @@ const ButtonOption = styled(Button)`
 	width: 90px;
 `;
 
-const RadioNumberComponent = (props: Props) => {
+const RadioComponent = (props: Props) => {
   const context = useAtyuContext();
   const { name, desc, config } = props;
   const { radioKey, radioValues, defaultValue } = config;
-	const value = atyuNumberValue(context[radioKey], defaultValue);
+	const value = atyuValue(context[radioKey], defaultValue);
 
   return (
     <HorizontalBox expanded>
@@ -48,4 +48,4 @@ const RadioNumberComponent = (props: Props) => {
   );
 };
 
-export default RadioNumberComponent;
+export default RadioComponent;

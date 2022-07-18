@@ -2,7 +2,7 @@
 import styled from "@emotion/styled";
 import { Alert, Box, Button, Switch, Typography, useTheme } from "@mui/material";
 import MultiselectBooleanComponent from "./configurator/MultiselectBooleanComponent";
-import { atyuBooleanValue } from "../functions/configuratorHelpers";
+import { atyuValue } from "../functions/configuratorHelpers";
 import { AtyuChildConfig, AtyuConfig } from "../constants/types/atyuConfig";
 import { runCodegen } from "../pages/codegen";
 import { useAtyuContext } from "../controllers/context/atyuContext";
@@ -10,7 +10,7 @@ import { testConfig } from "../controllers/reducers/atyuReducer";
 import SwitchComponent from "./configurator/SwitchComponent";
 import { exhaustSwitch } from "../functions/generic";
 import UpdateGifComponent from "./configurator/UpdateGifComponent";
-import RadioNumberComponent from "./configurator/RadioNumberComponent";
+import RadioComponent from "./configurator/RadioComponent";
 import { defaultGifRadioStruct } from "../constants";
 
 const OledModeBox = styled(Alert)`
@@ -52,14 +52,14 @@ const getChildComponent = (childConfigSection: AtyuChildConfig, name: string, de
     case "multiselect_boolean":
       return <MultiselectBooleanComponent config={struct} name={name} desc={desc} />;
     case "radio_number":
-      return <RadioNumberComponent config={struct} name={name} desc={desc} />;
+      return <RadioComponent config={struct} name={name} desc={desc} />;
     case "switch":
       return <SwitchComponent config={struct} name={name} desc={desc} />;
     case "update_gif":
       return (
         <Box>
           <UpdateGifComponent />
-          <RadioNumberComponent config={defaultGifRadioStruct} name="GIF speed" />
+          <RadioComponent config={defaultGifRadioStruct} name="GIF speed" />
         </Box>
       );
     default:
@@ -82,7 +82,7 @@ const Configurator = () => {
       </Typography>
       {config.map((configSection: AtyuConfig) => {
         const { name, desc, key, configurable, children, enabledByDefault } = configSection;
-        const isEnabled = atyuBooleanValue(context[key], enabledByDefault);
+        const isEnabled = atyuValue(context[key], enabledByDefault);
 
         return (
           <OledModeBox
