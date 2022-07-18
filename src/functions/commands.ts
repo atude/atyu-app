@@ -11,7 +11,12 @@ const calcFlashProgress = (dataString: string): number => {
 	return 0;
 }
 
-// Install to kb
+// Codegen and patch firmware
+export const runPatch = () => {
+
+;}
+
+// Codegen, patch and install to kb
 export const runFlash = (
 	keyboardKey: string, 
 	setFlashState: React.Dispatch<React.SetStateAction<FlashState>>,
@@ -23,11 +28,19 @@ export const runFlash = (
 		setFlashState(FlashState.ERROR);
 		return;
   }
+	const { qmkKb, qmkKm } = keyboardConfig;
+
+	// TODO: patch changes into firmware
 
 	// Run qmk flash
 	setFlashState(FlashState.COMPILING);
-	const child = spawn("qmk", ["flash", "-kb", keyboardConfig.qmkKb, "-km", keyboardConfig.qmkKm]);
+	const child = spawn("qmk", ["flash", "-kb", qmkKb, "-km", qmkKm], {
+		/* TODO: set working dir 
+		cwd: "test",
+		*/
+	});
 
+	// Update state as log changes
 	child.stdout.on("data", (data: any) => {
 		const dataString: string = data.toString();
 		console.log(dataString);

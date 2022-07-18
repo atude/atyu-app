@@ -21,7 +21,11 @@ cd $dir
 # Run qmk setup on repo; switch to new home
 qmk setup atude/qmk_firmware --yes
 check_status "Failed to setup fresh qmk"
-cd "qmk_firmware"
 
 # Test a build to check setup works
-#TODO: 
+echo "-> Running a test build to verify setup..."
+cd "$dir/qmk_firmware"
+qmk compile -kb cannonkeys/satisfaction75/rev1 -km via
+check_status "Failed to run a test build successfully"
+
+echo "-> Setup done!"
