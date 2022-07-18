@@ -1,29 +1,45 @@
 import { codegenHashDefine } from "../../functions/codegenHelpers";
-import { AtyuState } from "../../controllers/reducers/atyuReducer";
+import { AtyuContext } from "../../controllers/context/atyuContext";
+import { atyuSpecialKeys, atyuSpecialKeysArr } from "../../constants/atyuSpecialKeys";
 
-// TODO: just hardcoded for now for testing purposes
-export const runCodegen = (state: AtyuState): string => {
-	const { 
-		bigClockEnabled, 
-		bongoEnabled,
-		petsEnabled,
-		customGifEnabled, 
-		gifCode, 
-		gifUrl 
-	} = state;
-	const gifEnabledAndAdded: boolean = customGifEnabled && !!gifCode.length && !!gifUrl.length;
+export const runCodegen = (context: AtyuContext): string => {
 	const code: string[] = [
 		"#pragma once\n#include <stdio.h>\n",
-		codegenHashDefine("OLED_CLOCK_ENABLED", bigClockEnabled),
-		codegenHashDefine("OLED_BONGO_ENABLED", bongoEnabled),
-		codegenHashDefine("OLED_PETS_ENABLED", petsEnabled),
-		codegenHashDefine("OLED_GIF_ENABLED", gifEnabledAndAdded)
 	];
 
-	if (gifEnabledAndAdded) {
-		// TODO: make this a setting
-		code.push(codegenHashDefine("ANIM_GIF_SPEED", 100));
-		code.push(gifCode);
+	// Process generic keys
+	Object.keys(context).forEach((key: string) => {
+		// Dont process special keys here
+		if (atyuSpecialKeysArr.includes(key)) {
+			console.log(`wont process special key: ${key}`);
+			return;
+		}
+		if (key.startsWith("dispatch")) {
+			console.log(`wont process dispatch function: ${key}`);
+			return;
+		}
+		if (context[key] === undefined) {
+			console.log(`could not get value for key: ${key}`);
+			return;
+		}
+		code.push(codegenHashDefine(key, context[key]));
+	});
+
+	// Process special keys
+	// -> Update gif
+	if (context[atyuSpecialKeys.gifEnabled] !== undefined) {
+		const gifCode = context[atyuSpecialKeys.gifCode];
+		const gifUrl = context[atyuSpecialKeys.gifUrl];
+		const gifSpeed = context[atyuSpecialKeys.gifSpeed];
+		const gifEnabled = context[atyuSpecialKeys.gifEnabled];
+		if (gifCode && gifSpeed && gifUrl && gifEnabled) {
+			code.push(codegenHashDefine("ATYU_OLED_GIF_ENABLED", true));
+			code.push(codegenHashDefine("ATYU_ANIM_GIF_SPEED", gifSpeed));
+			code.push(gifCode);
+		} else {
+			code.push(codegenHashDefine("ATYU_OLED_GIF_ENABLED", false));
+		}
 	}
+
 	return code.join("\n");
 }

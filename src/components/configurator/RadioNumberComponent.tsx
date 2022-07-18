@@ -1,9 +1,8 @@
 import styled from "@emotion/styled";
-import { Box, Button, ButtonGroup, Checkbox, Typography, useTheme } from "@mui/material";
-import { atyuBooleanValue, atyuNumberValue } from "../../functions/configuratorHelpers";
+import { Button, ButtonGroup, Typography, useTheme } from "@mui/material";
+import { atyuNumberValue } from "../../functions/configuratorHelpers";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
 import { AtyuOptionRadioNumber } from "../../constants/types/atyuConfig";
-import { blueGrey } from "@mui/material/colors";
 import HorizontalBox from "../HorizontalBox";
 
 type Props = {
@@ -20,7 +19,6 @@ const ButtonOption = styled(Button)`
 `;
 
 const RadioNumberComponent = (props: Props) => {
-	const theme = useTheme();
   const context = useAtyuContext();
   const { name, desc, config } = props;
   const { radioKey, radioValues, defaultValue } = config;

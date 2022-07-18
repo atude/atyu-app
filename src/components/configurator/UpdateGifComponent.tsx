@@ -6,12 +6,14 @@ import { defaultEmptyGif } from '../../constants';
 import { convertGifToCpp } from '../../functions/gifToCpp';
 import { useAtyuContext } from '../../controllers/context/atyuContext';
 import { useAppContext } from '../../controllers/context/appContext';
+import { atyuSpecialKeys } from '../../constants/atyuSpecialKeys';
 
 function UpdateGifComponent() {
 	const theme = useTheme();
-	const { dispatchUpdateGif, gifUrl } = useAtyuContext();
+	const { dispatchUpdateGif, ...context } = useAtyuContext();
 	const { isDoingTask, setDoingTask } = useAppContext();
 	const [error, setError] = useState<string>("");
+	const gifUrl = context[atyuSpecialKeys.gifUrl];
 
 	const handleError = (msg: string) => {
 		setError(msg);

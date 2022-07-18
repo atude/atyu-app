@@ -1,3 +1,4 @@
+import { atyuSpecialKeys } from "./atyuSpecialKeys";
 import { AtyuOptionRadioNumber } from "./types/atyuConfig";
 
 export const versionString = "v0.1 alpha"
@@ -5,7 +6,7 @@ export const defaultEmptyGif = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQ
 
 export const defaultGifRadioStruct: AtyuOptionRadioNumber = {
 	type: "radio_number",
-	radioKey: "gifSpeed",
+	radioKey: atyuSpecialKeys.gifSpeed,
 	defaultValue: 100,
 	radioValues: [
 		{

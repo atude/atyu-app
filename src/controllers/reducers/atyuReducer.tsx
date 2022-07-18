@@ -1,4 +1,5 @@
 import { Reducer } from "react";
+import { atyuSpecialKeys } from "../../constants/atyuSpecialKeys";
 import { AtyuConfig } from "../../constants/types/atyuConfig";
 import { exhaustSwitch } from "../../functions/generic";
 
@@ -75,7 +76,7 @@ export const testConfig: AtyuConfig[] = [
 	{
 		name: "Custom Gif",
 		desc: "Have a separate mode to show a looping GIF.",
-		key: "OLED_GIF_ENABLED",
+		key: "ATYU_OLED_GIF_ENABLED",
 		configurable: true,
 		enabledByDefault: false,
 		children: [
@@ -87,7 +88,7 @@ export const testConfig: AtyuConfig[] = [
 				}
 			},
 		]
-	}
+	},
 ];
 
 export type AtyuState = {
@@ -151,9 +152,9 @@ const generateInitialState = (config: AtyuConfig[]): AtyuState => {
 				}
 				case "update_gif": {
 					const { defaultGifSpeed } = childConfigSection.struct;
-					initialState.gifSpeed = defaultGifSpeed;
-					initialState.gifUrl = "";
-					initialState.gifCode = "";
+					initialState[atyuSpecialKeys.gifSpeed] = defaultGifSpeed;
+					initialState[atyuSpecialKeys.gifUrl] = "";
+					initialState[atyuSpecialKeys.gifCode] = "";
 					break;
  				}
 				default: 
@@ -172,8 +173,6 @@ export const initialState = generateInitialState(testConfig);
 export const reducer: Reducer<AtyuState, Action> = (state, action) => {
 	const { type } = action;
 
-	console.log(state);
-
 	switch (type) {
 		case "UPDATE_VALUE":
 			const { key, value } = action?.payload as AtyuUpdateValuePayload;
@@ -186,12 +185,16 @@ export const reducer: Reducer<AtyuState, Action> = (state, action) => {
 		case "UPDATE_GIF":
 			const { gifUrl, gifCode } = action?.payload as AtyuGifPayload;
 			if (!gifUrl && !gifCode) {
-				return { ...state, gifUrl: "", gifCode: "" };
+				return { 
+					...state, 
+					[atyuSpecialKeys.gifUrl]: "", 
+					[atyuSpecialKeys.gifCode]: "",
+				};
 			}
 			return { 
 				...state, 
-				gifUrl: gifUrl || state.gifUrl,
-				gifCode: gifCode || state.gifCode,
+				[atyuSpecialKeys.gifUrl]: gifUrl || state[atyuSpecialKeys.gifUrl],
+				[atyuSpecialKeys.gifCode]: gifCode || state[atyuSpecialKeys.gifCode],
 			};
 		default:
 			exhaustSwitch(type);
