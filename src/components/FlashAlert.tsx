@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Alert, AlertTitle, Box, Button, CircularProgress, LinearProgress } from "@mui/material";
+import { Alert, AlertTitle, Box, Button, ButtonGroup, CircularProgress, LinearProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import { versionString } from "../constants";
 import {
@@ -8,6 +8,7 @@ import {
   FlashStateDisplayStrings,
 } from "../constants/types/flashState";
 import { useAppContext } from "../controllers/context/appContext";
+import { runCancel } from "../functions/commands";
 
 const AlertStyled = styled(Alert)`
   top: 0;
@@ -21,7 +22,7 @@ const AlertStyled = styled(Alert)`
   z-index: 9999;
 `;
 
-const LogButton = styled(Button)`
+const ActionButtonsContainer = styled(Box)`
   position: fixed;
   right: 0;
   top: 0;
@@ -42,6 +43,8 @@ const LogBox = styled(Box)`
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 10px;
 	background-color: #000;
+	box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 8px;
+	overscroll-behavior: contain;
 `;
 
 const StandardLinearProgress = styled(LinearProgress)`
@@ -54,24 +57,39 @@ const FlashAlert = () => {
   const flashSeverity = FlashAlertSeverityMap[flashState];
   const displayString = FlashStateDisplayStrings[flashState];
   const [viewLog, setViewLog] = useState(false);
+	const [prevFlashState, setPrevFlashState] = useState<FlashState | undefined>();
 
   useEffect(() => {
-    if (flashState === FlashState.DONE) {
+    if (flashState === FlashState.DONE || flashState === FlashState.CANCELLED) {
+			setPrevFlashState(flashState);
       setTimeout(() => {
-        if (flashState === FlashState.DONE) {
+        if (flashState === prevFlashState) {
           setFlashState(FlashState.IDLE);
           setFlashMessage("");
           setLog([]);
         }
       }, 5000);
     }
-  }, [flashState, setFlashState, setFlashMessage, setLog]);
+  }, [flashState, setFlashState, setFlashMessage, setLog, prevFlashState]);
+
+	const handleCancel = () => {
+		runCancel();
+	}
 
   const getLogComponent = () => (
     <>
-      <LogButton variant="outlined" onClick={() => setViewLog(!viewLog)}>
-        {viewLog ? "Hide" : "View"} log
-      </LogButton>
+			<ActionButtonsContainer>
+				<ButtonGroup>
+					{flashState === FlashState.WAITING_FOR_DFU && (
+						<Button key="cancel" color="error" variant="outlined" onClick={() => handleCancel()}>
+							Cancel
+						</Button>
+					)}
+					<Button key="log" variant="outlined" onClick={() => setViewLog(!viewLog)}>
+						{viewLog ? "Hide" : "View"} log
+					</Button>
+				</ButtonGroup>
+			</ActionButtonsContainer>
 			{!!viewLog && (
 				<LogBox>
 					{log.map((logString) => (

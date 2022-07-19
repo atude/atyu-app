@@ -3,7 +3,7 @@ import { FlashState } from "../../constants/types/flashState";
 
 const defaultKeyboard = "satisfaction75";
 
-type AppContext = {
+export type AppContext = {
   keyboard: string;
 	flashState: FlashState;
 	flashMessage: string;

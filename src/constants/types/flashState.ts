@@ -9,6 +9,7 @@ export enum FlashState {
 	FLASHING_DOWNLOADING,
 	DONE,
 	ERROR,
+	CANCELLED,
 };
 
 export const FlashStateDisplayStrings: Record<FlashState, string> = {
@@ -19,7 +20,8 @@ export const FlashStateDisplayStrings: Record<FlashState, string> = {
 	[FlashState.FLASHING_ERASING]: "Removing old firmware...",
 	[FlashState.FLASHING_DOWNLOADING]: "Installing firmware...",
 	[FlashState.DONE]: "Done!",
-	[FlashState.ERROR]: "Error during installation!",
+	[FlashState.ERROR]: "Error during installation",
+	[FlashState.CANCELLED]: "Cancelled installation",
 };
 
 export const FlashAlertSeverityMap: Record<FlashState, AlertColor | undefined> = {
@@ -31,4 +33,5 @@ export const FlashAlertSeverityMap: Record<FlashState, AlertColor | undefined> =
 	[FlashState.FLASHING_DOWNLOADING]: "info",
 	[FlashState.DONE]: "success",
 	[FlashState.ERROR]: "error",
+	[FlashState.CANCELLED]: "warning",
 }

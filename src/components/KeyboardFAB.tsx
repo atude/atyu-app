@@ -28,18 +28,9 @@ const FABBox = styled(Paper)`
 `;
 
 const KeyboardFAB = () => {
-  const {
-    keyboard,
-    flashState,
-    isDoingTask,
-    log,
-    setKeyboard,
-    setFlashState,
-    setFlashMessage,
-    setFlashProgress,
-    setLog,
-  } = useAppContext();
+  const appContext = useAppContext();
   const atyuContext = useAtyuContext();
+	const { keyboard, flashState, isDoingTask, setKeyboard } = appContext;
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     setKeyboard(event.target.value);
@@ -52,16 +43,7 @@ const KeyboardFAB = () => {
       flashState === FlashState.ERROR);
 
   const handleRunFlash = (onlyPatch: boolean) => {
-    runFlash(
-      keyboard,
-      atyuContext,
-      log,
-      onlyPatch,
-      setFlashState,
-      setFlashMessage,
-      setFlashProgress,
-      setLog
-    );
+    runFlash(appContext, atyuContext, onlyPatch);
   };
 
   return (
