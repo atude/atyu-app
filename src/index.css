@@ -2,6 +2,7 @@ html {
 	height: 100%;
 	width: 100%;
 	overflow: overlay;
+	overflow-y: hidden;
 }
 
 body {

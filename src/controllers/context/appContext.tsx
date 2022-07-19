@@ -9,11 +9,13 @@ type AppContext = {
 	flashMessage: string;
 	flashProgress: number;
 	isDoingTask: boolean;
+	log: string[];
 	setKeyboard: Dispatch<SetStateAction<string>>;
 	setFlashState: Dispatch<SetStateAction<FlashState>>;
 	setFlashMessage: Dispatch<SetStateAction<string>>;
 	setFlashProgress: Dispatch<SetStateAction<number>>;
 	setDoingTask:  Dispatch<SetStateAction<boolean>>;
+	setLog:  Dispatch<SetStateAction<string[]>>;
 }
 
 const context = createContext<AppContext>({
@@ -22,11 +24,13 @@ const context = createContext<AppContext>({
 	flashMessage: "",
 	flashProgress: 0,
 	isDoingTask: false,
+	log: [],
 	setKeyboard: () => {},
 	setFlashState: () => {},
 	setFlashMessage: () => {},
 	setFlashProgress: () => {},
 	setDoingTask: () => {},
+	setLog: () => {},
 });
 
 export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
@@ -35,6 +39,7 @@ export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
 	const [flashMessage, setFlashMessage] = useState<string>("");
   const [flashProgress, setFlashProgress] = useState<number>(0);
 	const [isDoingTask, setDoingTask] = useState<boolean>(false);
+	const [log, setLog] = useState<string[]>([]);
 
   const value: AppContext = {
 		keyboard,
@@ -47,6 +52,8 @@ export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
 		setFlashProgress,
 		isDoingTask, 
 		setDoingTask,
+		log,
+		setLog,
   };
 
   return <context.Provider value={value}>{children}</context.Provider>;

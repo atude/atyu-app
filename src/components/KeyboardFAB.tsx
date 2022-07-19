@@ -30,12 +30,14 @@ const FABBox = styled(Paper)`
 const KeyboardFAB = () => {
   const {
     keyboard,
-    setKeyboard,
     flashState,
+    isDoingTask,
+    log,
+    setKeyboard,
     setFlashState,
     setFlashMessage,
     setFlashProgress,
-    isDoingTask,
+    setLog,
   } = useAppContext();
   const atyuContext = useAtyuContext();
 
@@ -50,7 +52,16 @@ const KeyboardFAB = () => {
       flashState === FlashState.ERROR);
 
   const handleRunFlash = (onlyPatch: boolean) => {
-    runFlash(keyboard, atyuContext, onlyPatch, setFlashState, setFlashMessage, setFlashProgress);
+    runFlash(
+      keyboard,
+      atyuContext,
+      log,
+      onlyPatch,
+      setFlashState,
+      setFlashMessage,
+      setFlashProgress,
+      setLog
+    );
   };
 
   return (
