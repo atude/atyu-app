@@ -1,7 +1,6 @@
-import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
+import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
+import { defaultKeyboardKey, maxLogLength } from "../../constants";
 import { FlashState } from "../../constants/types/flashState";
-
-const defaultKeyboard = "satisfaction75";
 
 export type AppContext = {
   keyboard: string;
@@ -19,7 +18,7 @@ export type AppContext = {
 }
 
 const context = createContext<AppContext>({
-	keyboard: defaultKeyboard,
+	keyboard: defaultKeyboardKey,
 	flashState: FlashState.IDLE,
 	flashMessage: "",
 	flashProgress: 0,
@@ -34,7 +33,7 @@ const context = createContext<AppContext>({
 });
 
 export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [keyboard, setKeyboard] = useState<string>(defaultKeyboard);
+  const [keyboard, setKeyboard] = useState<string>(defaultKeyboardKey);
   const [flashState, setFlashState] = useState<FlashState>(FlashState.IDLE);
 	const [flashMessage, setFlashMessage] = useState<string>("");
   const [flashProgress, setFlashProgress] = useState<number>(0);

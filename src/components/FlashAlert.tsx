@@ -66,11 +66,10 @@ const FlashAlert = () => {
         if (flashState === prevFlashState) {
           setFlashState(FlashState.IDLE);
           setFlashMessage("");
-          setLog([]);
         }
       }, 5000);
     }
-  }, [flashState, setFlashState, setFlashMessage, setLog, prevFlashState]);
+  }, [flashState, setFlashState, setFlashMessage, prevFlashState]);
 
 	const handleCancel = () => {
 		runCancel();
@@ -92,8 +91,8 @@ const FlashAlert = () => {
 			</ActionButtonsContainer>
 			{!!viewLog && (
 				<LogBox>
-					{log.map((logString) => (
-						<div><code style={{ fontSize: "12px" }}>{logString}</code></div>
+					{log.map((logString, i) => (
+						<div key={i}><code style={{ fontSize: "12px" }}>{logString}</code></div>
 					))}
 				</LogBox>
 			)}

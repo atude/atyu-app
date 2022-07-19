@@ -19,8 +19,8 @@ const FABBox = styled(Paper)`
   position: fixed;
   bottom: 0;
   right: 0;
-  padding: 16px;
-  margin: 4px;
+  padding: 10px;
+  margin: 10px;
   border-radius: 10px;
   display: flex;
   flex-direction: row;

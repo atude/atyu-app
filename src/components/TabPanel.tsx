@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import KeyboardFAB from './KeyboardFAB';
-import Configurator from './Configurator';
-import { AtyuConfigProvider } from '../controllers/context/atyuContext';
-import styled from '@emotion/styled';
+import React, { useState } from "react";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import KeyboardFAB from "./KeyboardFAB";
+import Configurator from "./Configurator";
+import { AtyuConfigProvider } from "../controllers/context/atyuContext";
+import styled from "@emotion/styled";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -14,27 +14,34 @@ interface TabPanelProps {
 }
 
 const FixedTabs = styled(Tabs)`
-	height: 100%;
-	position: fixed;
+  height: 100%;
+  position: fixed;
+`;
+
+const TabPanelContainer = styled.div`
+  padding-left: 100px;
+  margin-bottom: 100px;
+	height: calc(100vh - 104px);
+	width: 1000px;
+	margin: auto;
+`;
+
+const TabPanelContent = styled(Box)`
+	width: 100%;
 `;
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
+    <TabPanelContainer
       role="tabpanel"
       hidden={value !== index}
       id={`vertical-tabpanel-${index}`}
-      style={{ marginLeft: "100px", marginBottom: "100px", width: "1000px" }}
-			{...other}
+      {...other}
     >
-      {value === index && (
-        <Box sx={{ pt: 2, pl: 4, pr: 4 }}>
-          {children}
-        </Box>
-      )}
-    </div>
+      {value === index && <TabPanelContent sx={{ pt: 2, pl: 4, pr: 4, pb: 12 }}>{children}</TabPanelContent>}
+    </TabPanelContainer>
   );
 }
 
@@ -58,12 +65,12 @@ export default function VerticalTabs() {
         <Tab label="Settings" />
       </FixedTabs>
       <TabPanel value={value} index={0}>
-				<AtyuConfigProvider>
-					<Box>
-						<KeyboardFAB />
-						<Configurator />
-					</Box>
-				</AtyuConfigProvider>
+        <AtyuConfigProvider>
+          <Box>
+            <KeyboardFAB />
+            <Configurator />
+          </Box>
+        </AtyuConfigProvider>
       </TabPanel>
       <TabPanel value={value} index={1}>
         TODO settings
