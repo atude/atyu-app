@@ -53,7 +53,7 @@ export default function VerticalTabs() {
   };
 
   return (
-    <Box sx={{ display: "flex", marginTop: "100px", overflowY: "auto" }}>
+    <Box sx={{ display: "flex", marginTop: "100px", overflowY: "scroll" }}>
       <FixedTabs
         orientation="vertical"
         variant="scrollable"
