@@ -1,5 +1,4 @@
 import { ShellString } from "shelljs";
-import { defaultKeyboardKey } from "../../constants";
 import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
