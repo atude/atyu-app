@@ -13,7 +13,7 @@ import { keyboardsArray } from "../configs/keyboards";
 import { FlashState } from "../constants/types/flashState";
 import { useAppContext } from "../controllers/context/appContext";
 import { useAtyuContext } from "../controllers/context/atyuContext";
-import { runFlash } from "../functions/commands";
+import runFlash from "../functions/commands/runFlash";
 
 const FABBox = styled(Paper)`
   position: fixed;

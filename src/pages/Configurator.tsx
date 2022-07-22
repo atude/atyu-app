@@ -1,16 +1,16 @@
 // import { AccessTime, Gif, Pets, ViewComfyRounded } from "@mui/icons-material";
 import styled from "@emotion/styled";
 import { Alert, Box, Button, Switch, Typography, useTheme } from "@mui/material";
-import MultiselectBooleanComponent from "./configurator/MultiselectBooleanComponent";
+import MultiselectBooleanComponent from "../components/configurator/MultiselectBooleanComponent";
 import { atyuValue } from "../functions/configuratorHelpers";
 import { AtyuChildConfig, AtyuConfig } from "../constants/types/atyuConfig";
 import { runCodegen } from "../functions/codegen";
 import { useAtyuContext } from "../controllers/context/atyuContext";
 import { testConfig } from "../controllers/reducers/atyuReducer";
-import SwitchComponent from "./configurator/SwitchComponent";
+import SwitchComponent from "../components/configurator/SwitchComponent";
 import { exhaustSwitch } from "../functions/generic";
-import UpdateGifComponent from "./configurator/UpdateGifComponent";
-import RadioComponent from "./configurator/RadioComponent";
+import UpdateGifComponent from "../components/configurator/UpdateGifComponent";
+import RadioComponent from "../components/configurator/RadioComponent";
 import { defaultGifRadioStruct } from "../constants";
 
 const OledModeBox = styled(Alert)`

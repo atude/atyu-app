@@ -10,6 +10,7 @@ export enum FlashState {
 	DONE,
 	ERROR,
 	CANCELLED,
+	RUNNING_SETUP,
 };
 
 export const FlashStateDisplayStrings: Record<FlashState, string> = {
@@ -22,6 +23,7 @@ export const FlashStateDisplayStrings: Record<FlashState, string> = {
 	[FlashState.DONE]: "Done!",
 	[FlashState.ERROR]: "Error during installation",
 	[FlashState.CANCELLED]: "Cancelled installation",
+	[FlashState.RUNNING_SETUP]: "Running initial setup...",
 };
 
 export const FlashAlertSeverityMap: Record<FlashState, AlertColor | undefined> = {
@@ -34,4 +36,5 @@ export const FlashAlertSeverityMap: Record<FlashState, AlertColor | undefined> =
 	[FlashState.DONE]: "success",
 	[FlashState.ERROR]: "error",
 	[FlashState.CANCELLED]: "warning",
+	[FlashState.RUNNING_SETUP]: "info",
 }

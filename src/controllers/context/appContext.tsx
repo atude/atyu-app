@@ -1,14 +1,17 @@
-import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
-import { defaultKeyboardKey, maxLogLength } from "../../constants";
+import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
+import { defaultKeyboardKey } from "../../constants";
+import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 
 export type AppContext = {
+	appReadyState: AppReadyState;
   keyboard: string;
 	flashState: FlashState;
 	flashMessage: string;
 	flashProgress: number;
 	isDoingTask: boolean;
 	log: string[];
+	setAppReadyState: Dispatch<SetStateAction<AppReadyState>>;
 	setKeyboard: Dispatch<SetStateAction<string>>;
 	setFlashState: Dispatch<SetStateAction<FlashState>>;
 	setFlashMessage: Dispatch<SetStateAction<string>>;
@@ -18,12 +21,14 @@ export type AppContext = {
 }
 
 const context = createContext<AppContext>({
+	appReadyState: AppReadyState.LOADING,
 	keyboard: defaultKeyboardKey,
 	flashState: FlashState.IDLE,
 	flashMessage: "",
 	flashProgress: 0,
 	isDoingTask: false,
 	log: [],
+	setAppReadyState: () => {},
 	setKeyboard: () => {},
 	setFlashState: () => {},
 	setFlashMessage: () => {},
@@ -33,6 +38,7 @@ const context = createContext<AppContext>({
 });
 
 export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
+	const [appReadyState, setAppReadyState] = useState<AppReadyState>(AppReadyState.LOADING);
   const [keyboard, setKeyboard] = useState<string>(defaultKeyboardKey);
   const [flashState, setFlashState] = useState<FlashState>(FlashState.IDLE);
 	const [flashMessage, setFlashMessage] = useState<string>("");
@@ -41,6 +47,8 @@ export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
 	const [log, setLog] = useState<string[]>([]);
 
   const value: AppContext = {
+		appReadyState,
+		setAppReadyState,
 		keyboard,
 		setKeyboard,
 		flashState,

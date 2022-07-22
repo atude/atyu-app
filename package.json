@@ -15,6 +15,7 @@
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@types/shelljs": "^0.8.11",
     "canvas": "^2.9.1",
     "concurrently": "^7.2.2",
     "electron": "^19.0.8",

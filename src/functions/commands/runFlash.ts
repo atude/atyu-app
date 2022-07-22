@@ -1,50 +1,36 @@
-import { keyboardsMap } from "../configs/keyboards";
-import { atyuConfigFilename } from "../constants";
-import { FlashState } from "../constants/types/flashState";
-import { AppContext } from "../controllers/context/appContext";
-import { AtyuContext } from "../controllers/context/atyuContext";
-import { runCodegen } from "./codegen";
-import { getKeyboardDir } from "./generic";
+import { keyboardsMap } from "../../configs/keyboards";
+import { atyuConfigFilename } from "../../constants";
+import { FlashState } from "../../constants/types/flashState";
+import { AppContext } from "../../controllers/context/appContext";
+import { AtyuContext } from "../../controllers/context/atyuContext";
+import { runCodegen } from "../codegen";
+import { getKeyboardDir } from "../shellHelpers";
+import { getShell, killCmd, updateLog } from "./helpers";
 
-const shell = window.require("shelljs");
-shell.config.execPath = String(shell.which("node"));
-
-const commandState = {
-	cancelled: false,
+const flashCommandState = {
+  cancelled: false,
 };
-
-// TODO: get dir properly
-const dir = "/Users/atude/Core/projects/qmk_atude";
 
 const calcFlashProgress = (dataString: string): number => {
   const flashNumber = dataString.match(/\d+?%/);
   return flashNumber?.length ? Number(flashNumber[0].replace("%", "")) : 0;
 };
 
-export const runCancel = () => {
-	commandState.cancelled = true;
-	return;
-}
+export const cancelFlash = () => flashCommandState.cancelled = true;
 
 // Codegen, patch and install to kb
-export const runFlash = (
+const runFlash = (
   appContext: AppContext,
   context: AtyuContext,
   onlyPatch: boolean
 ): void => {
-  const { keyboard, setLog, setFlashState, setFlashMessage, setFlashProgress } =
-    appContext;
+  const { keyboard, setLog, setFlashState, setFlashMessage, setFlashProgress } = appContext;
   const keyboardConfig = keyboardsMap[keyboard];
   const handleError = (message?: string) => {
     setFlashState(FlashState.ERROR);
     setFlashMessage(message ?? "");
   };
-
-  const updateLog = (dataString: string) => {
-    // Add log in reverse order for printing purposes
-    setLog((existingLog) => [dataString, ...existingLog]);
-    console.log(dataString);
-  };
+	const shell = getShell();
 
   if (!keyboardConfig) {
     return handleError("Could not read keyboard config.");
@@ -52,7 +38,7 @@ export const runFlash = (
 
   const { qmkKb, qmkKm } = keyboardConfig;
   const configCode = runCodegen(context);
-  const keyboardDir = getKeyboardDir(dir, keyboardConfig.dir);
+  const keyboardDir = getKeyboardDir(keyboardConfig.dir);
   console.log("dir: " + keyboardDir);
 
   // Patch firmware; copy to qmk folder
@@ -61,8 +47,10 @@ export const runFlash = (
     shell.cd(keyboardDir).code !== 0 ||
     shell.echo(configCode).to(atyuConfigFilename).code !== 0
   ) {
-    return handleError("Failed to save changes to QMK.");
+		updateLog(setLog, `Couldn't save file to ${atyuConfigFilename}`);
+    return handleError("Failed to save changes to Atyu QMK folder");
   }
+	updateLog(setLog, "Saved file.");
 
   // Save only; dont flash to keyboard
   if (onlyPatch) {
@@ -72,20 +60,14 @@ export const runFlash = (
   // Run qmk flash
   setFlashState(FlashState.COMPILING);
   const cmdFlash = shell.exec(`qmk flash -kb ${qmkKb} -km ${qmkKm}`, { async: true });
-	const killCmdFlash = () => {
-		console.log("KILLING!");
-		cmdFlash.stdout.destroy();
-		cmdFlash.stderr.destroy();
-		cmdFlash.kill('SIGINT');
-	}
 
   // Update state as log changes
   cmdFlash.stdout.on("data", (data: any) => {
     const dataString: string = data.toString();
-    updateLog(dataString);
-		if (commandState.cancelled) {
-			killCmdFlash();
-		}
+    updateLog(setLog, dataString);
+    if (flashCommandState.cancelled) {
+      killCmd(cmdFlash);
+    }
     if (dataString === ".") {
       setFlashState(FlashState.WAITING_FOR_DFU);
     } else if (dataString.includes("Erase") && dataString.includes("%")) {
@@ -97,24 +79,18 @@ export const runFlash = (
     }
   });
 
-  cmdFlash.stderr.on("data", (data: any) => {
-    updateLog(data.toString());
-  });
+  cmdFlash.stderr.on("data", (data: any) => updateLog(setLog, data.toString()));
 
   cmdFlash.on("close", (code: any) => {
-    updateLog(`Finished with code ${Number(code)}`);
-		if (commandState.cancelled) {
-			commandState.cancelled = false;
-			return setFlashState(FlashState.CANCELLED);
-		}
+    updateLog(setLog, `Finished with code ${Number(code)}`);
+    if (flashCommandState.cancelled) {
+      flashCommandState.cancelled = false;
+      return setFlashState(FlashState.CANCELLED);
+    }
     return Number(code) === 0
       ? setFlashState(FlashState.DONE)
       : handleError("An error occured with building and flashing the firmware.");
   });
 };
 
-// First time setup
-export const runSetup = () => {};
-
-// Pull updates from repo
-export const runSync = () => {};
+export default runFlash;

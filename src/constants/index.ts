@@ -5,7 +5,11 @@ export const versionString = "v0.1 alpha"
 export const atyuConfigFilename = "atyu_config.h";
 export const defaultKeyboardKey = "satisfaction75";
 export const defaultEmptyGif = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
-export const maxLogLength = 10;
+export const setupHelpText = `
+	If this is your first time using Atyu, click run setup. Otherwise, there is something
+	wrong with loading up QMK for Atyu. Check the log and ask for help in the
+	Atyu discord server. Or click run setup to start a fresh install.
+`.trim();
 
 export const defaultGifRadioStruct: AtyuOptionRadioNumber = {
 	type: "radio_number",

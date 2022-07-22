@@ -8,7 +8,7 @@ import {
   FlashStateDisplayStrings,
 } from "../constants/types/flashState";
 import { useAppContext } from "../controllers/context/appContext";
-import { runCancel } from "../functions/commands";
+import { cancelFlash } from "../functions/commands/runFlash";
 
 const AlertStyled = styled(Alert)`
   top: 0;
@@ -51,8 +51,13 @@ const StandardLinearProgress = styled(LinearProgress)`
   width: 400px;
 `;
 
+const StyledCircularProgress = styled(CircularProgress)`
+	margin-right: 20px;
+	margin-left: 20px;
+`;
+
 const FlashAlert = () => {
-  const { flashState, flashMessage, flashProgress, log, setFlashState, setFlashMessage, setLog } =
+  const { flashState, flashMessage, flashProgress, log, setFlashState, setFlashMessage } =
     useAppContext();
   const flashSeverity = FlashAlertSeverityMap[flashState];
   const displayString = FlashStateDisplayStrings[flashState];
@@ -71,9 +76,7 @@ const FlashAlert = () => {
     }
   }, [flashState, setFlashState, setFlashMessage, prevFlashState]);
 
-	const handleCancel = () => {
-		runCancel();
-	}
+	const handleCancel = () => cancelFlash();
 
   const getLogComponent = () => (
     <>
@@ -113,8 +116,8 @@ const FlashAlert = () => {
       )}
       {flashState === FlashState.WAITING_FOR_DFU && (
         <Box display="flex" flexDirection="row" alignItems="center">
-          <span>Please press the RESET key on your keyboard&nbsp;&nbsp;</span>
-          <CircularProgress size={20} />
+          <span>Please press the RESET key on your keyboard</span>
+          <StyledCircularProgress size={20} />
         </Box>
       )}
       {(flashState === FlashState.FLASHING_ERASING ||
@@ -122,6 +125,12 @@ const FlashAlert = () => {
         <StandardLinearProgress variant="determinate" value={flashProgress} />
       )}
       {flashState === FlashState.ERROR && flashMessage.length && <span>{flashMessage}</span>}
+			{flashState === FlashState.RUNNING_SETUP && flashMessage.length && (
+				<Box display="flex" flexDirection="row" alignItems="center">
+					<span>{flashMessage}</span>
+					<StyledCircularProgress size={20} />
+				</Box>
+			)}
       {getLogComponent()}
     </AlertStyled>
   );
