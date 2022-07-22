@@ -9,7 +9,6 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { keyboardsArray } from "../configs/keyboards";
 import { FlashState } from "../constants/types/flashState";
 import { useAppContext } from "../controllers/context/appContext";
 import { useAtyuContext } from "../controllers/context/atyuContext";
@@ -30,7 +29,7 @@ const FABBox = styled(Paper)`
 const KeyboardFAB = () => {
   const appContext = useAppContext();
   const atyuContext = useAtyuContext();
-	const { keyboard, flashState, isDoingTask, setKeyboard } = appContext;
+	const { keyboard, keyboardsConfig, flashState, isDoingTask, setKeyboard } = appContext;
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     setKeyboard(event.target.value);
@@ -51,7 +50,7 @@ const KeyboardFAB = () => {
       <FormControl>
         <InputLabel>Keyboard</InputLabel>
         <Select value={keyboard} label="Keyboard" onChange={(e) => handleChange(e)}>
-          {keyboardsArray.map((keyboard) => (
+          {Object.values(keyboardsConfig).map((keyboard) => (
             <MenuItem key={keyboard.key} value={keyboard.key} id={keyboard.key}>
               {keyboard.name}
             </MenuItem>

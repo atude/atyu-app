@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Button, ButtonGroup, Typography } from "@mui/material";
 import { atyuValue } from "../../functions/configuratorHelpers";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
-import { AtyuOptionRadioNumber } from "../../constants/types/atyuConfig";
+import { AtyuOptionRadioNumber } from "../../configs/atyuConfig";
 import HorizontalBox from "../HorizontalBox";
 
 type Props = {

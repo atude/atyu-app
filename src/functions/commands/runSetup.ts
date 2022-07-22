@@ -1,5 +1,5 @@
 import { ShellString } from "shelljs";
-import { keyboardsMap, defaultKeyboard } from "../../configs/keyboards";
+import { defaultKeyboardKey } from "../../constants";
 import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
@@ -21,7 +21,7 @@ const runSetup = (appContext: AppContext): void => {
   };
 
   setAppReadyState(AppReadyState.LOADING);
-	setFlashState(FlashState.RUNNING_SETUP);
+  setFlashState(FlashState.RUNNING_SETUP);
   setFlashMessage("Replacing any existing installations");
 
   if (shell.test("-d", atyuQmkDir)) {
@@ -64,8 +64,7 @@ const runSetup = (appContext: AppContext): void => {
       setFlashMessage(
         "Verifying installation by building test firmware (this can *also* take a few minutes)"
       );
-      const sat75 = keyboardsMap[defaultKeyboard];
-      const testBuildCmd = shell.exec(`qmk compile -kb ${sat75.qmkKb} -km ${sat75.qmkKm}`, {
+      const testBuildCmd = shell.exec("qmk compile -kb cannonkeys/satisfaction75/rev1 -km via", {
         async: true,
       });
       testBuildCmd.stdout.on("data", (data: any) => updateLog(setLog, data.toString()));

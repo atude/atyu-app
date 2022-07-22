@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Box, Switch, Typography } from "@mui/material";
 import { atyuValue } from "../../functions/configuratorHelpers";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
-import { AtyuOptionSwitch } from "../../constants/types/atyuConfig";
+import { AtyuOptionSwitch } from "../../configs/atyuConfig";
 
 type Props = {
   config: AtyuOptionSwitch;

@@ -1,10 +1,8 @@
-import { keyboardsMap } from "../../configs/keyboards";
-import { atyuConfigFilename } from "../../constants";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
 import { AtyuContext } from "../../controllers/context/atyuContext";
 import { runCodegen } from "../codegen";
-import { getKeyboardDir } from "../shellHelpers";
+import { atyuHConfigFilename, getKeyboardDir } from "../shellHelpers";
 import { getShell, killCmd, updateLog } from "./helpers";
 
 const flashCommandState = {
@@ -24,8 +22,8 @@ const runFlash = (
   context: AtyuContext,
   onlyPatch: boolean
 ): void => {
-  const { keyboard, setLog, setFlashState, setFlashMessage, setFlashProgress } = appContext;
-  const keyboardConfig = keyboardsMap[keyboard];
+  const { keyboard, keyboardsConfig, setLog, setFlashState, setFlashMessage, setFlashProgress } = appContext;
+  const keyboardConfig = keyboardsConfig[keyboard];
   const handleError = (message?: string) => {
     setFlashState(FlashState.ERROR);
     setFlashMessage(message ?? "");
@@ -45,9 +43,9 @@ const runFlash = (
   setFlashState(FlashState.PATCHING);
   if (
     shell.cd(keyboardDir).code !== 0 ||
-    shell.echo(configCode).to(atyuConfigFilename).code !== 0
+    shell.echo(configCode).to(atyuHConfigFilename).code !== 0
   ) {
-		updateLog(setLog, `Couldn't save file to ${atyuConfigFilename}`);
+		updateLog(setLog, `Couldn't save file to ${atyuHConfigFilename}`);
     return handleError("Failed to save changes to Atyu QMK folder");
   }
 	updateLog(setLog, "Saved file.");

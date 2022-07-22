@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { Alert, Box, Button, Switch, Typography, useTheme } from "@mui/material";
 import MultiselectBooleanComponent from "../components/configurator/MultiselectBooleanComponent";
 import { atyuValue } from "../functions/configuratorHelpers";
-import { AtyuChildConfig, AtyuConfig } from "../constants/types/atyuConfig";
+import { AtyuChildConfig, AtyuConfig } from "../configs/atyuConfig";
 import { runCodegen } from "../functions/codegen";
 import { useAtyuContext } from "../controllers/context/atyuContext";
 import { testConfig } from "../controllers/reducers/atyuReducer";
@@ -73,14 +73,14 @@ const Configurator = () => {
   const theme = useTheme();
 
 	// TODO: dont use test config
-  const config: AtyuConfig[] = testConfig;
+  const config: AtyuConfig = testConfig;
 
   return (
     <Box>
       <Typography color="primary" variant="h5" sx={{ mb: "18px" }}>
         Configure OLED modes
       </Typography>
-      {config.map((configSection: AtyuConfig) => {
+      {config.map((configSection) => {
         const { name, desc, key, configurable, children, enabledByDefault } = configSection;
         const isEnabled = atyuValue(context[key], enabledByDefault);
 

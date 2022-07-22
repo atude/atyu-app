@@ -1,9 +1,9 @@
 import { Reducer } from "react";
 import { atyuSpecialKeys } from "../../constants/atyuSpecialKeys";
-import { AtyuConfig } from "../../constants/types/atyuConfig";
+import { AtyuConfig } from "../../configs/atyuConfig";
 import { exhaustSwitch } from "../../functions/generic";
 
-export const testConfig: AtyuConfig[] = [
+export const testConfig: AtyuConfig = [
 	{
 		name: "Keyboard Matrix",
 		desc: "",
@@ -123,7 +123,7 @@ type Action = {
 // Create an initial state that can be consumed by the reducer.
 // This should be rerun whenever the keyboard is changed, and then the state
 // updated in context or reducer somehow
-const generateInitialState = (config: AtyuConfig[]): AtyuState => {
+const generateInitialState = (config: AtyuConfig): AtyuState => {
 	const initialState: AtyuState = {};
 
 	config.forEach(configSection => {
