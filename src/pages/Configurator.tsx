@@ -12,6 +12,7 @@ import UpdateGifComponent from "../components/configurator/UpdateGifComponent";
 import RadioComponent from "../components/configurator/RadioComponent";
 import { defaultGifRadioStruct } from "../constants";
 import { useAppContext } from "../controllers/context/appContext";
+import HorizontalBox from "../components/HorizontalBox";
 
 const OledModeBox = styled(Alert)`
   display: flex;
@@ -21,14 +22,6 @@ const OledModeBox = styled(Alert)`
 `;
 
 const OledModeHeader = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const OledModeHeaderText = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -91,17 +84,20 @@ const Configurator = () => {
             icon={false}
             sx={{ filter: isEnabled !== undefined && !isEnabled ? "grayscale(100%)" : "none" }}
           >
-            <OledModeHeader>
-              <OledModeHeaderText>
-                {/*TODO: {icon}*/}<Typography variant="button">{name}</Typography>
-              </OledModeHeaderText>
+            <HorizontalBox expanded>
+							<Box>
+								<OledModeHeader>
+									{/*TODO: {icon}*/}<Typography variant="button">{name}</Typography>
+								</OledModeHeader>
+								{!!desc.length && <Typography variant="body2">{desc}</Typography>}
+							</Box>
               {!!configurable && (
                 <Switch
                   checked={isEnabled}
                   onChange={() => context.dispatchUpdateValue(key, !isEnabled)}
                 />
               )}
-            </OledModeHeader>
+            </HorizontalBox>
             {!!isEnabled && !!children.length && (
               <OledModeComponent color={theme.palette.primary.main}>
                 {children.map((childConfigSection, i) => {

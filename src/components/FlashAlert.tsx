@@ -62,19 +62,20 @@ const FlashAlert = () => {
   const flashSeverity = FlashAlertSeverityMap[flashState];
   const displayString = FlashStateDisplayStrings[flashState];
   const [viewLog, setViewLog] = useState(false);
-	const [prevFlashState, setPrevFlashState] = useState<FlashState | undefined>();
 
   useEffect(() => {
     if (flashState === FlashState.DONE || flashState === FlashState.CANCELLED) {
-			setPrevFlashState(flashState);
       setTimeout(() => {
-        if (flashState === prevFlashState) {
-          setFlashState(FlashState.IDLE);
-          setFlashMessage("");
-        }
+				setFlashState((prevFlashState) => {
+					if (prevFlashState === FlashState.DONE || prevFlashState === FlashState.CANCELLED) {
+						setFlashMessage("");
+						return FlashState.IDLE;
+					}
+					return prevFlashState;
+				});
       }, 5000);
     }
-  }, [flashState, setFlashState, setFlashMessage, prevFlashState]);
+  }, [flashState, setFlashState, setFlashMessage]);
 
 	const handleCancel = () => cancelFlash();
 
