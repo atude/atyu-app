@@ -6,12 +6,12 @@ import { atyuValue } from "../functions/configuratorHelpers";
 import { AtyuChildConfig, AtyuConfig } from "../configs/atyuConfig";
 import { runCodegen } from "../functions/codegen";
 import { useAtyuContext } from "../controllers/context/atyuContext";
-import { testConfig } from "../controllers/reducers/atyuReducer";
 import SwitchComponent from "../components/configurator/SwitchComponent";
 import { exhaustSwitch } from "../functions/generic";
 import UpdateGifComponent from "../components/configurator/UpdateGifComponent";
 import RadioComponent from "../components/configurator/RadioComponent";
 import { defaultGifRadioStruct } from "../constants";
+import { useAppContext } from "../controllers/context/appContext";
 
 const OledModeBox = styled(Alert)`
   display: flex;
@@ -69,11 +69,10 @@ const getChildComponent = (childConfigSection: AtyuChildConfig, name: string, de
 
 // This is the UI generator entry point
 const Configurator = () => {
+	const { atyuConfigMap, keyboard } = useAppContext();
   const context = useAtyuContext();
   const theme = useTheme();
-
-	// TODO: dont use test config
-  const config: AtyuConfig = testConfig;
+	const config = atyuConfigMap[keyboard];
 
   return (
     <Box>

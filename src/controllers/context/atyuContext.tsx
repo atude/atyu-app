@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useReducer } from "react";
-import { reducer, initialState, AtyuState } from "../reducers/atyuReducer";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
+import { reducer, AtyuState, generateInitialState } from "../reducers/atyuReducer";
+import { useAppContext } from "./appContext";
 
 export type AtyuContext = AtyuState & {
 	dispatchUpdateValue: (key: string, value: string | number | boolean) => void;
@@ -7,13 +8,19 @@ export type AtyuContext = AtyuState & {
 };
 
 const context = createContext<AtyuContext>({
-  ...initialState,
 	dispatchUpdateValue: (key: string, value: string | number | boolean) => {},
   dispatchUpdateGif: (gifUrl?: string, gifCode?: string) => {},
 });
 
 export const AtyuConfigProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+	const { atyuConfigMap, keyboard } = useAppContext();
+  const [state, dispatch] = useReducer(reducer, {});
+
+	useEffect(() => {
+		const newState = generateInitialState(atyuConfigMap[keyboard]);
+		dispatch({ type: "CHANGE_KEYBOARD", payload: { newState }});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [keyboard]);
 
   const value: AtyuContext = {
     ...state,
