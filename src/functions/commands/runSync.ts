@@ -1,6 +1,6 @@
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
-import { atyuQmkDir } from "../shellHelpers";
+import { atyuQmkDir } from "../path";
 import { getShell, updateLog } from "./helpers";
 import runVerify from "./runVerify";
 

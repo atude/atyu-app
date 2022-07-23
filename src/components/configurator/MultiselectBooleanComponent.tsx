@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Box, Checkbox, Typography, useTheme } from "@mui/material";
-import { atyuValue } from "../../functions/configuratorHelpers";
+import { atyuValue } from "../../functions/configurator";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
 import { AtyuOptionMultiselectBoolean } from "../../configs/atyuConfig";
 import { blueGrey } from "@mui/material/colors";

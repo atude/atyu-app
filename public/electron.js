@@ -2,6 +2,7 @@ const path = require('path');
 
 const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
+const Store = require('electron-store');
 
 
 function createWindow() {
@@ -15,6 +16,9 @@ function createWindow() {
 			contextIsolation: false,
     },
   });
+
+	// init store
+	Store.initRenderer();
 
   // and load the index.html of the app.
   // win.loadFile("index.html");

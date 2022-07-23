@@ -2,7 +2,7 @@ import { ShellString } from "shelljs";
 import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
-import { atyuDir, atyuQmkDir } from "../shellHelpers";
+import { atyuDir, atyuQmkDir } from "../path";
 import { getShell, updateLog } from "./helpers";
 
 // First time setup

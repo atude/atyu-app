@@ -4,6 +4,7 @@ import { AppProvider } from "./controllers/context/appContext";
 import TabPanel from "./components/TabPanel";
 import FlashAlert from "./components/FlashAlert";
 import { colors } from "@mui/material";
+import { AppStoreProvider } from "./controllers/context/appStoreContext";
 
 const theme = createTheme({
   palette: {
@@ -17,11 +18,13 @@ const theme = createTheme({
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
-      <AppProvider>
-        <CssBaseline />
-        <FlashAlert />
-        <TabPanel />
-			</AppProvider>
+			<AppStoreProvider>
+				<AppProvider>
+					<CssBaseline />
+					<FlashAlert />
+					<TabPanel />
+				</AppProvider>
+			</AppStoreProvider>
     </ThemeProvider>
   );
 };

@@ -2,7 +2,7 @@ import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
 import { AtyuContext } from "../../controllers/context/atyuContext";
 import { runCodegen } from "../codegen";
-import { atyuHConfigFilename, getKeyboardDir } from "../shellHelpers";
+import { atyuHConfigFilename, getKeyboardDir } from "../path";
 import { getShell, killCmd, updateLog } from "./helpers";
 
 const flashCommandState = {

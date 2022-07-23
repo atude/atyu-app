@@ -3,7 +3,7 @@ import { zKeyboardsConfig } from "../../configs/keyboardConfig";
 import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
-import { atyuHomeConfigFilePath, atyuKeyboardConfigFilename, atyuQmkDir } from "../shellHelpers";
+import { atyuHomeConfigFilePath, atyuKeyboardConfigFilename, atyuQmkDir } from "../path";
 import { getShell, updateLog } from "./helpers";
 
 // Runs whenever app opens. Checks everything is fine.

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Box, Switch, Typography } from "@mui/material";
-import { atyuValue } from "../../functions/configuratorHelpers";
+import { atyuValue } from "../../functions/configurator";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
 import { AtyuOptionSwitch } from "../../configs/atyuConfig";
 
