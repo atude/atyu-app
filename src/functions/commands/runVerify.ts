@@ -4,7 +4,8 @@ import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
 import { atyuHomeConfigFilePath, atyuKeyboardConfigFilename, atyuQmkDir } from "../path";
-import { getShell, updateLog } from "./helpers";
+import { updateLog } from "./helpers";
+import { getShell } from "./shellInit";
 
 // Runs whenever app opens. Checks everything is fine.
 const runVerify = (appContext: AppContext): void => {
@@ -19,7 +20,7 @@ const runVerify = (appContext: AppContext): void => {
   setAppReadyState(AppReadyState.LOADING);
 
   // Check for git and qmk existence
-  if (!shell.which("git") || !shell.which("qmk")) {
+  if (!shell.which("git") || !shell.which("/usr/local/bin/qmk")) {
     updateLog(setLog, "which git/qmk failed.");
     setFlashState(FlashState.ERROR, "Couldn't find git or qmk (required for Atyu)");
     return setAppReadyState(AppReadyState.NOT_READY);

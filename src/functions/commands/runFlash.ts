@@ -4,7 +4,8 @@ import { appStore } from "../../controllers/context/appStoreContext";
 import { AtyuContext } from "../../controllers/context/atyuContext";
 import { runCodegen } from "../codegen";
 import { atyuHConfigFilename, getKeyboardDir } from "../path";
-import { getShell, killCmd, updateLog } from "./helpers";
+import { killCmd, updateLog } from "./helpers";
+import { getShell } from "./shellInit";
 
 const flashCommandState = {
   cancelled: false,
@@ -16,19 +17,19 @@ const calcFlashProgress = (dataString: string): number => {
 };
 
 const attemptParseFirmwareSize = (dataString: string): undefined | number => {
-	try {
-		const matches = dataString.match(/\b(\d+)\b/g);
-		if (matches?.length === 4) {
-			// Probably includes the firmware size here; get the "data" value
-			const size = Number(matches[1]);
-			if (size && size > 0) {
-				return size;
-			}
-		}
-	} catch (e) {
-		return undefined;
-	}
-	return undefined;
+  try {
+    const matches = dataString.match(/\b(\d+)\b/g);
+    if (matches?.length === 4) {
+      // Probably includes the firmware size here; get the "data" value
+      const size = Number(matches[1]);
+      if (size && size > 0) {
+        return size;
+      }
+    }
+  } catch (e) {
+    return undefined;
+  }
+  return undefined;
 };
 
 export const cancelFlash = () => (flashCommandState.cancelled = true);
@@ -50,13 +51,11 @@ const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boole
 
   // Patch firmware; copy to qmk folder
   setFlashState(FlashState.PATCHING);
-  if (
-    shell.cd(keyboardDir).code !== 0 ||
-    shell.echo(configCode).to(atyuHConfigFilename).code !== 0
-  ) {
-    updateLog(setLog, `Couldn't save file to ${atyuHConfigFilename}`);
+  if (shell.cd(keyboardDir).code !== 0) {
+    updateLog(setLog, `Couldn't go into directory ${keyboardDir}`);
     return setFlashState(FlashState.ERROR, "Failed to save changes to Atyu QMK folder");
   }
+	shell.echo(configCode).to(atyuHConfigFilename);
   updateLog(setLog, "Saved file.");
 
   // Save only; dont flash to keyboard
@@ -70,7 +69,7 @@ const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boole
     const cmdFlash = shell.exec(`qmk flash -kb ${qmkKb} -km ${qmkKm}`, { async: true });
 
     // Update state as log changes
-    cmdFlash.stdout.on("data", (data: any) => {
+    cmdFlash.stdout?.on("data", (data: any) => {
       const dataString: string = data.toString();
       updateLog(setLog, dataString);
       if (flashCommandState.cancelled) {
@@ -87,7 +86,7 @@ const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boole
       }
     });
 
-    cmdFlash.stderr.on("data", (data: any) => updateLog(setLog, data.toString()));
+    cmdFlash.stderr?.on("data", (data: any) => updateLog(setLog, data.toString()));
 
     cmdFlash.on("close", (code: any) => {
       updateLog(setLog, `Finished with code ${Number(code)}`);
@@ -107,40 +106,42 @@ const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boole
   if (appStore.get("enableFirmwareSizeCheck")) {
     updateLog(setLog, "Precompiling to check firmware size");
     setFlashState(FlashState.CHECK_SIZE);
-	
+
     let firmwareSize: number = 0;
-		let sawSizeAfter: boolean = false;
+    let sawSizeAfter: boolean = false;
 
     // Compile once to check firmware size
-    const cmdCompile = shell.exec(`qmk compile -kb ${qmkKb} -km ${qmkKm}`, { async: true });
-
-    // Update state as log changes
-    cmdCompile.stdout.on("data", (data: any) => {
-      const dataString: string = data.toString();
-      updateLog(setLog, dataString);
-			if (firmwareSize > 0) {
-				return;
-			}
-      if (!sawSizeAfter && dataString.includes("Size after")) {
-				sawSizeAfter = true;
-			}
-			if (sawSizeAfter) {
-				const attemptedSize = attemptParseFirmwareSize(dataString);
-				if (attemptedSize) {
-					updateLog(setLog, `Attempted to read size: ${attemptedSize}`);
-					firmwareSize = attemptedSize;
-				}
-			}
+    const cmdCompile = shell.exec(`qmk compile -kb ${qmkKb} -km ${qmkKm}`, {
+      async: true,
     });
 
-    cmdCompile.stderr.on("data", (data: any) => updateLog(setLog, data.toString()));
+    // Update state as log changes
+    cmdCompile.stdout?.on("data", (data: any) => {
+      const dataString: string = data.toString();
+      updateLog(setLog, dataString);
+      if (firmwareSize > 0) {
+        return;
+      }
+      if (!sawSizeAfter && dataString.includes("Size after")) {
+        sawSizeAfter = true;
+      }
+      if (sawSizeAfter) {
+        const attemptedSize = attemptParseFirmwareSize(dataString);
+        if (attemptedSize) {
+          updateLog(setLog, `Attempted to read size: ${attemptedSize}`);
+          firmwareSize = attemptedSize;
+        }
+      }
+    });
+
+    cmdCompile.stderr?.on("data", (data: any) => updateLog(setLog, data.toString()));
     cmdCompile.on("close", (code: any) => {
       updateLog(setLog, `Finished with code ${Number(code)}`);
       if (Number(code) !== 0) {
         return setFlashState(FlashState.ERROR, "An error occured with building the firmware.");
       }
       if (firmwareSize > maxFirmwareSizeBytes) {
-				updateLog(setLog, `Firmware size ${firmwareSize} > ${maxFirmwareSizeBytes}`);
+        updateLog(setLog, `Firmware size ${firmwareSize} > ${maxFirmwareSizeBytes}`);
         return setFlashState(
           FlashState.CANCELLED,
           `Firmware size is too big (got ${firmwareSize}b, but max is ${maxFirmwareSizeBytes}b) - 

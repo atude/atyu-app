@@ -1,8 +1,9 @@
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
 import { atyuQmkDir } from "../path";
-import { getShell, updateLog } from "./helpers";
+import { updateLog } from "./helpers";
 import runVerify from "./runVerify";
+import { getShell } from "./shellInit";
 
 // Pull updates from repo
 const runSync = (appContext: AppContext) => {
@@ -22,7 +23,7 @@ const runSync = (appContext: AppContext) => {
 	setDoingTask(true);
 	const pullCmd = shell.exec("git pull", { async: true });
 
-	pullCmd.stdout.on("data", (data: any) => {
+	pullCmd.stdout?.on("data", (data: any) => {
 		const dataString = data.toString();
 		updateLog(setLog, dataString);
 		if (dataString.includes("Already up to date.")) {
@@ -32,7 +33,7 @@ const runSync = (appContext: AppContext) => {
 			setFlashState(FlashState.UPDATING, "Downloading updates from atude/qmk_firmware");
 		}
 	});
-	pullCmd.stderr.on("data", (data: any) => updateLog(setLog, data.toString()));
+	pullCmd.stderr?.on("data", (data: any) => updateLog(setLog, data.toString()));
   pullCmd.on("close", (code: any) => {
 		setDoingTask(false);
 		if (Number(code) !== 0) {

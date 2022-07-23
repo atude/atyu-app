@@ -3,7 +3,8 @@ import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
 import { atyuDir, atyuQmkDir } from "../path";
-import { getShell, updateLog } from "./helpers";
+import { updateLog } from "./helpers";
+import { getShell } from "./shellInit";
 
 // First time setup
 const runSetup = (appContext: AppContext): void => {
@@ -18,12 +19,18 @@ const runSetup = (appContext: AppContext): void => {
     return cmd.code === 0;
   };
 
-	// Check for git and qmk existence
-	if (!shell.which("git") || !shell.which("qmk")) {
-		updateLog(setLog, "which git/qmk failed.");
-		setFlashState(FlashState.ERROR, "Couldn't find git or qmk (required for Atyu)");
-		return setAppReadyState(AppReadyState.NOT_READY);
-	}
+  console.log(shell);
+  console.log(shell.pwd());
+  console.log(shell.cd(atyuQmkDir).code);
+  console.log(shell.which("git"));
+  console.log(shell.which("qmk"));
+
+  // Check for git and qmk existence
+  if (!shell.which("git") || !shell.which("qmk")) {
+    updateLog(setLog, "which git/qmk failed.");
+    setFlashState(FlashState.ERROR, "Couldn't find git or qmk (required for Atyu)");
+    return setAppReadyState(AppReadyState.NOT_READY);
+  }
 
   setAppReadyState(AppReadyState.LOADING);
   setFlashState(FlashState.RUNNING_SETUP, "Replacing any existing installations");
@@ -51,12 +58,15 @@ const runSetup = (appContext: AppContext): void => {
 
   // Setup atude/qmk_firmware
   setFlashMessage("Downloading and setting up Atyu QMK (this can take a few minutes)");
-  const setupQmkCmd = shell.exec(`qmk setup atude/qmk_firmware --home ./qmk_firmware --yes`, {
-    async: true,
-  });
+  const setupQmkCmd = shell.exec(
+    `qmk setup atude/qmk_firmware --home ./qmk_firmware --yes`,
+    {
+      async: true,
+    }
+  );
 
-  setupQmkCmd.stdout.on("data", (data: any) => updateLog(setLog, data.toString()));
-  setupQmkCmd.stderr.on("data", (data: any) => updateLog(setLog, data.toString()));
+  setupQmkCmd.stdout?.on("data", (data: any) => updateLog(setLog, data.toString()));
+  setupQmkCmd.stderr?.on("data", (data: any) => updateLog(setLog, data.toString()));
   setupQmkCmd.on("close", (code: any) => {
     updateLog(setLog, `Finished with code ${Number(code)}`);
     if (Number(code) === 0) {
@@ -68,11 +78,14 @@ const runSetup = (appContext: AppContext): void => {
       setFlashMessage(
         "Verifying installation by building test firmware (this can *also* take a few minutes)"
       );
-      const testBuildCmd = shell.exec("qmk compile -kb cannonkeys/satisfaction75/rev1 -km via", {
-        async: true,
-      });
-      testBuildCmd.stdout.on("data", (data: any) => updateLog(setLog, data.toString()));
-      testBuildCmd.stderr.on("data", (data: any) => updateLog(setLog, data.toString()));
+      const testBuildCmd = shell.exec(
+        `qmk compile -kb cannonkeys/satisfaction75/rev1 -km via`,
+        {
+          async: true,
+        }
+      );
+      testBuildCmd.stdout?.on("data", (data: any) => updateLog(setLog, data.toString()));
+      testBuildCmd.stderr?.on("data", (data: any) => updateLog(setLog, data.toString()));
       testBuildCmd.on("close", (code: any) => {
         updateLog(setLog, `Finished with code ${Number(code)}`);
         if (Number(code) === 0) {

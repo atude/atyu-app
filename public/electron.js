@@ -4,6 +4,11 @@ const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
 const Store = require('electron-store');
 
+if (process.platform !== 'darwin') {
+	process.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
+}
+
+console.log(process.env["PATH"]);
 
 function createWindow() {
   // Create the browser window.
@@ -16,6 +21,8 @@ function createWindow() {
 			contextIsolation: false,
     },
   });
+
+	win.setBackgroundColor("rgb(18, 18, 18)");
 
 	// init store
 	Store.initRenderer();
@@ -42,9 +49,9 @@ app.whenReady().then(createWindow);
 // for applications and their menu bars to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  // if (process.platform !== 'darwin') {
+	app.quit();
+  // }
 });
 
 app.on('activate', () => {
