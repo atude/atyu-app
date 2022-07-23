@@ -65,8 +65,7 @@ const StyledCircularProgress = styled(CircularProgress)`
 `;
 
 const FlashAlert = () => {
-  const { flashState, flashMessage, flashProgress, log } =
-    useAppContext();
+  const { flashState, flashMessage, flashProgress, log } = useAppContext();
   const flashSeverity = FlashAlertSeverityMap[flashState];
   const displayString = FlashStateDisplayStrings[flashState];
   const [viewLog, setViewLog] = useState(false);
@@ -110,9 +109,9 @@ const FlashAlert = () => {
       <AlertTitle>{displayString}</AlertTitle>
       <Box display="flex" flexDirection="row" alignItems="center">
         {!!flashMessage.length && <span>{flashMessage}</span>}
-        {(flashState === FlashState.COMPILING || flashState === FlashState.PATCHING) && (
-          <StandardLinearProgress />
-        )}
+        {(flashState === FlashState.COMPILING ||
+          flashState === FlashState.PATCHING ||
+          flashState === FlashState.CHECK_SIZE) && <StandardLinearProgress />}
         {(flashState === FlashState.WAITING_FOR_DFU || flashState === FlashState.RUNNING_SETUP) && (
           <StyledCircularProgress size={20} />
         )}

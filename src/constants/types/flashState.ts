@@ -4,6 +4,7 @@ export enum FlashState {
 	IDLE,
 	PATCHING,
 	COMPILING,
+	CHECK_SIZE,
 	WAITING_FOR_DFU,
 	FLASHING_ERASING,
 	FLASHING_DOWNLOADING,
@@ -22,10 +23,11 @@ export const FlashStateDisplayStrings: Record<FlashState, string> = {
 	[FlashState.FLASHING_ERASING]: "Removing old firmware...",
 	[FlashState.FLASHING_DOWNLOADING]: "Installing firmware...",
 	[FlashState.DONE]: "Done!",
-	[FlashState.ERROR]: "An error occurred.",
-	[FlashState.CANCELLED]: "Cancelled task.",
+	[FlashState.ERROR]: "An error occurred",
+	[FlashState.CANCELLED]: "Cancelled",
 	[FlashState.RUNNING_SETUP]: "Running initial setup...",
 	[FlashState.UPDATING]: "Updating...",
+	[FlashState.CHECK_SIZE]: "Checking firmware size...",
 };
 
 export const FlashAlertSeverityMap: Record<FlashState, AlertColor | undefined> = {
@@ -40,4 +42,5 @@ export const FlashAlertSeverityMap: Record<FlashState, AlertColor | undefined> =
 	[FlashState.CANCELLED]: "warning",
 	[FlashState.RUNNING_SETUP]: "info",
 	[FlashState.UPDATING]: "info",
+	[FlashState.CHECK_SIZE]: "info",
 }

@@ -8,6 +8,7 @@ export const zKeyboardsConfig = z.record(
     qmkKb: z.string(),
     qmkKm: z.string(),
     dir: z.string(),
+		maxFirmwareSizeBytes: z.number().int(),
   })
 );
 

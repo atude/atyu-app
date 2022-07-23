@@ -60,6 +60,7 @@ const runVerify = (appContext: AppContext): void => {
     setTimeout(() => setAppReadyState(AppReadyState.READY), 1000);
   } catch (e: any) {
     updateLog(setLog, e?.toString() ?? "error occured while parsing JSON");
+		setFlashState(FlashState.ERROR, "There were issues trying to read the config files");
     setAppReadyState(AppReadyState.NOT_READY);
   }
 };

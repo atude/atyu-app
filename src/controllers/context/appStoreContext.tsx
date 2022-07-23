@@ -15,7 +15,9 @@ const defaults: AppStore = {
   enableFirmwareSizeCheck: true,
 };
 
-const appStore = new Store<AppStore>({ defaults });
+// For reading only purposes, we can reference the store directly instead of
+// needing to import the whole context
+export const appStore = new Store<AppStore>({ defaults });
 
 export type AppStoreContext = AppStore & AppStoreFunctions;
 
