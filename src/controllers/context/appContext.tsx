@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
+import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { AtyuConfigMap } from "../../configs/atyuConfig";
 import { KeyboardsConfig } from "../../configs/keyboardConfig";
 import { defaultKeyboardKey } from "../../constants";
@@ -6,77 +6,102 @@ import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 
 export type AppContext = {
-	appReadyState: AppReadyState;
+  appReadyState: AppReadyState;
   keyboard: string;
-	keyboardsConfig: KeyboardsConfig;
-	atyuConfigMap: AtyuConfigMap;
-	flashState: FlashState;
-	flashMessage: string;
-	flashProgress: number;
-	isDoingTask: boolean;
-	log: string[];
-	setAppReadyState: Dispatch<SetStateAction<AppReadyState>>;
-	setKeyboard: Dispatch<SetStateAction<string>>;
-	setKeyboardsConfig: Dispatch<SetStateAction<KeyboardsConfig>>;
-	setAtyuConfigMap: Dispatch<SetStateAction<AtyuConfigMap>>;
-	setFlashState: Dispatch<SetStateAction<FlashState>>;
-	setFlashMessage: Dispatch<SetStateAction<string>>;
-	setFlashProgress: Dispatch<SetStateAction<number>>;
-	setDoingTask:  Dispatch<SetStateAction<boolean>>;
-	setLog:  Dispatch<SetStateAction<string[]>>;
-}
+  keyboardsConfig: KeyboardsConfig;
+  atyuConfigMap: AtyuConfigMap;
+  flashState: FlashState;
+  flashMessage: string;
+  flashProgress: number;
+  isDoingTask: boolean;
+  log: string[];
+  setAppReadyState: Dispatch<SetStateAction<AppReadyState>>;
+  setKeyboard: Dispatch<SetStateAction<string>>;
+  setKeyboardsConfig: Dispatch<SetStateAction<KeyboardsConfig>>;
+  setAtyuConfigMap: Dispatch<SetStateAction<AtyuConfigMap>>;
+  setFlashState: (state: FlashState, msg?: string) => void;
+  setFlashMessage: Dispatch<SetStateAction<string>>;
+  setFlashProgress: Dispatch<SetStateAction<number>>;
+  setDoingTask: Dispatch<SetStateAction<boolean>>;
+  setLog: Dispatch<SetStateAction<string[]>>;
+};
 
 const context = createContext<AppContext>({
-	appReadyState: AppReadyState.LOADING,
-	keyboard: defaultKeyboardKey,
-	keyboardsConfig: {},
-	atyuConfigMap: {},
-	flashState: FlashState.IDLE,
-	flashMessage: "",
-	flashProgress: 0,
-	isDoingTask: false,
-	log: [],
-	setAppReadyState: () => {},
-	setKeyboard: () => {},
-	setKeyboardsConfig: () => {},
-	setAtyuConfigMap: () => {},
-	setFlashState: () => {},
-	setFlashMessage: () => {},
-	setFlashProgress: () => {},
-	setDoingTask: () => {},
-	setLog: () => {},
+  appReadyState: AppReadyState.LOADING,
+  keyboard: defaultKeyboardKey,
+  keyboardsConfig: {},
+  atyuConfigMap: {},
+  flashState: FlashState.IDLE,
+  flashMessage: "",
+  flashProgress: 0,
+  isDoingTask: false,
+  log: [],
+  setAppReadyState: () => {},
+  setKeyboard: () => {},
+  setKeyboardsConfig: () => {},
+  setAtyuConfigMap: () => {},
+  setFlashState: () => {},
+  setFlashMessage: () => {},
+  setFlashProgress: () => {},
+  setDoingTask: () => {},
+  setLog: () => {},
 });
 
+let timer: NodeJS.Timeout;
+
 export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
-	const [appReadyState, setAppReadyState] = useState<AppReadyState>(AppReadyState.LOADING);
+  const [appReadyState, setAppReadyState] = useState<AppReadyState>(AppReadyState.LOADING);
   const [keyboard, setKeyboard] = useState<string>(defaultKeyboardKey);
-	const [keyboardsConfig, setKeyboardsConfig] = useState<KeyboardsConfig>({});
-	const [atyuConfigMap, setAtyuConfigMap] = useState<AtyuConfigMap>({});
+  const [keyboardsConfig, setKeyboardsConfig] = useState<KeyboardsConfig>({});
+  const [atyuConfigMap, setAtyuConfigMap] = useState<AtyuConfigMap>({});
   const [flashState, setFlashState] = useState<FlashState>(FlashState.IDLE);
-	const [flashMessage, setFlashMessage] = useState<string>("");
+  const [flashMessage, setFlashMessage] = useState<string>("");
   const [flashProgress, setFlashProgress] = useState<number>(0);
-	const [isDoingTask, setDoingTask] = useState<boolean>(false);
-	const [log, setLog] = useState<string[]>([]);
+  const [isDoingTask, setDoingTask] = useState<boolean>(false);
+  const [log, setLog] = useState<string[]>([]);
+
+  const timedFlashState = (state: FlashState) =>
+    state === FlashState.DONE || state === FlashState.CANCELLED;
+
+  useEffect(() => {
+    if (timedFlashState(flashState)) {
+			clearTimeout(timer);
+			timer = setTimeout(
+				() => {
+					setFlashState(FlashState.IDLE);
+					setFlashMessage("");
+				},
+				5000
+			);
+    } else {
+			if (timer) {
+				clearTimeout(timer);
+			}
+		}
+  }, [flashState, flashMessage, setFlashState, setFlashMessage]);
 
   const value: AppContext = {
-		appReadyState,
-		setAppReadyState,
-		keyboard,
-		setKeyboard,
-		keyboardsConfig,
-		setKeyboardsConfig,
-		atyuConfigMap,
-		setAtyuConfigMap,
-		flashState,
-		setFlashState,
-		flashMessage,
-		setFlashMessage,
-		flashProgress,
-		setFlashProgress,
-		isDoingTask, 
-		setDoingTask,
-		log,
-		setLog,
+    appReadyState,
+    setAppReadyState,
+    keyboard,
+    setKeyboard,
+    keyboardsConfig,
+    setKeyboardsConfig,
+    atyuConfigMap,
+    setAtyuConfigMap,
+    flashState,
+    setFlashState: (state: FlashState, msg?: string) => {
+      setFlashState(state);
+      setFlashMessage(msg ?? "");
+    },
+    flashMessage,
+    setFlashMessage,
+    flashProgress,
+    setFlashProgress,
+    isDoingTask,
+    setDoingTask,
+    log,
+    setLog,
   };
 
   return <context.Provider value={value}>{children}</context.Provider>;

@@ -11,6 +11,7 @@ export enum FlashState {
 	ERROR,
 	CANCELLED,
 	RUNNING_SETUP,
+	UPDATING,
 };
 
 export const FlashStateDisplayStrings: Record<FlashState, string> = {
@@ -21,9 +22,10 @@ export const FlashStateDisplayStrings: Record<FlashState, string> = {
 	[FlashState.FLASHING_ERASING]: "Removing old firmware...",
 	[FlashState.FLASHING_DOWNLOADING]: "Installing firmware...",
 	[FlashState.DONE]: "Done!",
-	[FlashState.ERROR]: "Error during installation",
-	[FlashState.CANCELLED]: "Cancelled installation",
+	[FlashState.ERROR]: "An error occurred.",
+	[FlashState.CANCELLED]: "Cancelled task.",
 	[FlashState.RUNNING_SETUP]: "Running initial setup...",
+	[FlashState.UPDATING]: "Updating...",
 };
 
 export const FlashAlertSeverityMap: Record<FlashState, AlertColor | undefined> = {
@@ -37,4 +39,5 @@ export const FlashAlertSeverityMap: Record<FlashState, AlertColor | undefined> =
 	[FlashState.ERROR]: "error",
 	[FlashState.CANCELLED]: "warning",
 	[FlashState.RUNNING_SETUP]: "info",
+	[FlashState.UPDATING]: "info",
 }

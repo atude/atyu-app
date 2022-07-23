@@ -13,15 +13,20 @@ const runSetup = (appContext: AppContext): void => {
   const checkCommand = (cmd: ShellString, errMsg?: string) => {
     updateLog(setLog, cmd?.stdout || cmd?.stderr || "");
     if (cmd.code !== 0) {
-      setFlashState(FlashState.ERROR);
-      setFlashMessage(errMsg ?? "");
+      setFlashState(FlashState.ERROR, errMsg);
     }
     return cmd.code === 0;
   };
 
+	// Check for git and qmk existence
+	if (!shell.which("git") || !shell.which("qmk")) {
+		updateLog(setLog, "which git/qmk failed.");
+		setFlashState(FlashState.ERROR, "Couldn't find git or qmk (required for Atyu)");
+		return setAppReadyState(AppReadyState.NOT_READY);
+	}
+
   setAppReadyState(AppReadyState.LOADING);
-  setFlashState(FlashState.RUNNING_SETUP);
-  setFlashMessage("Replacing any existing installations");
+  setFlashState(FlashState.RUNNING_SETUP, "Replacing any existing installations");
 
   if (shell.test("-d", atyuQmkDir)) {
     // Found existing atude/qmk_firmware, so delete qmk files here. Stops the
@@ -73,16 +78,13 @@ const runSetup = (appContext: AppContext): void => {
         if (Number(code) === 0) {
           setAppReadyState(AppReadyState.READY);
           setFlashState(FlashState.DONE);
-          setFlashMessage("");
           updateLog(setLog, "Successfully built test firmware [satisfaction75]");
         } else {
-          setFlashState(FlashState.ERROR);
-          setFlashMessage("Failed to build test firmware");
+          setFlashState(FlashState.ERROR, "Failed to build test firmware");
         }
       });
     } else {
-      setFlashState(FlashState.ERROR);
-      setFlashMessage("Failed to setup atude/qmk_firmware environment");
+      setFlashState(FlashState.ERROR, "Failed to setup atude/qmk_firmware environment");
     }
   });
 

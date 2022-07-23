@@ -49,7 +49,7 @@ const KeyboardFAB = () => {
     <FABBox elevation={0}>
       <FormControl>
         <InputLabel>Keyboard</InputLabel>
-        <Select value={keyboard} label="Keyboard" onChange={(e) => handleChange(e)}>
+        <Select disabled={!canFlash} value={keyboard} label="Keyboard" onChange={(e) => handleChange(e)}>
           {Object.values(keyboardsConfig).map((keyboard) => (
             <MenuItem key={keyboard.key} value={keyboard.key} id={keyboard.key}>
               {keyboard.name}

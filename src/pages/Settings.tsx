@@ -2,6 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import HorizontalBox from "../components/HorizontalBox";
 import { useAppContext } from "../controllers/context/appContext";
 import runSetup from "../functions/commands/runSetup";
+import runSync from "../functions/commands/runSync";
 
 type SettingsItemProps = {
 	heading: string;
@@ -24,9 +25,11 @@ const SettingsItem = (props: SettingsItemProps) => {
 
 const Settings = () => {
 	const appContext = useAppContext();
+	const handleSync = () => runSync(appContext);
 
 	return (
-		<Box>
+		<Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+			<Button variant="contained" sx={{ mb: 4 }} onClick={handleSync}>Fetch Atyu QMK updates</Button>
 			<SettingsItem
 				heading="Run fresh Atyu QMK install"
 				desc="Had a little too much fun in the Atyu QMK folder? Do a fresh install"
