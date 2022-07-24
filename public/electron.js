@@ -5,9 +5,7 @@ const isDev = require('electron-is-dev');
 const Store = require('electron-store');
 
 // Fix mac paths
-if (process.platform !== 'darwin') {
-	process.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
-}
+process.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
 
 // console.log(process.env["PATH"]);
 function createWindow() {

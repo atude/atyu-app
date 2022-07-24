@@ -47,12 +47,15 @@
     "dev": "concurrently -k \"BROWSER=none yarn start\" \"yarn:electron\"",
     "electron": "wait-on tcp:3000 && electron .",
 		"pack": "electron-builder --dir",
-  	"dist": "electron-builder"
+  	"dist": "yarn build && electron-builder"
   },
 	"build": {
 		"appId": "com.atude.atyu",
 		"productName": "Atyu",
 		"copyright": "Copyright © 2021 Mozamel Anwary (atude)",
+		"directories": {
+			"buildResources": "resources"
+		},
 		"mac": {
 			"category": "public.app-category.utilities"
 		}
