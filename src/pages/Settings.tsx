@@ -38,7 +38,7 @@ const Settings = () => {
         heading="Enable firmware size check"
         desc={`
 					Checks firmware size is safe to install to your keyboard. Disabling this can brick your 
-					keyboard and require a hard reset.
+					keyboard and require a hard reset, but will improve install speed, especially on Windows.
 				`.trim()}
         action={
           <Switch checked={enableFirmwareSizeCheck} onChange={toggleEnableFirmwareSizeCheck} />

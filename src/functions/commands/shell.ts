@@ -25,11 +25,6 @@ export const shellExecOptions: ExecOptions & { async: true } = {
 	silent: true,
 };
 
-// Disable popup script on windows. Shouls be fine to run this in async.
-if (!isMac) {
-	shell.exec("qmk config user.hide_welcome=True", shellExecOptions);
-}
-
 // Weird issue where 'which' using exec does not work properly on mac
 export const checkPrereqs = () => {
 	if (isMac) {
