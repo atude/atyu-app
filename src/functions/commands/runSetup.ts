@@ -33,7 +33,8 @@ const runSetup = (appContext: AppContext): void => {
     // Also assures clean installs.
     updateLog(setLog, `Found existing Atyu QMK folder. Deleting ${atyuQmkDir}`);
     if (
-      !checkCommand(shell.rm("-rf", atyuQmkDir), "Couldn't delete existing Atyu QMK installation")
+      // We remove the "/" at the end since windows rm appends a slash at the end.
+      !checkCommand(shell.rm("-rf", atyuQmkDir.slice(0, -1)), "Couldn't delete existing Atyu QMK installation")
     ) {
       return;
     }

@@ -31,14 +31,12 @@ export const shellExecOptions: ExecOptions & { async: true } = {
 	silent: true,
 };
 
-// Weird issue where 'which' using exec does not work properly on mac
 export const checkPrereqs = () => {
 	if (isMac) {
 		return shell.which("git") && shell.which("qmk");
 	} else {
-		// TODO: Test that the qmk msys file exists instead
-		console.log("skipping which git/qmk check on windows");
-		return true;
+		// Test that the qmk msys file exists instead
+		return shell.test("-f", winQmkShellPath);
 	}
 };
 
