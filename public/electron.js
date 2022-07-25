@@ -4,10 +4,6 @@ const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
 const Store = require('electron-store');
 
-// Fix mac paths
-process.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
-
-// console.log(process.env["PATH"]);
 function createWindow() {
 	// Create the browser window.
 	const win = new BrowserWindow({

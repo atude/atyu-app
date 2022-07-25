@@ -4,8 +4,7 @@ import { appStore } from "../../controllers/context/appStoreContext";
 import { AtyuContext } from "../../controllers/context/atyuContext";
 import { runCodegen } from "../codegen";
 import { atyuHConfigFilename, getKeyboardDir } from "../path";
-import { killCmd, updateLog } from "./helpers";
-import { getShell } from "./shellInit";
+import shell, { shellExecOptions, killCmd, updateLog } from "./shell";
 
 const flashCommandState = {
   cancelled: false,
@@ -38,7 +37,6 @@ export const cancelFlash = () => (flashCommandState.cancelled = true);
 const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boolean): void => {
   const { keyboard, keyboardsConfig, setLog, setFlashState, setFlashProgress } = appContext;
   const keyboardConfig = keyboardsConfig[keyboard];
-  const shell = getShell();
 
   if (!keyboardConfig) {
     return setFlashState(FlashState.ERROR, "Could not read keyboard config.");
@@ -66,7 +64,7 @@ const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boole
   // Run qmk flash
   const doFlash = () => {
     setFlashState(FlashState.COMPILING);
-    const cmdFlash = shell.exec(`qmk flash -kb ${qmkKb} -km ${qmkKm}`, { async: true });
+    const cmdFlash = shell.exec(`qmk flash -kb ${qmkKb} -km ${qmkKm}`, shellExecOptions);
 
     // Update state as log changes
     cmdFlash.stdout?.on("data", (data: any) => {
@@ -111,9 +109,7 @@ const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boole
     let sawSizeAfter: boolean = false;
 
     // Compile once to check firmware size
-    const cmdCompile = shell.exec(`qmk compile -kb ${qmkKb} -km ${qmkKm}`, {
-      async: true,
-    });
+    const cmdCompile = shell.exec(`qmk compile -kb ${qmkKb} -km ${qmkKm}`, shellExecOptions);
 
     // Update state as log changes
     cmdCompile.stdout?.on("data", (data: any) => {

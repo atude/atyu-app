@@ -3,13 +3,11 @@ import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
 import { atyuDir, atyuQmkDir } from "../path";
-import { updateLog } from "./helpers";
-import { getShell } from "./shellInit";
+import shell, { checkPrereqs, shellExecOptions, updateLog } from "./shell";
 
 // First time setup
 const runSetup = (appContext: AppContext): void => {
   const { setLog, setFlashState, setFlashMessage, setAppReadyState } = appContext;
-  const shell = getShell();
 
   const checkCommand = (cmd: ShellString, errMsg?: string) => {
     updateLog(setLog, cmd?.stdout || cmd?.stderr || "");
@@ -19,15 +17,9 @@ const runSetup = (appContext: AppContext): void => {
     return cmd.code === 0;
   };
 
-  console.log(shell);
-  console.log(shell.pwd());
-  console.log(shell.cd(atyuQmkDir).code);
-  console.log(shell.which("git"));
-  console.log(shell.which("qmk"));
-
   // Check for git and qmk existence
-  if (!shell.which("git") || !shell.which("qmk")) {
-    updateLog(setLog, "which git/qmk failed.");
+  if (!checkPrereqs()) {
+    updateLog(setLog, `which git/qmk failed`);
     setFlashState(FlashState.ERROR, "Couldn't find git or qmk (required for Atyu)");
     return setAppReadyState(AppReadyState.NOT_READY);
   }
@@ -60,9 +52,7 @@ const runSetup = (appContext: AppContext): void => {
   setFlashMessage("Downloading and setting up Atyu QMK (this can take a few minutes)");
   const setupQmkCmd = shell.exec(
     `qmk setup atude/qmk_firmware --home ./qmk_firmware --yes`,
-    {
-      async: true,
-    }
+    shellExecOptions
   );
 
   setupQmkCmd.stdout?.on("data", (data: any) => updateLog(setLog, data.toString()));
@@ -80,9 +70,7 @@ const runSetup = (appContext: AppContext): void => {
       );
       const testBuildCmd = shell.exec(
         `qmk compile -kb cannonkeys/satisfaction75/rev1 -km via`,
-        {
-          async: true,
-        }
+        shellExecOptions
       );
       testBuildCmd.stdout?.on("data", (data: any) => updateLog(setLog, data.toString()));
       testBuildCmd.stderr?.on("data", (data: any) => updateLog(setLog, data.toString()));

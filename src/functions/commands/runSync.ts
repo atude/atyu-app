@@ -1,9 +1,8 @@
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
 import { atyuQmkDir } from "../path";
-import { updateLog } from "./helpers";
 import runVerify from "./runVerify";
-import { getShell } from "./shellInit";
+import shell, { shellExecOptions, updateLog } from "./shell";
 
 // Pull updates from repo
 const runSync = (appContext: AppContext) => {
@@ -12,7 +11,6 @@ const runSync = (appContext: AppContext) => {
     setFlashState,
 		setDoingTask,
   } = appContext;
-  const shell = getShell();
 	let alreadyUpdated = false;
 	setFlashState(FlashState.UPDATING, "Checking for updates");
 
@@ -21,7 +19,7 @@ const runSync = (appContext: AppContext) => {
 	}
 
 	setDoingTask(true);
-	const pullCmd = shell.exec("git pull", { async: true });
+	const pullCmd = shell.exec("git pull", shellExecOptions);
 
 	pullCmd.stdout?.on("data", (data: any) => {
 		const dataString = data.toString();
