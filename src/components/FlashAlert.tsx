@@ -17,6 +17,7 @@ import {
 } from "../constants/types/flashState";
 import { useAppContext } from "../controllers/context/appContext";
 import { cancelFlash } from "../functions/commands/runFlash";
+import HorizontalBox from "./HorizontalBox";
 
 const AlertStyled = styled(Alert)`
   top: 0;
@@ -100,8 +101,8 @@ const FlashAlert = () => {
 
   return !flashSeverity ? (
     <AlertStyled severity="info" icon={false}>
-      <AlertTitle>Atyu | OLED mods for QMK keyboards</AlertTitle>
-      {versionString}
+			<AlertTitle>Atyu | OLED mods for QMK keyboards</AlertTitle>
+			{versionString}
       {getLogComponent()}
     </AlertStyled>
   ) : (

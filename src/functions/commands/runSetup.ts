@@ -32,11 +32,13 @@ const runSetup = (appContext: AppContext): void => {
     // bug where 'qmk setup' will repeatedly install nested 'qmk_firmware' folders.
     // Also assures clean installs.
     updateLog(setLog, `Found existing Atyu QMK folder. Deleting ${atyuQmkDir}`);
-    if (
-      // We remove the "/" at the end since windows rm appends a slash at the end.
-      !checkCommand(shell.rm("-rf", atyuQmkDir.slice(0, -1)), "Couldn't delete existing Atyu QMK installation")
-    ) {
-      return;
+		// We remove the "/" at the end since windows rm appends a slash at the end.
+		const rmCmd = shell.rm("-rf", atyuQmkDir.slice(0, -1));
+    if (rmCmd.code !== 0) {
+			// Lets just assume rm went through fine due to weirdness with win perms
+			updateLog(setLog, "There was an issue with removing the old qmk directory");
+			updateLog(setLog, "If you are on Windows this is probably expected");
+			updateLog(setLog, "Continuing anyway LMAO...");
     }
   }
 

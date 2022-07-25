@@ -8,7 +8,6 @@ const os: typeof _os = window.require("os");
 const path: typeof _path = window.require("path");
 
 const isMac = os.platform() === "darwin";
-// const winNodePath = path.join("C:", "Program Files", "nodejs", "node.exe");
 const winQmkShellPath = path.join("C:", "QMK_MSYS", "shell_connector.cmd");
 
 // Fix mac path
@@ -33,6 +32,7 @@ export const shellExecOptions: ExecOptions & { async: true } = {
 
 export const checkPrereqs = () => {
 	if (isMac) {
+		// Test git and qmk exists
 		return shell.which("git") && shell.which("qmk");
 	} else {
 		// Test that the qmk msys file exists instead

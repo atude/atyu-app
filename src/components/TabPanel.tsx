@@ -56,6 +56,17 @@ const BigLoading = styled(CircularProgress)`
   margin: 24px;
 `;
 
+// const AtyuImage = styled.img`
+// 	position: absolute;
+// 	bottom: 0;
+// 	left: 0;
+// 	width: 48px;
+// 	height: 48px;
+// 	padding: 2px;
+// 	margin-bottom: 28px;
+// 	margin-left: 28px;
+// `;
+
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -127,6 +138,7 @@ export default function VerticalTabs() {
           </TabPanel>
         </AtyuConfigProvider>
       )}
+			{/* <AtyuImage src="/in_app_icon.png" alt="atyu icon" /> */}
     </Box>
   );
 }
