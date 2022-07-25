@@ -8,27 +8,26 @@ const os: typeof _os = window.require("os");
 const path: typeof _path = window.require("path");
 
 const isMac = os.platform() === "darwin";
+const winNodePath = path.join("C:", "Program Files", "nodejs", "node.exe");
+const winQmkShellPath = path.join("C:", "QMK_MSYS", "shell_connector.cmd");
 
-// Fix paths
+// Fix mac path
 if (isMac) {
 	shell.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
-} else {
-	// TODO: Windows path
 }
 
-console.log(shell.which("node"));
-console.log("is mac: " + isMac);
-
-shell.config.execPath = isMac ? 
-	String(shell.which("node")) : 
-	path.join("C:", "Program Files", "nodejs", "node.exe");
-
-// TODO: disable popup script on windows
+shell.config.execPath = isMac ? String(shell.which("node")) : winNodePath;
 
 export const shellExecOptions: ExecOptions & { async: true } = {
 	async: true,
 	// Specify QMK MSYS shell on windows. Use default shell on mac
-	shell: isMac ? shell.env["SHELL"] : "C://TODO",
+	shell: isMac ? shell.env["SHELL"] : winQmkShellPath,
+	silent: true,
+};
+
+// Disable popup script on windows. Shouls be fine to run this in async.
+if (!isMac) {
+	shell.exec("qmk config user.hide_welcome=True", shellExecOptions);
 }
 
 // Weird issue where 'which' using exec does not work properly on mac
