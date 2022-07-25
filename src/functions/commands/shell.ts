@@ -37,6 +37,7 @@ export const checkPrereqs = () => {
 		return shell.which("git") && shell.which("qmk");
 	} else {
 		// TODO: Test that the qmk msys file exists instead
+		console.log("skipping which git/qmk check on windows");
 		return true;
 	}
 };
