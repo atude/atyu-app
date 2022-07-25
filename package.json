@@ -49,7 +49,8 @@
     "electron": "wait-on tcp:3000 && electron .",
     "pack": "electron-builder --dir",
     "builddist": "yarn build && yarn dist",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+		"builddistall": "yarn build && electron-builder -mw"
   },
   "build": {
     "appId": "com.atude.atyu",
