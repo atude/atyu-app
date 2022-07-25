@@ -8,7 +8,7 @@ const os: typeof _os = window.require("os");
 const path: typeof _path = window.require("path");
 
 const isMac = os.platform() === "darwin";
-const winNodePath = path.join("C:", "Program Files", "nodejs", "node.exe");
+// const winNodePath = path.join("C:", "Program Files", "nodejs", "node.exe");
 const winQmkShellPath = path.join("C:", "QMK_MSYS", "shell_connector.cmd");
 
 // Fix mac path
@@ -16,7 +16,13 @@ if (isMac) {
 	shell.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
 }
 
-shell.config.execPath = isMac ? String(shell.which("node")) : winNodePath;
+shell.config.execPath = String(shell.which("node"));
+
+console.log("shell.config.execPath: " + shell.config.execPath);
+console.log("shell env path: " + shell.env["PATH"]);
+// console.log("winnodepath: " + winNodePath);
+console.log("is mac?: " + isMac);
+console.log("node: " + shell.which("node"));
 
 export const shellExecOptions: ExecOptions & { async: true } = {
 	async: true,
@@ -30,9 +36,10 @@ export const checkPrereqs = () => {
 	if (isMac) {
 		return shell.which("git") && shell.which("qmk");
 	} else {
-		const gitExists = shell.exec("which git", { ...shellExecOptions, async: false }).code === 0;
-		const qmkExists = shell.exec("which qmk", { ...shellExecOptions, async: false }).code === 0;
-		return gitExists && qmkExists;
+		const gitExists = shell.exec("which git", { ...shellExecOptions, async: false });
+		const qmkExists = shell.exec("which qmk", { ...shellExecOptions, async: false });
+		console.log(gitExists, qmkExists);
+		return gitExists.code === 0 && qmkExists.code === 0;
 	}
 };
 
