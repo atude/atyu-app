@@ -113,7 +113,7 @@ const Configurator = () => {
           </OledModeBox>
         );
       })}
-      <Button onClick={() => console.log(runCodegen(context))}>codegen test</Button>
+      {/* <Button onClick={() => console.log(runCodegen(context))}>codegen test</Button> */}
     </Box>
   );
 };
