@@ -48,7 +48,8 @@
     "dev": "concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn:electron\"",
     "electron": "wait-on tcp:3000 && electron .",
     "pack": "electron-builder --dir",
-    "dist": "yarn build && electron-builder"
+    "builddist": "yarn build && yarn dist",
+    "dist": "electron-builder"
   },
   "build": {
     "appId": "com.atude.atyu",
