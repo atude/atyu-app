@@ -36,10 +36,8 @@ export const checkPrereqs = () => {
 	if (isMac) {
 		return shell.which("git") && shell.which("qmk");
 	} else {
-		const gitExists = shell.exec("which git", { ...shellExecOptions, async: false });
-		const qmkExists = shell.exec("which qmk", { ...shellExecOptions, async: false });
-		console.log(gitExists, qmkExists);
-		return gitExists.code === 0 && qmkExists.code === 0;
+		// TODO: Test that the qmk msys file exists instead
+		return true;
 	}
 };
 
