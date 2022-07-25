@@ -48,9 +48,9 @@ export const updateLog = (setLog: Dispatch<SetStateAction<string[]>>, dataString
 };
 
 export const killCmd = (shellCmd: any) => {
-  shellCmd.stdout.destroy();
-  shellCmd.stderr.destroy();
-  shellCmd.kill("SIGINT");
+	shellCmd.stdout.destroy();
+	shellCmd.stderr.destroy();
+	shellCmd.kill("SIGINT");
 };
 
 export default shell;
