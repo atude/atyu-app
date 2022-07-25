@@ -1,7 +1,9 @@
 import { atyuSpecialKeys } from "./atyuSpecialKeys";
 import { AtyuOptionRadioNumber } from "../configs/atyuConfig";
 
-export const versionString = "v0.1 alpha"
+const { version } = window.require("../../package.json");
+
+export const versionString = `${version ?? "--"} beta`;
 export const defaultKeyboardKey = "satisfaction75";
 export const defaultEmptyGif = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 export const setupHelpText = `
