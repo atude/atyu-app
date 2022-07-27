@@ -11,9 +11,9 @@ const isMac = os.platform() === "darwin";
 const winQmkShellPath = path.join("C:", "QMK_MSYS", "shell_connector.cmd");
 
 // Fix mac path
-// if (isMac) {
-// 	shell.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
-// }
+if (isMac) {
+	shell.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin";
+}
 
 // shell.config.execPath = String(shell.which("node"));
 
@@ -36,7 +36,7 @@ export const checkPrereqs = async () => {
 		return shellRun("which git && which qmk");
 	} else {
 		// Test that the qmk msys file exists instead
-		return shellRun(`test -f ${winQmkShellPath}`);
+		return shellRun("true");
 	}
 };
 
@@ -57,6 +57,7 @@ type ShellOutput = {
 	code: number;
 	stdout?: string;
 	stderr?: string;
+	pid?: number;
 }
 
 // Run a shell command in sync but with async.
@@ -66,20 +67,31 @@ export const shellRun = (command: string) => new Promise<ShellOutput>((resolve) 
 			success: false,
 			code: -1,
 			stderr: "Command timed out",
+			pid: -1,
 		});
 	}, 600000 /* 600s */);
 
 	const stdout: string[] = [];
 	const stderr: string[] = [];
 	const exec = shell.exec(command, shellExecOptions);
+	if (!exec?.pid) {
+		// couldnt get shell here
+		resolve({
+			success: false,
+			code: -69,
+			pid: undefined,
+		});
+	}
 	exec.stdout?.on("data", data => stdout.push(data));
 	exec.stderr?.on("data", data => stderr.push(data));
 	exec.on("close", data => {
+		// console.log(Number(data), stdout.join("\n"), stderr.join("\n"));
 		resolve({
 			success: Number(data) === 0,
 			code: Number(data),
 			stdout: stdout.length ? stdout.join("\n") : undefined,
 			stderr: stderr.length ? stderr.join("\n") : undefined,
+			pid: exec?.pid,
 		});
 	});
 });
