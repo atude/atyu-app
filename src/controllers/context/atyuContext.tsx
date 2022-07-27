@@ -17,10 +17,12 @@ export const AtyuConfigProvider = ({ children }: { children?: React.ReactNode })
   const [state, dispatch] = useReducer(reducer, {});
 
 	useEffect(() => {
-		const newState = generateInitialState(atyuConfigMap[keyboard]);
-		dispatch({ type: "CHANGE_KEYBOARD", payload: { newState }});
+		if (atyuConfigMap[keyboard]?.length) {
+			const newState = generateInitialState(atyuConfigMap[keyboard]);
+			dispatch({ type: "CHANGE_KEYBOARD", payload: { newState }});
+		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [keyboard]);
+	}, [atyuConfigMap, keyboard]);
 
   const value: AtyuContext = {
     ...state,

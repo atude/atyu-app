@@ -60,7 +60,6 @@ type ShellOutput = {
 }
 
 // Run a shell command in sync but with async.
-// Returns a boolean indicating success
 export const shellRun = (command: string) => new Promise<ShellOutput>((resolve) => {
 	setTimeout(() => {
 		resolve({
