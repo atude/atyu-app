@@ -11,13 +11,13 @@ const isMac = os.platform() === "darwin";
 const winQmkShellPath = path.join("C:", "QMK_MSYS", "shell_connector.cmd");
 
 // Fix mac path
-if (isMac) {
-	shell.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
-}
+// if (isMac) {
+// 	shell.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin";
+// }
 
-shell.config.execPath = String(shell.which("node"));
+// shell.config.execPath = String(shell.which("node"));
 
-console.log("shell.config.execPath: " + shell.config.execPath);
+// console.log("shell.config.execPath: " + shell.config.execPath);
 console.log("shell env path: " + shell.env["PATH"]);
 // console.log("winnodepath: " + winNodePath);
 console.log("is mac?: " + isMac);
@@ -30,13 +30,13 @@ export const shellExecOptions: ExecOptions & { async: true } = {
 	silent: true,
 };
 
-export const checkPrereqs = () => {
+export const checkPrereqs = async () => {
 	if (isMac) {
 		// Test git and qmk exists
-		return shell.which("git") && shell.which("qmk");
+		return shellRun("which git && which qmk");
 	} else {
 		// Test that the qmk msys file exists instead
-		return shell.test("-f", winQmkShellPath);
+		return shellRun(`test -f ${winQmkShellPath}`);
 	}
 };
 
@@ -46,10 +46,43 @@ export const updateLog = (setLog: Dispatch<SetStateAction<string[]>>, dataString
 	console.log(dataString);
 };
 
-export const killCmd = (shellCmd: any) => {
+export const killAsyncCmd = (shellCmd: any) => {
 	shellCmd.stdout.destroy();
 	shellCmd.stderr.destroy();
 	shellCmd.kill("SIGINT");
 };
+
+type ShellOutput = {
+	success: boolean;
+	code: number;
+	stdout?: string;
+	stderr?: string;
+}
+
+// Run a shell command in sync but with async.
+// Returns a boolean indicating success
+export const shellRun = (command: string) => new Promise<ShellOutput>((resolve) => {
+	setTimeout(() => {
+		resolve({
+			success: false,
+			code: -1,
+			stderr: "Command timed out",
+		});
+	}, 600000 /* 600s */);
+
+	const stdout: string[] = [];
+	const stderr: string[] = [];
+	const exec = shell.exec(command, shellExecOptions);
+	exec.stdout?.on("data", data => stdout.push(data));
+	exec.stderr?.on("data", data => stderr.push(data));
+	exec.on("close", data => {
+		resolve({
+			success: Number(data) === 0,
+			code: Number(data),
+			stdout: stdout.length ? stdout.join("\n") : undefined,
+			stderr: stderr.length ? stderr.join("\n") : undefined,
+		});
+	});
+});
 
 export default shell;

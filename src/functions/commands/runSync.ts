@@ -14,12 +14,8 @@ const runSync = (appContext: AppContext) => {
 	let alreadyUpdated = false;
 	setFlashState(FlashState.UPDATING, "Checking for updates");
 
-	if (shell.cd(atyuQmkDir).code !== 0) {
-		return setFlashState(FlashState.ERROR, "Failed to pull updates; something wrong with git?");
-	}
-
 	setDoingTask(true);
-	const pullCmd = shell.exec("git pull", shellExecOptions);
+	const pullCmd = shell.exec(`cd ${atyuQmkDir} && git pull`, shellExecOptions);
 
 	pullCmd.stdout?.on("data", (data: any) => {
 		const dataString = data.toString();

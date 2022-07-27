@@ -1,10 +1,9 @@
 // import { AccessTime, Gif, Pets, ViewComfyRounded } from "@mui/icons-material";
 import styled from "@emotion/styled";
-import { Alert, Box, Button, Switch, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Switch, Typography, useTheme } from "@mui/material";
 import MultiselectBooleanComponent from "../components/configurator/MultiselectBooleanComponent";
 import { atyuValue } from "../functions/configurator";
 import { AtyuChildConfig } from "../configs/atyuConfig";
-import { runCodegen } from "../functions/codegen";
 import { useAtyuContext } from "../controllers/context/atyuContext";
 import SwitchComponent from "../components/configurator/SwitchComponent";
 import { exhaustSwitch } from "../functions/generic";
@@ -70,9 +69,9 @@ const Configurator = () => {
   return (
     <Box>
       <Typography color="primary" variant="h5" sx={{ mb: "18px" }}>
-        Configure OLED modes
+        OLED Options
       </Typography>
-      {config.map((configSection) => {
+      {!!config?.length && config.map((configSection) => {
         const { name, desc, key, configurable, children, enabledByDefault } = configSection;
         const isEnabled = atyuValue(context[key], enabledByDefault);
 

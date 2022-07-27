@@ -4,7 +4,7 @@ import { appStore } from "../../controllers/context/appStoreContext";
 import { AtyuContext } from "../../controllers/context/atyuContext";
 import { runCodegen } from "../codegen";
 import { atyuHConfigFilename, getKeyboardDir } from "../path";
-import shell, { shellExecOptions, killCmd, updateLog } from "./shell";
+import shell, { shellExecOptions, killAsyncCmd, updateLog, shellRun } from "./shell";
 
 const flashCommandState = {
   cancelled: false,
@@ -34,7 +34,11 @@ const attemptParseFirmwareSize = (dataString: string): undefined | number => {
 export const cancelFlash = () => (flashCommandState.cancelled = true);
 
 // Codegen, patch and install to kb
-const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boolean): void => {
+const runFlash = async (
+  appContext: AppContext,
+  context: AtyuContext,
+  onlyPatch: boolean
+): Promise<void> => {
   const { keyboard, keyboardsConfig, setLog, setFlashState, setFlashProgress } = appContext;
   const keyboardConfig = keyboardsConfig[keyboard];
 
@@ -49,11 +53,16 @@ const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boole
 
   // Patch firmware; copy to qmk folder
   setFlashState(FlashState.PATCHING);
-  if (shell.cd(keyboardDir).code !== 0) {
-    updateLog(setLog, `Couldn't go into directory ${keyboardDir}`);
-    return setFlashState(FlashState.ERROR, "Failed to save changes to Atyu QMK folder");
+
+  // cd and save file
+	// TODO: this config code might need to escape chars like ""
+  const runSave = await shellRun(
+    `cd ${keyboardDir} && echo "${configCode}" > ${atyuHConfigFilename}`
+  );
+  if (!runSave.success) {
+    updateLog(setLog, `Couldn't save code to ${atyuHConfigFilename}`);
+    return setFlashState(FlashState.ERROR, "Failed to save changes to Atyu QMK config");
   }
-	shell.echo(configCode).to(atyuHConfigFilename);
   updateLog(setLog, "Saved file.");
 
   // Save only; dont flash to keyboard
@@ -64,14 +73,17 @@ const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boole
   // Run qmk flash
   const doFlash = () => {
     setFlashState(FlashState.COMPILING);
-    const cmdFlash = shell.exec(`qmk flash -kb ${qmkKb} -km ${qmkKm}`, shellExecOptions);
+    const cmdFlash = shell.exec(
+      `cd ${keyboardDir} && qmk flash -kb ${qmkKb} -km ${qmkKm}`,
+      shellExecOptions
+    );
 
     // Update state as log changes
     cmdFlash.stdout?.on("data", (data: any) => {
       const dataString: string = data.toString();
       updateLog(setLog, dataString);
       if (flashCommandState.cancelled) {
-        killCmd(cmdFlash);
+        killAsyncCmd(cmdFlash);
       }
       if (dataString === ".") {
         setFlashState(FlashState.WAITING_FOR_DFU, "Please press the RESET key on your keyboard");
@@ -109,7 +121,7 @@ const runFlash = (appContext: AppContext, context: AtyuContext, onlyPatch: boole
     let sawSizeAfter: boolean = false;
 
     // Compile once to check firmware size
-    const cmdCompile = shell.exec(`qmk compile -kb ${qmkKb} -km ${qmkKm}`, shellExecOptions);
+    const cmdCompile = shell.exec(`cd ${keyboardDir} && qmk compile -kb ${qmkKb} -km ${qmkKm}`, shellExecOptions);
 
     // Update state as log changes
     cmdCompile.stdout?.on("data", (data: any) => {

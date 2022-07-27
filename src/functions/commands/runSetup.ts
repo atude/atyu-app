@@ -1,24 +1,19 @@
-import { ShellString } from "shelljs";
 import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
 import { atyuDir, atyuQmkDir } from "../path";
-import shell, { checkPrereqs, shellExecOptions, updateLog } from "./shell";
+import shell, { checkPrereqs, shellExecOptions, shellRun, updateLog } from "./shell";
 
 // First time setup
-const runSetup = (appContext: AppContext): void => {
+const runSetup = async (appContext: AppContext): Promise<void> => {
   const { setLog, setFlashState, setFlashMessage, setAppReadyState } = appContext;
 
-  const checkCommand = (cmd: ShellString, errMsg?: string) => {
-    updateLog(setLog, cmd?.stdout || cmd?.stderr || "");
-    if (cmd.code !== 0) {
-      setFlashState(FlashState.ERROR, errMsg);
-    }
-    return cmd.code === 0;
-  };
-
   // Check for git and qmk existence
-  if (!checkPrereqs()) {
+	const hasPrereqs = await checkPrereqs();
+  if (!hasPrereqs.success) {
+		if (hasPrereqs.stderr) {
+			updateLog(setLog, hasPrereqs.stderr);
+		}
     updateLog(setLog, `which git/qmk failed`);
     setFlashState(FlashState.ERROR, "Couldn't find git or qmk (required for Atyu)");
     return setAppReadyState(AppReadyState.NOT_READY);
@@ -27,34 +22,35 @@ const runSetup = (appContext: AppContext): void => {
   setAppReadyState(AppReadyState.LOADING);
   setFlashState(FlashState.RUNNING_SETUP, "Replacing any existing installations");
 
-  if (shell.test("-d", atyuQmkDir)) {
+	const testAtyuQmkDir = await shellRun(`test -d ${atyuQmkDir}`);
+  if (testAtyuQmkDir.success) {
     // Found existing atude/qmk_firmware, so delete qmk files here. Stops the
     // bug where 'qmk setup' will repeatedly install nested 'qmk_firmware' folders.
     // Also assures clean installs.
     updateLog(setLog, `Found existing Atyu QMK folder. Deleting ${atyuQmkDir}`);
-		// We remove the "/" at the end since windows rm appends a slash at the end.
-		const rmCmd = shell.rm("-rf", atyuQmkDir.slice(0, -1));
-    if (rmCmd.code !== 0) {
-			// Lets just assume rm went through fine due to weirdness with win perms
+		const rmQmkDir = await shellRun(`rm -rf ${atyuQmkDir}`);
+    if (!rmQmkDir.success) {
 			updateLog(setLog, "There was an issue with removing the old qmk directory");
-			updateLog(setLog, "If you are on Windows this is probably expected");
-			updateLog(setLog, "Continuing anyway LMAO...");
+			updateLog(setLog, `You can try manually deleting ${atyuQmkDir} instead`);
+			setFlashState(FlashState.ERROR, "Couldn't remove old Atyu QMK files");
     }
   }
 
   // Make dir
   setFlashMessage("Creating Atyu files");
-  if (!checkCommand(shell.mkdir("-p", atyuDir), "Couldn't create folder for setup")) return;
+	const mkdirCmd = await shellRun(`mkdir -p ${atyuDir}`);
+  if (!mkdirCmd.success) {
+		updateLog(setLog, "Couldn't create folder for setup");
+		console.log(mkdirCmd.stderr);
+		setAppReadyState(AppReadyState.NOT_READY);
+		return setFlashState(FlashState.ERROR, "Couldn't create folder for setup");
+	}
   updateLog(setLog, `Successfully created ${atyuDir}`);
-
-  // Cd into dir
-  if (!checkCommand(shell.cd(atyuDir), "Couldn't go into Atyu folder")) return;
-  updateLog(setLog, `Successfully moved into ${atyuDir}`);
 
   // Setup atude/qmk_firmware
   setFlashMessage("Downloading and setting up Atyu QMK (this can take a few minutes)");
   const setupQmkCmd = shell.exec(
-    `qmk setup atude/qmk_firmware --home ./qmk_firmware --yes`,
+    `cd ${atyuDir} && qmk setup atude/qmk_firmware --home ./qmk_firmware --yes`,
     shellExecOptions
   );
 
@@ -66,13 +62,11 @@ const runSetup = (appContext: AppContext): void => {
       updateLog(setLog, "Successfully ran qmk setup (using atude/qmk_firmware)");
 
       // Do a test build using `satisfaction75`
-      if (!checkCommand(shell.cd(atyuQmkDir), "Couldn't go into Atyu QMK folder")) return;
-
       setFlashMessage(
         "Verifying installation by building test firmware (this can *also* take a few minutes)"
       );
       const testBuildCmd = shell.exec(
-        `qmk compile -kb cannonkeys/satisfaction75/rev1 -km via`,
+        `cd ${atyuQmkDir} && qmk compile -kb cannonkeys/satisfaction75/rev1 -km via`,
         shellExecOptions
       );
       testBuildCmd.stdout?.on("data", (data: any) => updateLog(setLog, data.toString()));
@@ -91,8 +85,6 @@ const runSetup = (appContext: AppContext): void => {
       setFlashState(FlashState.ERROR, "Failed to setup atude/qmk_firmware environment");
     }
   });
-
-  return;
 };
 
 export default runSetup;
