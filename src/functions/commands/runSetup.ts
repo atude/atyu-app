@@ -1,7 +1,7 @@
 import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
-import { atyuDir, atyuQmkDir } from "../path";
+import { atyuQmkDir } from "../path";
 import shell, { checkPrereqs, shellExecOptions, shellRun, updateLog } from "./shell";
 
 // First time setup
@@ -22,35 +22,20 @@ const runSetup = async (appContext: AppContext): Promise<void> => {
   setAppReadyState(AppReadyState.LOADING);
   setFlashState(FlashState.RUNNING_SETUP, "Replacing any existing installations");
 
-	const testAtyuQmkDir = await shellRun(`test -d ${atyuQmkDir}`);
-  if (testAtyuQmkDir.success) {
-    // Found existing atude/qmk_firmware, so delete qmk files here. Stops the
-    // bug where 'qmk setup' will repeatedly install nested 'qmk_firmware' folders.
-    // Also assures clean installs.
-    updateLog(setLog, `Found existing Atyu QMK folder. Deleting ${atyuQmkDir}`);
-		const rmQmkDir = await shellRun(`rm -rf ${atyuQmkDir}`);
-    if (!rmQmkDir.success) {
-			updateLog(setLog, "There was an issue with removing the old qmk directory");
-			updateLog(setLog, `You can try manually deleting ${atyuQmkDir} instead`);
-			setFlashState(FlashState.ERROR, "Couldn't remove old Atyu QMK files");
-    }
-  }
-
-  // Make dir
-  setFlashMessage("Creating Atyu files");
-	const mkdirCmd = await shellRun(`mkdir -p ${atyuDir}`);
-  if (!mkdirCmd.success) {
-		updateLog(setLog, "Couldn't create folder for setup");
-		console.log(mkdirCmd.stderr);
-		setAppReadyState(AppReadyState.NOT_READY);
-		return setFlashState(FlashState.ERROR, "Couldn't create folder for setup");
+    // Delete old wmk files here. Stops the bug where 'qmk setup' will repeatedly install 
+		// nested 'qmk_firmware' folders. Also assures clean installs.
+	updateLog(setLog, `Deleting old ${atyuQmkDir} if it exists`);
+	const rmAndMkDirQmkDir = await shellRun(`rm -rf ${atyuQmkDir}`);
+	if (!rmAndMkDirQmkDir.success) {
+		updateLog(setLog, "There was an issue with removing the old qmk directory");
+		updateLog(setLog, `You can try manually deleting ${atyuQmkDir} instead`);
+		setFlashState(FlashState.ERROR, "Couldn't remove old Atyu QMK files");
 	}
-  updateLog(setLog, `Successfully created ${atyuDir}`);
 
   // Setup atude/qmk_firmware
   setFlashMessage("Downloading and setting up Atyu QMK (this can take a few minutes)");
   const setupQmkCmd = shell.exec(
-    `cd ${atyuDir} && qmk setup atude/qmk_firmware --home ./qmk_firmware --yes`,
+    `qmk clone atude/qmk_firmware ${atyuQmkDir}`,
     shellExecOptions
   );
 
@@ -59,7 +44,7 @@ const runSetup = async (appContext: AppContext): Promise<void> => {
   setupQmkCmd.on("close", (code: any) => {
     updateLog(setLog, `Finished with code ${Number(code)}`);
     if (Number(code) === 0) {
-      updateLog(setLog, "Successfully ran qmk setup (using atude/qmk_firmware)");
+      updateLog(setLog, "Successfully ran setup qmk (using atude/qmk_firmware)");
 
       // Do a test build using `satisfaction75`
       setFlashMessage(

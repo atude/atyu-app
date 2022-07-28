@@ -86,6 +86,7 @@ function TabPanel(props: TabPanelProps) {
 
 export default function VerticalTabs() {
   const appContext = useAppContext();
+	const { appReadyState, atyuConfigMap } = appContext;
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -93,14 +94,16 @@ export default function VerticalTabs() {
   };
 
   useEffect(() => {
-    runVerify(appContext);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+		if (!Object.keys(atyuConfigMap).length) {
+			runVerify(appContext);
+		}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appReadyState, atyuConfigMap]);
 
   return (
     <Box sx={{ display: "flex", marginTop: "100px", overflowY: "scroll" }}>
-      {appContext.appReadyState === AppReadyState.LOADING && <BigLoading />}
-      {appContext.appReadyState === AppReadyState.NOT_READY && (
+      {appReadyState === AppReadyState.LOADING && <BigLoading />}
+      {appReadyState === AppReadyState.NOT_READY && (
         <SetupBox>
           <HorizontalBox sx={{ mb: 4 }}>
             <Typography variant="h6" sx={{ mr: 1 }}>
@@ -115,7 +118,7 @@ export default function VerticalTabs() {
           </Button>
         </SetupBox>
       )}
-      {appContext.appReadyState === AppReadyState.READY && (
+      {appReadyState === AppReadyState.READY && (
         <AtyuConfigProvider>
           <FixedTabs
             orientation="vertical"

@@ -42,7 +42,7 @@ export const checkPrereqs = async () => {
 
 // Add log in reverse order for printing purposes
 export const updateLog = (setLog: Dispatch<SetStateAction<string[]>>, dataString: string) => {
-	setLog((existingLog) => [dataString, ...existingLog]);
+	setLog((existingLog) => [`=> ${dataString}`, ...existingLog]);
 	console.log(dataString);
 };
 
@@ -61,7 +61,7 @@ type ShellOutput = {
 }
 
 // Run a shell command in sync but with async.
-export const shellRun = (command: string) => new Promise<ShellOutput>((resolve) => {
+export const shellRun = (command: string, dontUseQmkShell?: boolean) => new Promise<ShellOutput>((resolve) => {
 	setTimeout(() => {
 		resolve({
 			success: false,
@@ -73,7 +73,11 @@ export const shellRun = (command: string) => new Promise<ShellOutput>((resolve) 
 
 	const stdout: string[] = [];
 	const stderr: string[] = [];
-	const exec = shell.exec(command, shellExecOptions);
+	const exec = shell.exec(command, {
+		...shellExecOptions,
+		// Dont use QMK MSYS shell on windows if flag
+		...(dontUseQmkShell && !isMac && { shell: undefined })
+	});
 	if (!exec?.pid) {
 		// couldnt get shell here
 		resolve({
