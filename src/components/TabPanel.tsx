@@ -86,7 +86,7 @@ function TabPanel(props: TabPanelProps) {
 
 export default function VerticalTabs() {
   const appContext = useAppContext();
-	const { appReadyState, atyuConfigMap } = appContext;
+	const { appReadyState } = appContext;
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -94,11 +94,9 @@ export default function VerticalTabs() {
   };
 
   useEffect(() => {
-		if (!Object.keys(atyuConfigMap).length) {
-			runVerify(appContext);
-		}
+		runVerify(appContext);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [atyuConfigMap]);
+  }, []);
 
   return (
     <Box sx={{ display: "flex", marginTop: "100px", overflowY: "scroll" }}>

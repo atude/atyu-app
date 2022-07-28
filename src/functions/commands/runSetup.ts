@@ -2,6 +2,7 @@ import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
 import { atyuQmkDir } from "../path";
+import runVerify from "./runVerify";
 import shell, { checkPrereqs, shellExecOptions, shellRun, updateLog } from "./shell";
 
 // First time setup
@@ -59,9 +60,9 @@ const runSetup = async (appContext: AppContext): Promise<void> => {
       testBuildCmd.on("close", (code: any) => {
         updateLog(setLog, `Finished with code ${Number(code)}`);
         if (Number(code) === 0) {
-          setAppReadyState(AppReadyState.READY);
           setFlashState(FlashState.DONE);
           updateLog(setLog, "Successfully built test firmware [satisfaction75]");
+					runVerify(appContext);
         } else {
           setFlashState(FlashState.ERROR, "Failed to build test firmware");
         }
