@@ -17,7 +17,6 @@ import {
 } from "../constants/types/flashState";
 import { useAppContext } from "../controllers/context/appContext";
 import { cancelFlash } from "../functions/commands/runFlash";
-import HorizontalBox from "./HorizontalBox";
 
 const AlertStyled = styled(Alert)`
   top: 0;

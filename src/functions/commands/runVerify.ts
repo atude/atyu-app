@@ -26,7 +26,7 @@ const runVerify = async (appContext: AppContext): Promise<void> => {
 
   const homeConfigExists = await shellRun(`test -f ${atyuHomeConfigFilePath}`);
   if (!homeConfigExists.success) {
-    updateLog(setLog, `Couldnt find ${atyuHomeConfigFilePath}.`);
+    updateLog(setLog, `Couldn't find ${atyuHomeConfigFilePath}.`);
     return setAppReadyState(AppReadyState.NOT_READY);
   }
   updateLog(setLog, `Found ${atyuHomeConfigFilePath}!`);

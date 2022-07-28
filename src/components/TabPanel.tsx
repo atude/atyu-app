@@ -98,7 +98,7 @@ export default function VerticalTabs() {
 			runVerify(appContext);
 		}
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appReadyState, atyuConfigMap]);
+  }, [atyuConfigMap]);
 
   return (
     <Box sx={{ display: "flex", marginTop: "100px", overflowY: "scroll" }}>
