@@ -1,6 +1,7 @@
 # Atyu | OLED configurator for QMK keyboards
 
 `Note: Atyu is currently in beta`
+
 [Download](https://github.com/atude/atyu-app/releases) | 
 
 ### What is Atyu?
