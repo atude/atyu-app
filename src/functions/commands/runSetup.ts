@@ -1,13 +1,14 @@
 import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
-import { atyuQmkDir } from "../path";
+import { atyuQmkDir, pathOf } from "../path";
 import runVerify from "./runVerify";
-import shell, { checkPrereqs, shellExecOptions, shellRun, updateLog } from "./shell";
+import shell, { checkPrereqs, nodeCommands, shellExecOptions, updateLog } from "./shell";
 
 // First time setup
 const runSetup = async (appContext: AppContext): Promise<void> => {
   const { setLog, setFlashState, setFlashMessage, setAppReadyState } = appContext;
+  setAppReadyState(AppReadyState.LOADING);
 
   // Check for git and qmk existence
 	const hasPrereqs = await checkPrereqs();
@@ -20,13 +21,12 @@ const runSetup = async (appContext: AppContext): Promise<void> => {
     return setAppReadyState(AppReadyState.NOT_READY);
   }
 
-  setAppReadyState(AppReadyState.LOADING);
   setFlashState(FlashState.RUNNING_SETUP, "Replacing any existing installations");
 
 	// Delete old qmk files here. Stops the bug where 'qmk setup' will repeatedly install 
 	// nested 'qmk_firmware' folders. Also assures clean installs.
 	updateLog(setLog, `Deleting old ${atyuQmkDir} if it exists`);
-	const rmAndMkDirQmkDir = await shellRun(`rm -rf ${atyuQmkDir}`);
+	const rmAndMkDirQmkDir = nodeCommands.rmDir(pathOf(atyuQmkDir));
 	if (!rmAndMkDirQmkDir.success) {
 		updateLog(setLog, "There was an issue with removing the old qmk directory");
 		updateLog(setLog, `You can try manually deleting ${atyuQmkDir} instead`);

@@ -1,15 +1,26 @@
 import { Dispatch, SetStateAction } from "react";
 import _shell, { ExecOptions } from "shelljs";
 import _os from "os";
+import _fs from "fs";
 import _path from "path";
 
 const shell: typeof _shell = window.require("shelljs");
 const os: typeof _os = window.require("os");
+const fs: typeof _fs = window.require("fs");
 const path: typeof _path = window.require("path");
+
+type ShellOutput = {
+	success: boolean;
+	code: number;
+	stdout?: string;
+	stderr?: string;
+	pid?: number;
+}
 
 const winQmkShellPath = path.join("C:", "QMK_MSYS", "shell_connector.cmd");
 
 export const isMac = os.platform() === "darwin";
+export const homeDir = os.homedir();
 
 // Fix mac path
 if (isMac) {
@@ -52,29 +63,51 @@ export const killAsyncCmd = (shellCmd: any) => {
 	shellCmd.kill("SIGINT");
 };
 
-// Alternatives for windows without needing dedicated msys shell
-export const osCommands = {
-	cat: (file: string) => `${isMac ? "cat" : "type"} ${file}`,
-  // TODO: might need to escape chars like double quote on mac
-	// needs verification on windows
-	echoTo: (str: string, outputFile: string) => isMac ? 
-		`echo "${str}" > ${outputFile}` :
-		`echo "${str}"> ${outputFile}`,
-	testFile: (path: string) => isMac ? 
-		`test -f ${path}` :
-		`type ${path}`, // `type` should fail on win32 when file dont exist
+export const nodeCommands = {
+	fileExists: (filepath: string): ShellOutput => {
+		try {
+			if (fs.existsSync(filepath)) {
+				return { success: true, code: 0 };
+			}
+			return { success: false, code: -1 };
+		} catch(e) {
+			console.log(e);
+			return { success: false, code: -1 };
+		}
+	},
+	readJsonFile: (filepath: string): ShellOutput => {
+		try {
+			const file = fs.readFileSync(filepath);
+			const stdout = JSON.parse(file.toString());
+			return { success: true, code: 0, stdout };
+		} catch (e) {
+			console.log(e);
+			return { success: false, code: -1 };
+		}
+	},
+	saveToFile: (str: string, filePath: string): ShellOutput => {
+		try {
+			fs.writeFileSync(filePath, str);
+			return { success: true, code: 0 };
+		} catch (e) {
+			console.log(e);
+			return { success: false, code: -1 };
+		}
+	},
+	rmDir: (filePath: string): ShellOutput => {
+		try {
+			fs.rmSync(filePath, { recursive: true, force: true });
+			return { success: true, code: 0 };
+		} catch (e) {
+			console.log(e);
+			return { success: false, code: -1 };
+		}
+	},
 }
 
-type ShellOutput = {
-	success: boolean;
-	code: number;
-	stdout?: string;
-	stderr?: string;
-	pid?: number;
-}
-
-// Run a shell command in sync but with async.
-export const shellRun = (command: string, dontUseQmkShell?: boolean) => new Promise<ShellOutput>((resolve) => {
+// Run a shell command in sync but with async. Prevents requirement of external Node 
+// when in Electron.
+export const shellRun = (command: string) => new Promise<ShellOutput>((resolve) => {
 	setTimeout(() => {
 		resolve({
 			success: false,
@@ -86,11 +119,7 @@ export const shellRun = (command: string, dontUseQmkShell?: boolean) => new Prom
 
 	const stdout: string[] = [];
 	const stderr: string[] = [];
-	const exec = shell.exec(command, {
-		...shellExecOptions,
-		// Dont use QMK MSYS shell on windows if flag
-		...(dontUseQmkShell && !isMac && { shell: undefined })
-	});
+	const exec = shell.exec(command, shellExecOptions);
 	if (!exec?.pid) {
 		// couldnt get shell here
 		resolve({
