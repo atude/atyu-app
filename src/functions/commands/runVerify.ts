@@ -3,8 +3,8 @@ import { zKeyboardsConfig } from "../../configs/keyboardConfig";
 import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
-import { atyuHomeConfigFilePath, atyuKeyboardConfigFilename, atyuQmkDir } from "../path";
-import { updateLog, checkPrereqs, shellRun } from "./shell";
+import { atyuHomeConfigFilePath, atyuKeyboardConfigFilename, atyuQmkDir, pathOf } from "../path";
+import { updateLog, checkPrereqs, shellRun, osCommands } from "./shell";
 
 // Runs whenever app opens. Checks everything is fine.
 const runVerify = async (appContext: AppContext): Promise<void> => {
@@ -19,12 +19,12 @@ const runVerify = async (appContext: AppContext): Promise<void> => {
 
 	const hasPrereqs = await checkPrereqs();
   if (!hasPrereqs.success) {
-    updateLog(setLog, `which git/qmk failed`);
-    setFlashState(FlashState.ERROR, "Couldn't find git or qmk (required for Atyu)");
+    updateLog(setLog, `Couldn't find QMK installed, or QMK is installed in an unknown directory`);
+    setFlashState(FlashState.ERROR, "Couldn't find QMK (required for Atyu)");
     return setAppReadyState(AppReadyState.NOT_READY);
   }
 
-  const homeConfigExists = await shellRun(`test -f ${atyuHomeConfigFilePath}`);
+  const homeConfigExists = await shellRun(osCommands.testFile(pathOf(atyuHomeConfigFilePath)), true);
   if (!homeConfigExists.success) {
     updateLog(setLog, `Couldn't find ${atyuHomeConfigFilePath}.`);
     return setAppReadyState(AppReadyState.NOT_READY);
@@ -36,10 +36,12 @@ const runVerify = async (appContext: AppContext): Promise<void> => {
   // issues across all of Atyu if one keyboard has a bad config.
   try {
     updateLog(setLog, "Parsing JSON...");
-		const atyuHomeJsonOutput = await shellRun(`cat ${atyuHomeConfigFilePath}`);
+		const atyuHomeJsonOutput = await shellRun(osCommands.cat(pathOf(atyuHomeConfigFilePath)), true);
 		if (!atyuHomeJsonOutput.success || !atyuHomeJsonOutput.stdout) {
 			throw Error("Couldn't process home json");
 		}
+		updateLog(setLog, "output:");
+		updateLog(setLog, atyuHomeJsonOutput.stdout);
     const atyuHomeJson = JSON.parse(atyuHomeJsonOutput.stdout);
     updateLog(setLog, "Validating JSON...");
     const keyboardsConfig = zKeyboardsConfig.parse(atyuHomeJson);
@@ -49,10 +51,12 @@ const runVerify = async (appContext: AppContext): Promise<void> => {
 		let atyuConfigMap: AtyuConfigMap = {};
     for (const keyboardConfig of Object.values(keyboardsConfig)) {
 			const configPath = `${atyuQmkDir}${keyboardConfig.dir}${atyuKeyboardConfigFilename}`;
-			const atyuConfigJsonOutput = await shellRun(`cat ${configPath}`);
+			const atyuConfigJsonOutput = await shellRun(osCommands.cat(pathOf(configPath)), true);
 			if (!atyuConfigJsonOutput.success || !atyuConfigJsonOutput.stdout) {
 				throw Error(`Couldn't process config json for ${atyuKeyboardConfigFilename}`);
 			}
+			updateLog(setLog, `Config for ${keyboardConfig.key}:`);
+			updateLog(setLog, atyuConfigJsonOutput.stdout);
 			const atyuConfigJson = JSON.parse(atyuConfigJsonOutput.stdout);
 			const atyuConfig = zAtyuConfig.parse(atyuConfigJson);
 			updateLog(setLog, `Loaded config for ${keyboardConfig.key} from ${configPath}`);

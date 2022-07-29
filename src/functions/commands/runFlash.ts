@@ -3,8 +3,8 @@ import { AppContext } from "../../controllers/context/appContext";
 import { appStore } from "../../controllers/context/appStoreContext";
 import { AtyuContext } from "../../controllers/context/atyuContext";
 import { runCodegen } from "../codegen";
-import { atyuHConfigFilename, getKeyboardDir } from "../path";
-import shell, { shellExecOptions, killAsyncCmd, updateLog, shellRun } from "./shell";
+import { atyuHConfigFilename, getKeyboardDir, pathOf } from "../path";
+import shell, { shellExecOptions, killAsyncCmd, updateLog, shellRun, osCommands } from "./shell";
 
 const flashCommandState = {
   cancelled: false,
@@ -55,12 +55,12 @@ const runFlash = async (
   setFlashState(FlashState.PATCHING);
 
   // cd and save file
-	// TODO: this config code might need to escape chars like ""
   const runSave = await shellRun(
-    `cd ${keyboardDir} && echo "${configCode}" > ${atyuHConfigFilename}`
+    osCommands.echoTo(configCode, pathOf(`${keyboardDir}${atyuHConfigFilename}`)),
+    true
   );
   if (!runSave.success) {
-    updateLog(setLog, `Couldn't save code to ${atyuHConfigFilename}`);
+    updateLog(setLog, `Couldn't save code to ${keyboardDir}${atyuHConfigFilename}`);
     return setFlashState(FlashState.ERROR, "Failed to save changes to Atyu QMK config");
   }
   updateLog(setLog, "Saved file.");
@@ -121,7 +121,10 @@ const runFlash = async (
     let sawSizeAfter: boolean = false;
 
     // Compile once to check firmware size
-    const cmdCompile = shell.exec(`cd ${keyboardDir} && qmk compile -kb ${qmkKb} -km ${qmkKm}`, shellExecOptions);
+    const cmdCompile = shell.exec(
+      `cd ${keyboardDir} && qmk compile -kb ${qmkKb} -km ${qmkKm}`,
+      shellExecOptions
+    );
 
     // Update state as log changes
     cmdCompile.stdout?.on("data", (data: any) => {

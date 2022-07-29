@@ -7,21 +7,21 @@ const shell: typeof _shell = window.require("shelljs");
 const os: typeof _os = window.require("os");
 const path: typeof _path = window.require("path");
 
-const isMac = os.platform() === "darwin";
 const winQmkShellPath = path.join("C:", "QMK_MSYS", "shell_connector.cmd");
+
+export const isMac = os.platform() === "darwin";
 
 // Fix mac path
 if (isMac) {
 	shell.env["PATH"] = "~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin";
 }
 
+// If we want to use a specific node instance: 
 // shell.config.execPath = String(shell.which("node"));
-
-// console.log("shell.config.execPath: " + shell.config.execPath);
 console.log("shell env path: " + shell.env["PATH"]);
-// console.log("winnodepath: " + winNodePath);
 console.log("is mac?: " + isMac);
 console.log("node: " + shell.which("node"));
+console.log("shell: " + shell.env["SHELL"]);
 
 export const shellExecOptions: ExecOptions & { async: true } = {
 	async: true,
@@ -51,6 +51,19 @@ export const killAsyncCmd = (shellCmd: any) => {
 	shellCmd.stderr.destroy();
 	shellCmd.kill("SIGINT");
 };
+
+// Alternatives for windows without needing dedicated msys shell
+export const osCommands = {
+	cat: (file: string) => `${isMac ? "cat" : "type"} ${file}`,
+  // TODO: might need to escape chars like double quote on mac
+	// needs verification on windows
+	echoTo: (str: string, outputFile: string) => isMac ? 
+		`echo "${str}" > ${outputFile}` :
+		`echo "${str}"> ${outputFile}`,
+	testFile: (path: string) => isMac ? 
+		`test -f ${path}` :
+		`type ${path}`, // `type` should fail on win32 when file dont exist
+}
 
 type ShellOutput = {
 	success: boolean;

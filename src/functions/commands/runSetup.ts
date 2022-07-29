@@ -23,8 +23,8 @@ const runSetup = async (appContext: AppContext): Promise<void> => {
   setAppReadyState(AppReadyState.LOADING);
   setFlashState(FlashState.RUNNING_SETUP, "Replacing any existing installations");
 
-    // Delete old wmk files here. Stops the bug where 'qmk setup' will repeatedly install 
-		// nested 'qmk_firmware' folders. Also assures clean installs.
+	// Delete old qmk files here. Stops the bug where 'qmk setup' will repeatedly install 
+	// nested 'qmk_firmware' folders. Also assures clean installs.
 	updateLog(setLog, `Deleting old ${atyuQmkDir} if it exists`);
 	const rmAndMkDirQmkDir = await shellRun(`rm -rf ${atyuQmkDir}`);
 	if (!rmAndMkDirQmkDir.success) {
