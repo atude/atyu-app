@@ -59,11 +59,12 @@ const zAtyuChildConfig = z.object({
 export const zAtyuConfig = z.array(
   z.object({
     name: z.string(),
-    desc: z.string(),
+    desc: z.string().optional(),
     key: z.string(),
     configurable: z.boolean(),
     enabledByDefault: z.boolean(),
     children: z.array(zAtyuChildConfig),
+    notes: z.array(z.string()).optional(),
   })
 );
 

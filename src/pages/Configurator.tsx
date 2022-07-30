@@ -1,6 +1,7 @@
 // import { AccessTime, Gif, Pets, ViewComfyRounded } from "@mui/icons-material";
 import styled from "@emotion/styled";
 import { Alert, Box, Switch, Typography, useTheme } from "@mui/material";
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import MultiselectBooleanComponent from "../components/configurator/MultiselectBooleanComponent";
 import { atyuValue } from "../functions/configurator";
 import { AtyuChildConfig } from "../configs/atyuConfig";
@@ -12,6 +13,8 @@ import RadioComponent from "../components/configurator/RadioComponent";
 import { defaultGifRadioStruct } from "../constants";
 import { useAppContext } from "../controllers/context/appContext";
 import HorizontalBox from "../components/HorizontalBox";
+import { grey } from "@mui/material/colors";
+import { InfoOutlined } from "@mui/icons-material";
 
 const OledModeBox = styled(Alert)`
   display: flex;
@@ -37,6 +40,16 @@ const OledModeComponent = styled.div`
   border-top: 1px solid ${(props) => props.color};
 `;
 
+const NotesTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: "rgba(0, 0, 0, 0.85)",
+    maxWidth: "800px",
+		padding: "12px",
+  },
+}));
+
 const getChildComponent = (childConfigSection: AtyuChildConfig, name: string, desc?: string) => {
   const struct = childConfigSection.struct;
   const type = struct.type;
@@ -61,57 +74,80 @@ const getChildComponent = (childConfigSection: AtyuChildConfig, name: string, de
 
 // This is the UI generator entry point
 const Configurator = () => {
-	const { atyuConfigMap, keyboard } = useAppContext();
+  const { atyuConfigMap, keyboard } = useAppContext();
   const context = useAtyuContext();
   const theme = useTheme();
-	const config = atyuConfigMap[keyboard];
+  const config = atyuConfigMap[keyboard];
 
   return (
     <Box>
       <Typography color="primary" variant="h5" sx={{ mb: "18px" }}>
         OLED Options
       </Typography>
-      {!!config?.length && config.map((configSection) => {
-        const { name, desc, key, configurable, children, enabledByDefault } = configSection;
-        const isEnabled = atyuValue(context[key], enabledByDefault);
+      {!!config?.length &&
+        config.map((configSection) => {
+          const { name, desc, key, configurable, children, enabledByDefault, notes } =
+            configSection;
+          const isEnabled = atyuValue(context[key], enabledByDefault);
 
-        return (
-          <OledModeBox
-            variant="outlined"
-            severity="info"
-            key={name}
-            icon={false}
-            sx={{ filter: isEnabled !== undefined && !isEnabled ? "grayscale(100%)" : "none" }}
-          >
-            <HorizontalBox expanded>
-							<Box>
-								<OledModeHeader>
-									{/*TODO: {icon}*/}<Typography variant="button">{name}</Typography>
-								</OledModeHeader>
-								{!!desc.length && <Typography variant="body2">{desc}</Typography>}
-							</Box>
-              {!!configurable && (
-                <Switch
-                  checked={isEnabled}
-                  onChange={() => context.dispatchUpdateValue(key, !isEnabled)}
-                />
+          return (
+            <OledModeBox
+              variant="outlined"
+              severity="info"
+              key={name}
+              icon={false}
+              sx={{ filter: isEnabled !== undefined && !isEnabled ? "grayscale(100%)" : "none" }}
+            >
+              <HorizontalBox expanded>
+                <Box>
+                  <OledModeHeader>
+                    {/*TODO: {icon}*/}
+                    <Typography variant="button">{name}</Typography>
+                  </OledModeHeader>
+                  {!!desc?.length && <Typography variant="body2">{desc}</Typography>}
+                </Box>
+                <HorizontalBox>
+                  {!!notes?.length && (
+                    <NotesTooltip
+											placement="left-start"
+                      title={
+                        <Box>
+                          {notes.map((note, i) => (
+                            <div key={i}>
+                              <Typography color={grey[300]} variant="caption" fontSize={13}>
+                                • {note}
+                              </Typography>
+                            </div>
+                          ))}
+                        </Box>
+                      }
+                    >
+                      <InfoOutlined sx={{ mr: 2 }} />
+                    </NotesTooltip>
+                  )}
+                  {!!configurable && (
+                    <Switch
+                      checked={isEnabled}
+                      onChange={() => context.dispatchUpdateValue(key, !isEnabled)}
+                    />
+                  )}
+                </HorizontalBox>
+              </HorizontalBox>
+              {!!isEnabled && !!children.length && (
+                <OledModeComponent color={theme.palette.primary.main}>
+                  {children.map((childConfigSection, i) => {
+                    const { name: childName, desc: childDesc } = childConfigSection;
+                    return (
+                      <Box sx={{ width: "100%" }} key={i}>
+                        {getChildComponent(childConfigSection, childName, childDesc)}
+                      </Box>
+                    );
+                  })}
+                </OledModeComponent>
               )}
-            </HorizontalBox>
-            {!!isEnabled && !!children.length && (
-              <OledModeComponent color={theme.palette.primary.main}>
-                {children.map((childConfigSection, i) => {
-                  const { name: childName, desc: childDesc } = childConfigSection;
-                  return (
-                    <Box sx={{ width: "100%" }} key={i}>
-                      {getChildComponent(childConfigSection, childName, childDesc)}
-                    </Box>
-                  );
-                })}
-              </OledModeComponent>
-            )}
-          </OledModeBox>
-        );
-      })}
+            </OledModeBox>
+          );
+        })}
       {/* <Button onClick={() => console.log(runCodegen(context))}>codegen test</Button> */}
     </Box>
   );
