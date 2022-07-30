@@ -31,7 +31,7 @@ const Settings = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <Button variant="contained" sx={{ mb: 4 }} onClick={handleSync}>
+      <Button disabled={appContext.isDoingTask} variant="contained" sx={{ mb: 4 }} onClick={handleSync}>
         Fetch Atyu QMK updates
       </Button>
       <SettingsItem
