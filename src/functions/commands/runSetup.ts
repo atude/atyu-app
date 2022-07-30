@@ -16,8 +16,8 @@ const runSetup = async (appContext: AppContext): Promise<void> => {
 		if (hasPrereqs.stderr) {
 			updateLog(setLog, hasPrereqs.stderr);
 		}
-    updateLog(setLog, `which git/qmk failed`);
-    setFlashState(FlashState.ERROR, "Couldn't find git or qmk (required for Atyu)");
+    updateLog(setLog, "Failed to find QMK; is it installed in another directory?");
+    setFlashState(FlashState.ERROR, "Couldn't find QMK installed (required for Atyu)");
     return setAppReadyState(AppReadyState.NOT_READY);
   }
 

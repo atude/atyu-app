@@ -55,18 +55,18 @@ const zAtyuChildConfig = z.object({
   struct: zAtyuChildOptionsStruct,
 });
 
+const zAtyuConfigSection = z.object({
+	name: z.string(),
+	desc: z.string().optional(),
+	key: z.string(),
+	configurable: z.boolean(),
+	enabledByDefault: z.boolean(),
+	children: z.array(zAtyuChildConfig),
+	notes: z.array(z.string()).optional(),
+});
+
 // Top level configs are all booleans
-export const zAtyuConfig = z.array(
-  z.object({
-    name: z.string(),
-    desc: z.string().optional(),
-    key: z.string(),
-    configurable: z.boolean(),
-    enabledByDefault: z.boolean(),
-    children: z.array(zAtyuChildConfig),
-    notes: z.array(z.string()).optional(),
-  })
-);
+export const zAtyuConfig = z.array(zAtyuConfigSection);
 
 export type AtyuOptionMultiselectBoolean = z.infer<typeof zAtyuOptionMultiselectBoolean>;
 export type AtyuOptionRadioNumber = z.infer<typeof zAtyuOptionRadioNumber>;
@@ -75,5 +75,6 @@ export type AtyuOptionUpdateGif = z.infer<typeof zAtyuOptionUpdateGif>;
 type AtyuChildOptionsStruct = z.infer<typeof zAtyuChildOptionsStruct>;
 export type AtyuChildConfig = z.infer<typeof zAtyuChildConfig>;
 export type AtyuChildOptionsType = AtyuChildOptionsStruct["type"];
+export type AtyuConfigSection = z.infer<typeof zAtyuConfigSection>;
 export type AtyuConfig = z.infer<typeof zAtyuConfig>;
 export type AtyuConfigMap = Record<string, AtyuConfig>;

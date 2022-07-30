@@ -41,8 +41,6 @@ const runVerify = async (appContext: AppContext): Promise<void> => {
 		if (!atyuHomeJsonOutput.success || !atyuHomeJsonOutput.stdout) {
 			throw Error("Couldn't process home json");
 		}
-		updateLog(setLog, "JSON output:");
-		updateLog(setLog, atyuHomeJsonOutput.stdout);
     const keyboardsConfig = zKeyboardsConfig.parse(atyuHomeJsonOutput.stdout);
     updateLog(setLog, "Setting config...");
     setKeyboardsConfig(keyboardsConfig);
@@ -55,8 +53,6 @@ const runVerify = async (appContext: AppContext): Promise<void> => {
         console.log(atyuConfigJsonOutput);
 				throw Error(`Couldn't process config json for ${atyuKeyboardConfigFilename}`);
 			}
-			updateLog(setLog, `Config for ${keyboardConfig.key}:`);
-			updateLog(setLog, atyuConfigJsonOutput.stdout);
 			const atyuConfig = zAtyuConfig.parse(atyuConfigJsonOutput.stdout);
 			updateLog(setLog, `Loaded config for ${keyboardConfig.key} from ${configPath}`);
 			atyuConfigMap[keyboardConfig.key] = atyuConfig;

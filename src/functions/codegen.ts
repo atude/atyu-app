@@ -21,6 +21,10 @@ export const runCodegen = (context: AtyuContext): string => {
 			console.log(`wont process dispatch function: ${key}`);
 			return;
 		}
+		if (key.startsWith("__")) {
+			console.log(`wont process keys with __: ${key}`);
+			return;
+		}
 		if (context[key] === undefined) {
 			console.log(`could not get value for key: ${key}`);
 			return;
