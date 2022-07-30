@@ -1,7 +1,7 @@
 {
   "name": "atyu",
   "description": "OLED configurator for QMK keyboards",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "author": {
     "name": "atude"
   },
