@@ -53,9 +53,9 @@ export const checkPrereqs = async () => {
 
 // Add log in reverse order for printing purposes
 export const updateLog = (setLog: Dispatch<SetStateAction<string[]>>, dataString: string) => {
-  // eslint-disable-next-line no-control-regex
-	// Regex to remove ANSI colouring
+  // Regex to remove ANSI colouring
   setLog((existingLog) => [
+    // eslint-disable-next-line no-control-regex
     `=> ${dataString.toString().replace(/\u001b[^m]*?m/g, "")}`,
     ...existingLog,
   ]);

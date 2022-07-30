@@ -3,7 +3,7 @@ import { AppContext } from "../../controllers/context/appContext";
 import { appStore } from "../../controllers/context/appStoreContext";
 import { AtyuContext } from "../../controllers/context/atyuContext";
 import { runCodegen } from "../codegen";
-import { atyuHConfigFilename, getKeyboardDir, pathOf } from "../path";
+import { atyuHConfigFilename, atyuHResourcesFilename, getKeyboardDir, pathOf } from "../path";
 import shell, { shellExecOptions, killAsyncCmd, updateLog, nodeCommands } from "./shell";
 
 const flashCommandState = {
@@ -47,20 +47,31 @@ const runFlash = async (
   }
 
   const { qmkKb, qmkKm, maxFirmwareSizeBytes } = keyboardConfig;
-  const configCode = runCodegen(context);
+  const { configCode, resourcesCode } = runCodegen(context);
   const keyboardDir = getKeyboardDir(keyboardConfig.dir);
   console.log("dir: " + keyboardDir);
 
   // Patch firmware; copy to qmk folder
   setFlashState(FlashState.PATCHING);
 
-  // Save file (via node)
-  const runSave = nodeCommands.saveToFile(configCode, pathOf(`${keyboardDir}${atyuHConfigFilename}`));
-  if (!runSave.success) {
+  // Save files (via node)
+  const runSaveConfig = nodeCommands.saveToFile(
+    configCode,
+    pathOf(`${keyboardDir}${atyuHConfigFilename}`)
+  );
+  if (!runSaveConfig.success) {
     updateLog(setLog, `Couldn't save code to ${pathOf(`${keyboardDir}${atyuHConfigFilename}`)}`);
-    return setFlashState(FlashState.ERROR, "Failed to save changes to Atyu QMK config");
+    return setFlashState(FlashState.ERROR, "Failed to save changes to Atyu QMK config file");
   }
-  updateLog(setLog, "Saved file.");
+  const runSaveResources = nodeCommands.saveToFile(
+    resourcesCode,
+    pathOf(`${keyboardDir}${atyuHResourcesFilename}`)
+  );
+  if (!runSaveResources.success) {
+    updateLog(setLog, `Couldn't save code to ${pathOf(`${keyboardDir}${atyuHResourcesFilename}`)}`);
+    return setFlashState(FlashState.ERROR, "Failed to save changes to Atyu QMK resources file");
+  }
+  updateLog(setLog, "Saved files successfully.");
 
   // Save only; dont flash to keyboard
   if (onlyPatch) {

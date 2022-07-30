@@ -27,7 +27,7 @@ const RadioComponent = (props: Props) => {
   return (
     <HorizontalBox expanded>
 			<Box>
-				<Typography variant="subtitle1">{name}</Typography>
+				<Typography variant="subtitle1" fontSize={14}>{name}</Typography>
 				{!!desc?.length && (
 					<Typography sx={{ mb: "12px" }} variant="subtitle2" color="secondary">{desc}</Typography>
 				)}

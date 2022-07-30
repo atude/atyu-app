@@ -40,7 +40,7 @@ const MultiselectBooleanComponent = (props: Props) => {
 
   return (
     <Box>
-			<Typography variant="subtitle1">{name}</Typography>
+			<Typography variant="subtitle1" fontSize={14}>{name}</Typography>
 			{!!desc?.length && (
 				<Typography sx={{ mb: "12px" }} variant="subtitle2" color="secondary">{desc}</Typography>
 			)}

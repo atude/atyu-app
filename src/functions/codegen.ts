@@ -5,10 +5,14 @@ export const codegenHashDefine = (key: string, value: boolean | string | number)
 	`#define ${key} ${value}`;
 export const tab = (tabDepth = 1): string => "    ".repeat(tabDepth);
 
-export const runCodegen = (context: AtyuContext): string => {
-	const code: string[] = [
-		"#pragma once\n#include <stdio.h>\n",
-	];
+type CodegenOutput = {
+	configCode: string;
+	resourcesCode: string;
+}
+
+export const runCodegen = (context: AtyuContext): CodegenOutput => {
+	const configCode: string[] = ["#pragma once\n"];
+	const resourcesCode: string[] = ["#pragma once\n#include <stdio.h>\n"];
 
 	// Process generic keys
 	Object.keys(context).forEach((key: string) => {
@@ -29,7 +33,7 @@ export const runCodegen = (context: AtyuContext): string => {
 			console.log(`could not get value for key: ${key}`);
 			return;
 		}
-		code.push(codegenHashDefine(key, context[key]));
+		configCode.push(codegenHashDefine(key, context[key]));
 	});
 
 	// Process special keys
@@ -40,13 +44,16 @@ export const runCodegen = (context: AtyuContext): string => {
 		const gifSpeed = context[atyuSpecialKeys.gifSpeed];
 		const gifEnabled = context[atyuSpecialKeys.gifEnabled];
 		if (gifCode && gifSpeed && gifUrl && gifEnabled) {
-			code.push(codegenHashDefine("ATYU_OLED_GIF_ENABLED", true));
-			code.push(codegenHashDefine("ATYU_ANIM_GIF_SPEED", gifSpeed));
-			code.push(gifCode);
+			configCode.push(codegenHashDefine("ATYU_OLED_GIF_ENABLED", true));
+			configCode.push(codegenHashDefine("ATYU_ANIM_GIF_SPEED", gifSpeed));
+			resourcesCode.push(gifCode);
 		} else {
-			code.push(codegenHashDefine("ATYU_OLED_GIF_ENABLED", false));
+			configCode.push(codegenHashDefine("ATYU_OLED_GIF_ENABLED", false));
 		}
 	}
 
-	return code.join("\n");
+	return {
+		configCode: configCode.join("\n"),
+		resourcesCode: resourcesCode.join("\n"),
+	};
 }
