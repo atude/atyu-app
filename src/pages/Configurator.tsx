@@ -40,6 +40,17 @@ const OledModeComponent = styled.div`
   border-top: 1px solid ${(props) => props.color};
 `;
 
+const ThumbnailImage = styled.img`
+	width: 32px;
+	height: 32px;
+	padding: 4px;
+	border-radius: 8px;
+	border: 2px solid white;
+	margin-right: 12px;
+	/* turn white to cyanish */
+	filter: brightness(77.4%) sepia(100) saturate(100) hue-rotate(170deg);
+`;
+
 const NotesTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
@@ -72,7 +83,12 @@ const getChildComponent = (childConfigSection: AtyuChildConfig, name: string, de
   }
 };
 
-const getConfigComponent = (configSection: AtyuConfigSection, context: AtyuContext, theme: Theme) => {
+const getConfigComponent = (
+  configSection: AtyuConfigSection,
+  context: AtyuContext,
+  theme: Theme,
+  thumbnail?: string | undefined
+) => {
   const { name, desc, key, configurable, children, enabledByDefault, notes } = configSection;
   const isEnabled = atyuValue(context[key], enabledByDefault);
 
@@ -85,13 +101,17 @@ const getConfigComponent = (configSection: AtyuConfigSection, context: AtyuConte
       sx={{ filter: isEnabled !== undefined && !isEnabled ? "grayscale(100%)" : "none" }}
     >
       <HorizontalBox expanded>
-        <Box>
-          <OledModeHeader>
-            {/*TODO: {icon}*/}
-            <Typography variant="button">{name}</Typography>
-          </OledModeHeader>
-          {!!desc?.length && <Typography variant="body2" color="secondary">{desc}</Typography>}
-        </Box>
+				<HorizontalBox>
+					{!!thumbnail && <ThumbnailImage src={thumbnail} alt="mode thumbnail" />}
+					<Box>
+						<Typography variant="button">{name}</Typography>
+						{!!desc?.length && (
+							<Typography variant="body2" color="secondary">
+								{desc}
+							</Typography>
+						)}
+					</Box>
+        	</HorizontalBox>
         <HorizontalBox>
           {!!notes?.length && (
             <NotesTooltip
@@ -137,7 +157,7 @@ const getConfigComponent = (configSection: AtyuConfigSection, context: AtyuConte
 
 // This is the UI generator entry point
 const Configurator = () => {
-  const { atyuConfigMap, keyboard } = useAppContext();
+  const { atyuConfigMap, keyboard, thumbnails } = useAppContext();
   const context = useAtyuContext();
   const theme = useTheme();
   const config = atyuConfigMap[keyboard];
@@ -151,16 +171,24 @@ const Configurator = () => {
       {!!config?.length &&
         config
           // "keyboard options" is a special tag; put it in a separate section
+					// TODO: this can be cleaned up instead of hacking based on key
           .filter((section) => section.key !== "__keyboard_options")
-          .map(configSection => getConfigComponent(configSection, context, theme))}
+          .map((configSection) =>
+            getConfigComponent(configSection, context, theme, thumbnails[configSection.key])
+          )}
       {/* <Button onClick={() => console.log(runCodegen(context))}>codegen test</Button> */}
       {keyboardOptionsConfig !== undefined && (
-				<>
-					<Typography color="primary" variant="h5" sx={{ mb: 2, mt: 4 }}>
-						Keyboard Options
-					</Typography>
-					{getConfigComponent(keyboardOptionsConfig, context, theme)}
-				</>
+        <>
+          <Typography color="primary" variant="h5" sx={{ mb: 2, mt: 4 }}>
+            Keyboard Options
+          </Typography>
+          {getConfigComponent(
+            keyboardOptionsConfig,
+            context,
+            theme,
+            thumbnails[keyboardOptionsConfig.key]
+          )}
+        </>
       )}
     </Box>
   );

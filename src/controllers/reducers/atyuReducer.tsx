@@ -169,7 +169,6 @@ export const generateInitialState = (config: AtyuConfig): AtyuState => {
 		}); 
 	});
 
-	console.log("Initial state:");
 	console.log(initialState);
 	return initialState;
 };
@@ -181,7 +180,6 @@ export const reducer: Reducer<AtyuState, Action> = (state, action) => {
 		case "UPDATE_VALUE":
 			const { key, value } = action?.payload as AtyuUpdateValuePayload;
 			if (!key || value === undefined) {
-				console.log("couldnt find key or value in payload");
 				return state;
 			}
 			console.log(`Updating ${key} to ${value}`)

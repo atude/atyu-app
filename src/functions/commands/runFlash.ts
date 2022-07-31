@@ -4,7 +4,7 @@ import { appStore } from "../../controllers/context/appStoreContext";
 import { AtyuContext } from "../../controllers/context/atyuContext";
 import { runCodegen } from "../codegen";
 import { atyuHConfigFilename, atyuHResourcesFilename, getKeyboardDir, pathOf } from "../path";
-import shell, { shellExecOptions, killAsyncCmd, updateLog, nodeCommands } from "./shell";
+import shell, { shellExecOptions, killAsyncCmd, updateLog, nodeCmd } from "./shell";
 
 const flashCommandState = {
   cancelled: false,
@@ -49,13 +49,12 @@ const runFlash = async (
   const { qmkKb, qmkKm, maxFirmwareSizeBytes } = keyboardConfig;
   const { configCode, resourcesCode } = runCodegen(context);
   const keyboardDir = getKeyboardDir(keyboardConfig.dir);
-  console.log("dir: " + keyboardDir);
 
   // Patch firmware; copy to qmk folder
   setFlashState(FlashState.PATCHING);
 
   // Save files (via node)
-  const runSaveConfig = nodeCommands.saveToFile(
+  const runSaveConfig = nodeCmd.saveToFile(
     configCode,
     pathOf(`${keyboardDir}${atyuHConfigFilename}`)
   );
@@ -63,7 +62,7 @@ const runFlash = async (
     updateLog(setLog, `Couldn't save code to ${pathOf(`${keyboardDir}${atyuHConfigFilename}`)}`);
     return setFlashState(FlashState.ERROR, "Failed to save changes to Atyu QMK config file");
   }
-  const runSaveResources = nodeCommands.saveToFile(
+  const runSaveResources = nodeCmd.saveToFile(
     resourcesCode,
     pathOf(`${keyboardDir}${atyuHResourcesFilename}`)
   );

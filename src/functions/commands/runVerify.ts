@@ -3,8 +3,8 @@ import { zKeyboardsConfig } from "../../configs/keyboardConfig";
 import { AppReadyState } from "../../constants/types/appReadyState";
 import { FlashState } from "../../constants/types/flashState";
 import { AppContext } from "../../controllers/context/appContext";
-import { atyuHomeConfigFilePath, atyuKeyboardConfigFilename, atyuQmkDir, pathOf } from "../path";
-import { updateLog, checkPrereqs, nodeCommands } from "./shell";
+import { atyuHomeConfigFilePath, atyuKeyboardConfigFilename, atyuQmkDir, atyuThumbnailsDir, pathOf } from "../path";
+import { updateLog, checkPrereqs, nodeCmd } from "./shell";
 
 // Runs whenever app opens. Checks everything is fine and loads files.
 const runVerify = async (appContext: AppContext): Promise<void> => {
@@ -14,6 +14,7 @@ const runVerify = async (appContext: AppContext): Promise<void> => {
     setAtyuConfigMap,
     setFlashState,
     setAppReadyState,
+		setThumbnails,
   } = appContext;
   setAppReadyState(AppReadyState.LOADING);
 
@@ -24,41 +25,48 @@ const runVerify = async (appContext: AppContext): Promise<void> => {
     return setAppReadyState(AppReadyState.NOT_READY);
   }
 
-  const homeConfigExists = nodeCommands.fileExists(pathOf(atyuHomeConfigFilePath));
+  const homeConfigExists = nodeCmd.fileExists(pathOf(atyuHomeConfigFilePath));
   if (!homeConfigExists.success) {
     updateLog(setLog, `Couldn't find ${pathOf(atyuHomeConfigFilePath)}.`);
     return setAppReadyState(AppReadyState.NOT_READY);
   }
-  console.log(homeConfigExists);
   updateLog(setLog, `Found ${pathOf(atyuHomeConfigFilePath)}!`);
 
   // Attempt load required home config file, then attempt load every child config file
   // Maybe the child configs can be loaded on a keyboard selection basis to isolate
   // issues across all of Atyu if one keyboard has a bad config.
+	// Also load image thumbnails
   try {
     updateLog(setLog, "Parsing JSON...");
-		const atyuHomeJsonOutput = nodeCommands.readJsonFile(pathOf(atyuHomeConfigFilePath));
-		if (!atyuHomeJsonOutput.success || !atyuHomeJsonOutput.stdout) {
+		const atyuHomeJsonRes = nodeCmd.readJsonFile(pathOf(atyuHomeConfigFilePath));
+		if (!atyuHomeJsonRes.success || !atyuHomeJsonRes.stdout) {
 			throw Error("Couldn't process home json");
 		}
-    const keyboardsConfig = zKeyboardsConfig.parse(atyuHomeJsonOutput.stdout);
+    const keyboardsConfig = zKeyboardsConfig.parse(atyuHomeJsonRes.stdout);
     updateLog(setLog, "Setting config...");
     setKeyboardsConfig(keyboardsConfig);
 
 		let atyuConfigMap: AtyuConfigMap = {};
     for (const keyboardConfig of Object.values(keyboardsConfig)) {
 			const configPath = pathOf(`${atyuQmkDir}${keyboardConfig.dir}${atyuKeyboardConfigFilename}`);
-			const atyuConfigJsonOutput = nodeCommands.readJsonFile(configPath);
-			if (!atyuConfigJsonOutput.success || !atyuConfigJsonOutput.stdout) {
-        console.log(atyuConfigJsonOutput);
+			const atyuConfigJsonRes = nodeCmd.readJsonFile(configPath);
+			if (!atyuConfigJsonRes.success || !atyuConfigJsonRes.stdout) {
 				throw Error(`Couldn't process config json for ${atyuKeyboardConfigFilename}`);
 			}
-			const atyuConfig = zAtyuConfig.parse(atyuConfigJsonOutput.stdout);
+			const atyuConfig = zAtyuConfig.parse(atyuConfigJsonRes.stdout);
 			updateLog(setLog, `Loaded config for ${keyboardConfig.key} from ${configPath}`);
 			atyuConfigMap[keyboardConfig.key] = atyuConfig;
 		};
 
     setAtyuConfigMap(atyuConfigMap);
+
+		// Load thumbnails
+		const thumbnailsRes = nodeCmd.readPngImagesInDir(pathOf(atyuThumbnailsDir));
+		const thumbnailData = (thumbnailsRes?.data) as Record<string, string>;
+		if (Object.keys(thumbnailData).length) {
+			setThumbnails(thumbnailsRes.data);
+		} 
+
     // Add delay cause looks weird without it
     // Could be removed once a lot more keyboards added
     setTimeout(() => setAppReadyState(AppReadyState.READY), 1000);

@@ -15,6 +15,7 @@ type ShellOutput = {
   stdout?: string;
   stderr?: string;
   pid?: number;
+	data?: any;
 };
 
 const winQmkShellPath = path.join("C:", "QMK_MSYS", "shell_connector.cmd");
@@ -29,10 +30,10 @@ if (isMac) {
 
 // If we want to use a specific node instance:
 // shell.config.execPath = String(shell.which("node"));
-console.log("shell env path: " + shell.env["PATH"]);
-console.log("is mac?: " + isMac);
-console.log("node: " + shell.which("node"));
-console.log("shell: " + shell.env["SHELL"]);
+// console.log("shell env path: " + shell.env["PATH"]);
+// console.log("is mac?: " + isMac);
+// console.log("node: " + shell.which("node"));
+// console.log("shell: " + shell.env["SHELL"]);
 
 export const shellExecOptions: ExecOptions & { async: true } = {
   async: true,
@@ -59,7 +60,7 @@ export const updateLog = (setLog: Dispatch<SetStateAction<string[]>>, dataString
     `=> ${dataString.toString().replace(/\u001b[^m]*?m/g, "")}`,
     ...existingLog,
   ]);
-  console.log(dataString);
+  // console.log(dataString);
 };
 
 export const killAsyncCmd = (shellCmd: any) => {
@@ -68,7 +69,7 @@ export const killAsyncCmd = (shellCmd: any) => {
   shellCmd.kill("SIGINT");
 };
 
-export const nodeCommands = {
+export const nodeCmd = {
   fileExists: (filepath: string): ShellOutput => {
     try {
       if (fs.existsSync(filepath)) {
@@ -90,6 +91,28 @@ export const nodeCommands = {
       return { success: false, code: -1 };
     }
   },
+	// Read images safely; skip if cant parse or doesnt exits
+	readPngImagesInDir: (dirPath: string): ShellOutput => {
+		const images: Record<string, string> = {};
+		const files: string[] = fs.readdirSync(dirPath);
+		files.forEach(file => {
+			try {
+				const imageData = fs.readFileSync(path.join(dirPath, file));
+				const b64 = Buffer.from(imageData).toString("base64");
+				const srcData = `data:image/png;base64,${b64}`;
+				const fileKey = file.replace(".png", "");
+				images[fileKey] = srcData;
+			} catch (e) {
+				// do nothing; skip image
+				console.log(e);
+			}
+		});
+		return {
+			success: true,
+			code: 0,
+			data: images,
+		}
+	},
   saveToFile: (str: string, filePath: string): ShellOutput => {
     try {
       fs.writeFileSync(filePath, str);

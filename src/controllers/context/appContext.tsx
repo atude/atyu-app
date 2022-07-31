@@ -15,6 +15,7 @@ export type AppContext = {
   flashProgress: number;
   isDoingTask: boolean;
   log: string[];
+	thumbnails: Record<string, string>;
   setAppReadyState: Dispatch<SetStateAction<AppReadyState>>;
   setKeyboard: Dispatch<SetStateAction<string>>;
   setKeyboardsConfig: Dispatch<SetStateAction<KeyboardsConfig>>;
@@ -24,6 +25,7 @@ export type AppContext = {
   setFlashProgress: Dispatch<SetStateAction<number>>;
   setDoingTask: Dispatch<SetStateAction<boolean>>;
   setLog: Dispatch<SetStateAction<string[]>>;
+	setThumbnails: Dispatch<SetStateAction<Record<string, string>>>;
 };
 
 const context = createContext<AppContext>({
@@ -36,6 +38,7 @@ const context = createContext<AppContext>({
   flashProgress: 0,
   isDoingTask: false,
   log: [],
+	thumbnails: {},
   setAppReadyState: () => {},
   setKeyboard: () => {},
   setKeyboardsConfig: () => {},
@@ -45,6 +48,7 @@ const context = createContext<AppContext>({
   setFlashProgress: () => {},
   setDoingTask: () => {},
   setLog: () => {},
+	setThumbnails: () => {},
 });
 
 let timer: NodeJS.Timeout;
@@ -59,6 +63,7 @@ export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
   const [flashProgress, setFlashProgress] = useState<number>(0);
   const [isDoingTask, setDoingTask] = useState<boolean>(false);
   const [log, setLog] = useState<string[]>([]);
+	const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
 
   const timedFlashState = (state: FlashState) =>
     state === FlashState.DONE || state === FlashState.CANCELLED;
@@ -102,6 +107,8 @@ export const AppProvider = ({ children }: { children?: React.ReactNode }) => {
     setDoingTask,
     log,
     setLog,
+		thumbnails,
+		setThumbnails,
   };
 
   return <context.Provider value={value}>{children}</context.Provider>;
