@@ -93,24 +93,32 @@ export const nodeCmd = {
   },
 	// Read images safely; skip if cant parse or doesnt exits
 	readPngImagesInDir: (dirPath: string): ShellOutput => {
-		const images: Record<string, string> = {};
-		const files: string[] = fs.readdirSync(dirPath);
-		files.forEach(file => {
-			try {
-				const imageData = fs.readFileSync(path.join(dirPath, file));
-				const b64 = Buffer.from(imageData).toString("base64");
-				const srcData = `data:image/png;base64,${b64}`;
-				const fileKey = file.replace(".png", "");
-				images[fileKey] = srcData;
-			} catch (e) {
-				// do nothing; skip image
-				console.log(e);
+		try {
+			const images: Record<string, string> = {};
+			const files: string[] = fs.readdirSync(dirPath);
+			files.forEach(file => {
+				try {
+					const imageData = fs.readFileSync(path.join(dirPath, file));
+					const b64 = Buffer.from(imageData).toString("base64");
+					const srcData = `data:image/png;base64,${b64}`;
+					const fileKey = file.replace(".png", "");
+					images[fileKey] = srcData;
+				} catch (e) {
+					// do nothing; skip image
+					console.log(e);
+				}
+			});
+			return {
+				success: true,
+				code: 0,
+				data: images,
 			}
-		});
-		return {
-			success: true,
-			code: 0,
-			data: images,
+		} catch (e) {
+			return {
+				success: false,
+				code: -1,
+				data: {},
+			}
 		}
 	},
   saveToFile: (str: string, filePath: string): ShellOutput => {

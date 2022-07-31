@@ -23,12 +23,6 @@ const OledModeBox = styled(Alert)`
   transition: all 0.5s;
 `;
 
-const OledModeHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
 const OledModeComponent = styled.div`
   margin: 12px auto;
   padding: 14px 8px 0 8px;
@@ -41,9 +35,9 @@ const OledModeComponent = styled.div`
 `;
 
 const ThumbnailImage = styled.img`
-	width: 32px;
-	height: 32px;
-	padding: 4px;
+	width: 40px;
+	height: 40px;
+	padding: 2px;
 	border-radius: 8px;
 	border: 2px solid white;
 	margin-right: 12px;
