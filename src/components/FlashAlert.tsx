@@ -100,8 +100,8 @@ const FlashAlert = () => {
 
   return !flashSeverity ? (
     <AlertStyled severity="info" icon={false}>
-			<AlertTitle>Atyu | OLED mods for QMK keyboards</AlertTitle>
-			{versionString}
+      <AlertTitle>Atyu | Mods for QMK keyboards</AlertTitle>
+      {versionString}
       {getLogComponent()}
     </AlertStyled>
   ) : (
@@ -112,9 +112,9 @@ const FlashAlert = () => {
         {(flashState === FlashState.COMPILING ||
           flashState === FlashState.PATCHING ||
           flashState === FlashState.CHECK_SIZE) && <StandardLinearProgress />}
-        {(flashState === FlashState.WAITING_FOR_DFU || flashState === FlashState.RUNNING_SETUP) && (
-          <StyledCircularProgress size={20} />
-        )}
+        {(flashState === FlashState.WAITING_FOR_DFU ||
+          flashState === FlashState.RUNNING_SETUP ||
+          flashState === FlashState.UPDATING) && <StyledCircularProgress size={20} />}
         {(flashState === FlashState.FLASHING_ERASING ||
           flashState === FlashState.FLASHING_DOWNLOADING) && (
           <StandardLinearProgress variant="determinate" value={flashProgress} />

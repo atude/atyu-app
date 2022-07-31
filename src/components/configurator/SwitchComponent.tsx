@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
-import { Box, Switch, Typography } from "@mui/material";
+import { Box, Switch } from "@mui/material";
 import { atyuValue } from "../../functions/configurator";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
 import { AtyuOptionSwitch } from "../../configs/atyuConfig";
+import ConfiguratorSectionHeading from "./subcomponents/ConfiguratorSectionHeading";
 
 type Props = {
   config: AtyuOptionSwitch;
@@ -26,12 +27,7 @@ const SwitchComponent = (props: Props) => {
 
   return (
 		<SwitchContainer>
-			<Box>
-				<Typography variant="subtitle1" fontSize={14}>{name}</Typography>
-				{!!desc?.length && (
-					<Typography variant="subtitle2" color="secondary">{desc}</Typography>
-				)}
-			</Box>
+			<ConfiguratorSectionHeading name={name} desc={desc} />
 			<Switch 
 				checked={isEnabled}
 				onChange={() => context.dispatchUpdateValue(key, !isEnabled)}

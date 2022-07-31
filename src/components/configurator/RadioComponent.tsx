@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
-import { Box, Button, ButtonGroup, Typography } from "@mui/material";
+import { Button, ButtonGroup } from "@mui/material";
 import { atyuValue } from "../../functions/configurator";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
 import { AtyuOptionRadioNumber } from "../../configs/atyuConfig";
 import HorizontalBox from "../HorizontalBox";
+import ConfiguratorSectionHeading from "./subcomponents/ConfiguratorSectionHeading";
 
 type Props = {
   config: AtyuOptionRadioNumber;
@@ -26,12 +27,7 @@ const RadioComponent = (props: Props) => {
 
   return (
     <HorizontalBox expanded>
-			<Box>
-				<Typography variant="subtitle1" fontSize={14}>{name}</Typography>
-				{!!desc?.length && (
-					<Typography sx={{ mb: "12px" }} variant="subtitle2" color="secondary">{desc}</Typography>
-				)}
-			</Box>
+			<ConfiguratorSectionHeading name={name} desc={desc} />
       <ButtonGroupContainer disableElevation>
         {radioValues.map((radioValue) => {
           const { name, value: thisValue } = radioValue;

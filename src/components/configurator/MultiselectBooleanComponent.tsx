@@ -1,14 +1,15 @@
 import styled from "@emotion/styled";
-import { Box, Checkbox, Typography, useTheme } from "@mui/material";
+import { Box, Checkbox, Typography } from "@mui/material";
 import { atyuValue } from "../../functions/configurator";
 import { useAtyuContext } from "../../controllers/context/atyuContext";
 import { AtyuOptionMultiselectBoolean } from "../../configs/atyuConfig";
 import { blueGrey } from "@mui/material/colors";
+import ConfiguratorSectionHeading from "./subcomponents/ConfiguratorSectionHeading";
 
 type Props = {
   config: AtyuOptionMultiselectBoolean;
-	name: string;
-	desc?: string;
+  name: string;
+  desc?: string;
 };
 
 const CheckboxContainer = styled(Box)`
@@ -29,7 +30,6 @@ const CheckboxBox = styled(Box)`
 `;
 
 const MultiselectBooleanComponent = (props: Props) => {
-	const theme = useTheme();
   const context = useAtyuContext();
   const { name, desc, config } = props;
   const { multiselectStruct, multiselectOptions } = config;
@@ -40,25 +40,21 @@ const MultiselectBooleanComponent = (props: Props) => {
 
   return (
     <Box>
-			<Typography variant="subtitle1" fontSize={14}>{name}</Typography>
-			{!!desc?.length && (
-				<Typography sx={{ mb: "12px" }} variant="subtitle2" color="secondary">{desc}</Typography>
-			)}
-      { (
+			<ConfiguratorSectionHeading name={name} desc={desc} />
+      {
         <Typography component="span" variant="subtitle2" color={blueGrey[300]}>
-          {multiselectOptions?.max != null && `
+          {multiselectOptions?.max != null &&
+            `
 						Choose up to ${multiselectOptions?.max} ${multiselectOptions?.max === 1 ? "option" : "options"}. 
 					`}
-					{multiselectOptions?.min != null && `
-						You must have at least ${multiselectOptions?.min} ${multiselectOptions?.min === 1 ? "option" : "options"} selected.
+          {multiselectOptions?.min != null &&
+            `
+						You must have at least ${multiselectOptions?.min} ${
+              multiselectOptions?.min === 1 ? "option" : "options"
+            } selected.
 					`}
         </Typography>
-      )}
-      {multiselectOptions?.min != null && (
-        <Typography component="span" variant="subtitle2" color={theme.palette.secondary.light}>
-          
-        </Typography>
-      )}
+      }
       <CheckboxContainer>
         {multiselectStruct.map((multiselectKey, i) => {
           const { name, key, defaultValue } = multiselectKey;
