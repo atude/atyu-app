@@ -1,12 +1,16 @@
 import styled from "@emotion/styled";
+import { CancelOutlined, SaveAlt, Segment } from "@mui/icons-material";
 import {
   Alert,
+  AlertColor,
   AlertTitle,
   Box,
   Button,
   ButtonGroup,
   CircularProgress,
   LinearProgress,
+	Snackbar,
+	Tooltip,
 } from "@mui/material";
 import { useState } from "react";
 import { versionString } from "../constants";
@@ -17,6 +21,8 @@ import {
 } from "../constants/types/flashState";
 import { useAppContext } from "../controllers/context/appContext";
 import { cancelFlash } from "../functions/commands/runFlash";
+import { nodeCmd } from "../functions/commands/shell";
+import { logFilePath, pathOf } from "../functions/path";
 
 const AlertStyled = styled(Alert)`
   top: 0;
@@ -27,7 +33,7 @@ const AlertStyled = styled(Alert)`
   flex-direction: row;
   width: 100%;
   height: 90px;
-  z-index: 9999;
+  z-index: 999;
 `;
 
 const ActionButtonsContainer = styled(Box)`
@@ -69,21 +75,45 @@ const FlashAlert = () => {
   const flashSeverity = FlashAlertSeverityMap[flashState];
   const displayString = FlashStateDisplayStrings[flashState];
   const [viewLog, setViewLog] = useState(false);
+	const [snackbar, setSnackbar] = useState<[string, AlertColor]>(["", "info"]);
 
   const handleCancel = () => cancelFlash();
+	const downloadLog = () => {
+		console.log(pathOf(logFilePath));
+		const cmd = nodeCmd.saveToFile(log.reverse().join("\n"), pathOf(logFilePath));
+		if (cmd.success) {
+			setSnackbar(["Saved log to desktop", "success"]);
+		} else {
+			setSnackbar(["Failed to save log to desktop", "error"]);
+		}
+	}
 
   const getLogComponent = () => (
     <>
       <ActionButtonsContainer>
+				<Snackbar open={!!snackbar[0].length} autoHideDuration={6000} onClose={() => setSnackbar(["", "info"])}>
+					<Alert severity={snackbar[1]}>
+						{snackbar[0]}
+					</Alert>
+				</Snackbar>	
         <ButtonGroup>
           {flashState === FlashState.WAITING_FOR_DFU && (
-            <Button key="cancel" color="error" variant="outlined" onClick={() => handleCancel()}>
-              Cancel
-            </Button>
+						<Tooltip title="Cancel installation">
+							<Button key="cancel" color="error" variant="outlined" onClick={handleCancel}>
+								<CancelOutlined />
+							</Button>
+						</Tooltip>
           )}
-          <Button key="log" variant="outlined" onClick={() => setViewLog(!viewLog)}>
-            {viewLog ? "Hide" : "View"} log
-          </Button>
+					<Tooltip title={viewLog ? "Hide log" : "View log"}>
+						<Button key="view" variant="outlined" onClick={() => setViewLog(!viewLog)}>
+							<Segment />
+						</Button>
+					</Tooltip>
+					<Tooltip title="Save log to desktop">
+						<Button key="dowload" variant="outlined" onClick={downloadLog}>
+							<SaveAlt />
+						</Button>
+					</Tooltip>
         </ButtonGroup>
       </ActionButtonsContainer>
       {!!viewLog && (
