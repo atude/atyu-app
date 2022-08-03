@@ -2,7 +2,7 @@
 
 `Note: Atyu is currently in beta`
 
-[Download](https://github.com/atude/atyu-app/releases) | [Join the Discord for updates and discussion!](https://discord.gg/X3A6NhAJtG)
+### [Download](https://github.com/atude/atyu-app/releases) | [Join the Discord for updates and discussion!](https://discord.gg/X3A6NhAJtG)
 
 ### What is Atyu?
 Atyu is a Mac/Windows app that lets you configure OLED (and other) settings for QMK keyboards. It uses a [fork of QMK](https://github.com/atude/qmk_firmware) that includes preset mods that can be set by the app, and installed directly to your keyboard. 
