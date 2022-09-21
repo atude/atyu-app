@@ -11,6 +11,7 @@ Atyu can receive updates from the QMK fork from within the app's settings, so yo
 
 ### Installation Requirements
 - [QMK (QMK MSYS if using Windows)](https://docs.qmk.fm/#/newbs_getting_started?id=set-up-your-environment) (you only need to do step 2)
+  - On Windows, you **must** install QMK MSYS in the default directory
 
 ### Supported Keyboards
 - Satisfaction 75
